@@ -1,0 +1,711 @@
+\documentclass[handout]{beamer}
+\usepackage{pgfpages}
+%\setbeameroption{show notes}
+%\setbeameroption{show notes on second screen=right}
+
+\mode<presentation>{
+  \usetheme[shadow=false]{Boadilla}
+  \usefonttheme{professionalfonts}
+  \usefonttheme[onlymath]{serif}
+  \usecolortheme{dolphin}
+  \useinnertheme{circles}
+  \setbeamercovered{transparent} 
+}
+\makeatletter
+\def\beamerorig@set@color{%
+  \pdfliteral{\current@color}%
+  \aftergroup\reset@color
+}
+\def\beamerorig@reset@color{\pdfliteral{\current@color}}
+\makeatother
+\usepackage[spanish]{babel}
+\usepackage{amssymb} 
+\usepackage{amsthm,mathtools} 
+\usepackage{tikz}
+\usepackage{bussproofs}
+\usepackage{stmaryrd}
+
+%% FONTS
+\usepackage[utf8]{inputenx}
+\usepackage{fontenc}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{ 
+  \hbox{%
+  \begin{beamercolorbox}[wd=.50\paperwidth,ht=2.25ex,dp=1ex,center]{white}%
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.20\paperwidth,ht=2.25ex,dp=1ex,center]{white}%
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.30\paperwidth,ht=2.25ex,dp=1ex,left]{foot}%
+    \textbf{\insertsection}
+  \end{beamercolorbox}
+  }%
+  \vskip0pt%
+}
+\setbeamertemplate{footline}{}
+\setbeamertemplate{headline}{
+\hbox{
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.25ex,dp=1ex,right]{white}%
+    \color{black}\textbf{\insertframenumber{} }\hspace*{2em}
+  \end{beamercolorbox}}
+  \vspace{-.4cm}
+}
+
+\setbeamertemplate{section in toc}{\leftskip=2ex%
+    \usebeamerfont*{section number projected}%
+    \usebeamercolor{section number projected}%
+    \begin{pgfpicture}{-1ex}{2pt}{1ex}{2.2ex}
+      \color{bg}
+      \pgfpathcircle{\pgfpoint{0pt}{1.5ex}}{1.8ex}
+      \pgfusepath{fill}
+      \pgftext[bottom,y=3pt]{\color{fg}\inserttocsectionnumber}
+    \end{pgfpicture}\kern1em%
+  \inserttocsection\par}
+\newcommand{\fifte}[3]{\left\{
+                              \begin{array}{l@{\quad\quad}l}
+                                #2 & \mbox{si }#1 \\
+                                #3 & \mbox{si no}
+                              \end{array} 
+                           \right.}\newcommand{\fassign}[2]{#1 := #2}
+\newcommand{\true}{\textbf{true}}
+\newcommand{\false}{\textbf{false}}
+\newcommand{\fskipc}{\mbox{\textbf{skip}}}
+\newcommand{\fiftec}[3]{\textbf{if}\ #1\ \textbf{then}\ #2\ \textbf{else}\ #3}
+\newcommand{\fwhile}[2]{\textbf{while}\ #1\ \textbf{do}\ #2}
+\newcommand{\fnewvar}[3]{\mbox{\textbf{newvar}\ #1:= #2\ \textbf{in}\ #3}}
+\newcommand \supr{\vee}
+\newcommand \infi{\wedge}
+\newcommand{\se}[1]{\mbox{$[\![#1]\!]$}}
+\newcommand{\sems}[1]{\sem{#1}\sigma}
+\newcommand{\overs}[3]{[#1|#2:#3]}
+\newcommand{\commif}[3]{\mathbf{if}\;#1\;\mathbf{then}\;#2\;\mathbf{else}\;#3}
+\newcommand{\commseq}[2]{#1;#2}
+\newcommand{\commassign}[2]{#1:=#2}
+\newcommand{\commskip}{\mathbf{skip}}
+\newcommand{\commwhile}[2]{\mathbf{while}\;#1\;\mathbf{do}\;#2}
+\newcommand{\commnvar}[3]{\mathbf{newvar}\;#1:=#2\;\mathbf{in}\;#3}
+\newcommand{\ptodo}[2]{\forall #1.\ #2}
+\newcommand{\existe}[2]{\exists #1.\ #2}
+\newcommand{\s}{\sigma }
+\newcommand{\Z}{\textbf{Z}}
+\newcommand{\la}{\left\langle }
+\newcommand{\ra}{\right\rangle }
+%\newcommand{\se}[1]{[\![#1]\!]}
+\newcommand{\db}{\perp\!\!\!\perp}
+\newcommand{\sem}[2]{[\![#1]\!]_{#2}}
+\newcommand{\semnat}[1]{\sem{#1}{\nat}}
+\newcommand{\semassert}[1]{\sem{#1}{\assert}}
+\newcommand{\semintexp}[1]{\sem{#1}{\intexp}}
+\newcommand{\semtheta}[1]{\sem{#1}{\theta}}
+\newcommand{\semden}[1]{\sem{#1}{}}
+\newcommand{\semop}[1]{\{\!\![#1]\!\!\}}
+\newcommand{\syn}[1]{<\!\!#1\!\!>}
+\newcommand{\conc}{+\!\!\!+}
+\newcommand{\nat}{\left\langle nat\right\rangle}
+\newcommand{\var}{\left\langle var\right\rangle}
+\newcommand{\boolexp}{\left\langle boolexp\right\rangle}
+\newcommand{\bin}{{\rm bin}}
+\newcommand{\assert}{\left\langle assert\right\rangle}
+\newcommand{\intexp}{\left\langle intexp\right\rangle }
+\newcommand{\comm}{\left\langle comm\right\rangle}
+\newcommand{\fun}{\left\langle fun\right\rangle}
+\newcommand{\fvar}{\left\langle fvar\right\rangle}
+\newcommand{\prog}{\left\langle prog\right\rangle}
+\newcommand{\cnf}{\left\langle cnf\right\rangle}
+\newcommand{\ife}{\mathbf{if}\ }
+\newcommand{\lete}{\mathbf{let}\ }
+\newcommand{\where}{\ \mathbf{where}\ }
+\newcommand{\ine}{\ \mathbf{in}\ }
+\newcommand{\thene}{\ \mathbf{then}\ }
+\newcommand{\elsee}{\ \mathbf{else}\ }
+\newcommand{\newvar}{\mathbf{newvar}\ }
+\newcommand{\while}{\mathbf{while}\ }
+\newcommand{\val}{\mathbf{val}\ }
+\newcommand{\doc}{\ \mathbf{do}\ }
+\newcommand{\env}{\left\langle env\right\rangle}
+\newcommand{\penv}{\left\langle penv\right\rangle}
+\newcommand{\ex}{\left\langle exp\right\rangle}
+\newcommand{\natconst}{\left\langle natconst\right\rangle}
+\newcommand{\boolconst}{\left\langle boolconst\right\rangle}
+\newcommand{\pvar}{\left\langle pvar\right\rangle}
+\newcommand{\proc}{\ \mathbf{proc}\ }
+\newcommand{\va}[1]{\mathsf{#1}}
+
+
+
+\title{Lenguajes y Compiladores}
+
+\date{2017}
+
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+\beamerdefaultoverlayspecification{<+->}
+
+
+\begin{document}
+
+
+
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+\begin{frame}{Estructura de la materia a grandes rasgos:}
+
+\textbf{Primera Parte: } Lenguaje imperativo
+
+\bigskip
+
+
+\textbf{Segunda Parte: } Lenguaje aplicativo puro, y lenguaje aplicativo con referencias y asignación
+
+\end{frame}
+
+\begin{frame}{Ejes de contenidos de la segunda parte}
+  \tableofcontents
+\end{frame}
+
+\section{Cálculo Lambda}
+
+
+% \begin{frame}{Evaluación}
+
+% $\rightarrow^*$ no representa adecuadamente la ejecución de los lenguajes aplicativos. \pause
+% \medskip
+% En los lenguajes aplicativos la evaluación \pause
+% \medskip
+% \begin{enumerate}
+% \item sólo para expresiones cerradas, 
+% \item es determinística,
+% \item no busca formas normales sino formas canónicas.
+% \end{enumerate}\pause
+
+% \bigskip
+
+% Vamos a estudiar:
+
+% \medskip
+
+% \textbf{Evaluación (en orden) normal}: lenguajes funcionales lazy (Haskell)
+
+% \medskip
+
+% \textbf{Evaluación eager o estricta}: lenguajes estrictos (ML).
+
+% \end{frame}
+
+
+% \begin{frame}{Formas canónicas}
+
+%   La evaluación busca una forma canónica, las mismas juegan el rol de
+%   ser ``valores'' de expresiones. \pause
+
+% \medskip
+
+% La noción de forma canónica depende de la definición de evaluación. Se define
+% una noción de forma canónica para la evaluación normal, y otra para la
+% evaluación eager. \pause
+
+% \medskip
+
+% En el caso del cálculo lambda coinciden: \textbf{son las abstracciones}
+% \end{frame}
+
+
+% \begin{frame}{Formas canónicas vs. formas normales}
+% \note{Es fácil: podemos hacer inducción en la estructura. Sólo tiene
+%   sentido el caso para la aplicación y el operador no es una
+%   variable. Si el operador es una aplicación sale por HI; si es
+%   una abstracción estamos listos.
+
+%   Las únicas formas normales cerradas son abstracciones,
+%   es decir, son formas canónicas. Pero hay formas canónicas que
+%   no son (y otras que no tienen) forma normal.
+% }  
+% \textbf{Propiedad}: Una aplicación cerrada no puede ser forma normal. \pause
+
+% \bigskip
+
+% \textbf{Corolario}:  una expresión cerrada que es forma normal es
+% también forma canónica.  \pause
+
+% \bigskip
+
+% El recíproco no vale. 
+
+% \bigskip
+
+% \end{frame}
+
+
+
+% \begin{frame}{¿Por qué evaluación?}
+
+% ¿Por qué conformarse con una forma canónica en vez de continuar ejecutando hasta
+% obtener una forma normal?  \pause
+
+% \bigskip
+
+% Sólo tiene sentido evaluar expresiones cerradas. \pause
+
+% \bigskip
+
+% Una vez que se alcanzó una abstracción $\lambda v.e$, continuar
+% evaluando implicaría evaluar $e$ que puede no ser una expresión
+% cerrada, puede contener a la variable $v$.
+
+% \end{frame}
+
+
+% \begin{frame}{semántica natural o big-step}
+
+% En este tipo de semántica, uno no describe un paso de ejecución,
+% sino directamente una relación entre los términos y sus valores (que
+% también son términos, son formas canónicas). \pause
+
+% \bigskip
+
+% Utilizando la nomenclatura de configuraciones de la semántica small-step,
+% diremos que  $\Rightarrow \subseteq \Gamma \times \Gamma_N$.
+
+% \end{frame}
+
+% \begin{frame}{Evaluación Normal ($\Rightarrow_N$)}
+
+% Regla para las formas canónicas
+
+% \[\begin{array}{c}
+% \overline{\lambda v.e\ \Rightarrow_N\ \lambda v.e}
+% \end{array}
+% \]
+% \pause
+% \bigskip
+
+% Regla para la aplicación
+
+% \[ \begin{array}{c}
+% \underline{e\ \Rightarrow_N\ \lambda v.e_0\qquad (e_0/v\mapsto e')\ \Rightarrow_N\ z}\\
+% ee'\ \Rightarrow_N\ z
+% \end{array}
+% \]
+
+% \end{frame}
+
+
+% \begin{frame}{Evaluación Eager ($\Rightarrow_E$)}
+
+% Regla para las formas canónicas
+
+% \[
+%   \begin{array}{c}
+%     \overline{\lambda v.e\ \Rightarrow_E\ \lambda v.e}
+% \end{array}
+% \]
+% \pause
+% \bigskip
+
+% Regla para la aplicación
+% \[\begin{array}{c}
+% \underline{e\ \Rightarrow_E\ \lambda v.e_0\qquad e'\ \Rightarrow_E\ z'\qquad(e_0/v\mapsto z')\ \Rightarrow_E\ z}\\
+% ee'\ \Rightarrow_E\ z
+% \end{array}
+% \]
+% \end{frame}
+
+
+
+\begin{frame}{Semántica Denotacional del Cálculo Lambda}
+  \note{La auto aplicación exige que nuestro dominio semántico $C$ sea isomorfo a
+    al espacio $C \to C$. Notemos que la paradoja se hace aparente si consideramos
+    $a,b\in C$ tal que $a\neq b$ y definimos \[f\,x=
+    \begin{cases}
+      b & \text{ si } x = a\\
+      a & \text{ en otro caso }
+    \end{cases}
+    \].
+
+    Para ser más precisos, Scott muestra que si trabajamos en alguna
+    categoría de dominios podemos encontrar soluciones no triviales de
+    ecuaciones recursivas que utilicen ``constructores'' tales como
+    el producto, la unión disjunta, lifting y espacio de funciones.
+  }
+  
+Requisito inicial para su semántica: 
+
+\medskip
+
+un conjunto $C$ tal que $C$ es isomorfo a $C\to C$ \pause
+
+\bigskip
+
+\textbf{¿Paradoja?} Sea $f$ cualquier función, y definamos $p_f\, x = f (x x)$.
+
+\medskip
+
+Entonces $p_f\,p_f$ es punto fijo de $f$. 
+\pause
+\bigskip
+
+\textbf{Scott-Strachey}($\dagger$ 1975) Definen la semántica utilizando dominios:
+\[D_\infty\ \  \simeq\ [\ D_\infty \rightarrow D_\infty]\]
+\end{frame}
+
+
+\begin{frame}{Semántica Denotacional del Cálculo Lambda}
+Asumimos la existencia de un dominio $D_{\infty}$, junto con un isomorfismo:
+
+\begin{align*}
+\phi\in D_{\infty}\rightarrow [D_{\infty}\rightarrow D_{\infty}] \\
+\psi\in [D_{\infty}\rightarrow D_{\infty}]\rightarrow D_{\infty}
+\end{align*}
+es decir 
+\begin{align*}
+  \phi \circ \psi &= Id_{[D_{\infty}\rightarrow D_{\infty}]} \\
+  \shortintertext{ y }
+  \psi\circ\phi &= Id_{D_{\infty}} 
+\end{align*}
+\end{frame}
+
+
+
+\begin{frame}{Semántica Denotacional del Cálculo Lambda}
+  \note{
+
+    Ese isomorfismo es todo lo que necesitamos para definir la
+    semántica: las variables adquieren su semántica del entorno; la
+    aplicación utiliza medio isomorfismo y la abstracción la otra
+    mitad.
+
+    Notemos que estamos siendo poco cuidadosos al utilizar el
+    isomorfismo; puesto que deberíamos saber que
+    $ d \mapsto \se{e}[\eta | v :d]$ es continua.
+
+  }
+
+
+\textbf{Ambientes (Entornos):}
+  \[\eta \in Env = \langle var\rangle\rightarrow D_\infty\] \pause
+\vspace{-6ex}
+  \begin{align*}
+  \shortintertext{\textbf{Función semántica:}}
+    \se{\_}\in\ \ &\langle exp\rangle \rightarrow Env\rightarrow D_{\infty}
+    \pause
+  \shortintertext{\textbf{Ecuaciones semánticas:}}
+                    \se{v}\eta &= \eta v\\[1ex]
+    \pause
+    \se{e_0 e_1}\eta &= \phi(\se{e_0}\eta)\ \se{e_1}\eta\\[1ex]
+    \pause
+    \se{\lambda v.e}\eta &= \psi(\lambda d\in D_\infty. \se{e}[\eta|v:d])
+  \end{align*}
+  \pause
+  
+  Se puede probar que $\se{\Delta\,\Delta}\eta = \bot$.
+
+\end{frame}
+
+
+
+\begin{frame}{Propiedades de la semántica del CL}
+
+\textbf{Teorema de Coincidencia:}
+
+Si $\eta w = \eta' w$ para todo $w\in FV\ e$, entonces
+$\se{e}\eta = \se{e}\eta'.$
+\pause
+
+\bigskip
+
+\textbf{Teorema de Renombre:} Si $v_{new}\notin FV\ e-\{v\}$, 
+
+entonces $\se{\lambda v_{new}.(e/v\mapsto v_{new})} = \se{\lambda v.e}.$ \pause
+
+\bigskip
+\textbf{Sustituciones:} $\Delta \ = \ \ \langle var\rangle \rightarrow  \langle exp\rangle$
+
+\medskip
+
+\textbf{Teorema de Sustitución}: Si $\se{\delta w}\eta = \eta' w$ para todo $w \in FV\ e$, entonces $\se{e/\delta}\eta = \se{e}\eta'$.
+
+\end{frame}
+
+
+\begin{frame}{Corrección de las reglas $\beta$ y $\eta$}
+  \note{La gracia de probar los resultados anteriores es que podemos probar
+    que nuestro modelo respeta las reglas de cómputo.
+  }
+  
+Son válidas en el modelo $D_\infty$ las reglas del cálculo lambda:
+
+\bigskip
+
+\[ \se{(\lambda v.e)e'}\eta = \se{e/v\mapsto e'}\eta \]
+\pause
+\bigskip
+
+\[\se{\lambda v.e\,v}\eta = \se{e}\eta, \text{ si } v\notin FV e \]
+\pause
+\bigskip
+
+\textbf{Corolario}: Si $e \rightarrow^\ast e'$, entonces $\se{e} = \se{e'}$.
+
+\end{frame}
+
+
+
+\begin{frame}{¿Representa $D_\infty$ la evaluación?}
+
+La semántica denotacional dada \textbf{ no representa adecuadamente}
+la evaluación de los lenguajes funcionales.
+\pause
+
+\bigskip
+Puesto que no distingue los valores de términos que divergen.   
+\medskip
+
+Mientras que $\lambda x. \Delta\,\Delta$ es un valor, en $D_\infty$
+tenemos $\se{\lambda v. \Delta\Delta} = \perp$.
+\pause
+\medskip
+
+Si queremos construir un modelo que represente adecuadamente la
+evaluación (cualquiera de ellas), qué vamos a romper necesariamente?
+\pause
+
+Repuesta: la regla $\eta$.
+
+\end{frame}
+
+
+
+\begin{frame}{Semántica Denotacional Normal}
+
+Hay que distinguir las semántica de $\lambda v. \Delta\Delta$ y $\Delta\Delta$
+\pause
+\bigskip
+
+Los ``valores'' (conjunto $V$), representan a las formas canónicas:
+\[ V\ \ \approx\ \  [D\rightarrow D]\]
+\pause
+Definimos el conjunto de resultados posibles como :
+\[D \ =\ V_\perp\]
+
+\end{frame}
+
+
+\begin{frame}{Dominio para Semántica Normal}
+
+Asumimos la existencia de un dominio $D$, junto con un isomorfismo:
+
+\bigskip
+
+\begin{align*}
+\phi\in & V\rightarrow [D\rightarrow D]\\
+\psi\in &[D\rightarrow D] \rightarrow V
+\end{align*}
+
+\begin{align*}
+\phi \circ \psi &= Id_{D\rightarrow D}\\
+  \psi\circ\phi &= Id_{V}\\
+  \shortintertext{\textbf{Notación: }} 
+  \iota_\perp\in & V\rightarrow D
+\end{align*}
+\bigskip
+
+\end{frame}
+
+
+\begin{frame}{Semántica Denotacional del Cálculo Lambda Normal}
+
+Dominio Semántico: $D \ = V_\perp \qquad  V\ \approx\ [D\rightarrow D]$
+\pause
+
+\bigskip
+
+\textbf{Ambientes:} $Env = \langle var\rangle\rightarrow D$
+\pause
+\bigskip
+\begin{align*}
+  \shortintertext{\textbf{Función semántica:}}
+  \se{\_}\in\ \ \langle exp\rangle \rightarrow Env\rightarrow D
+\end{align*}
+\pause
+\vspace{-4ex}
+\begin{align*}
+\shortintertext{\textbf{Ecuaciones semánticas:}}
+  \se{v}\eta &= \eta v\\
+  \pause
+  \se{e_0 e_1}\eta &= \phi_{\perp\!\!\!\perp}(\se{e_0}\eta) (\se{e_1}\eta)\\
+  \pause
+  \se{\lambda v.e}\eta &=\  \iota_\perp\circ\psi\ (\lambda d\in D. \se{e}[\eta|v:d])
+\end{align*}
+\end{frame}
+
+
+\begin{frame}{Una aplicación se cuelga si \ldots}
+
+¿Cuáles son todas las posibilidades para que $e_0e_1$ tenga semántica $\perp$? \pause
+\bigskip
+Recordemos que $\phi_{\perp\!\!\!\perp} \perp\  \ \ =\  \ \perp_{D\rightarrow D}$. \pause
+
+\bigskip
+
+Si bien la semántica denotacional no expresa un orden de evaluación ya
+que no es operacional, establece indirectamente el orden natural en
+que debe evaluarse. \pause
+\bigskip
+Por más que $\se{e_1}\eta = \perp$, no necesariamente
+$\se{e_0e_1}\eta = \perp$.
+\pause
+
+\medskip Eso indica que $e_1$ no necesariamente debe evaluarse para
+evaluarse $e_0 e_1$.
+
+\end{frame}
+
+
+
+\begin{frame}{Propiedades de la Semántica Denotacional Normal }
+
+Los teoremas que vimos antes siguen valiendo. \pause
+
+\bigskip
+
+También vale la regla $\beta$, que utiliza la igualdad: 
+\[\phi_{\perp\!\!\!\perp}\circ (\iota_\perp \circ \psi) = Id_{D\rightarrow D}\]
+\pause
+\bigskip
+
+No vale la regla $\eta$. De hecho, empezamos queriendo distinguir $\lambda x.(\Delta\,\Delta) x$ de
+$\Delta\,\Delta$.
+\end{frame}
+
+
+
+
+%EAGER
+
+
+
+
+
+
+\begin{frame}{Modalidad EAGER}
+
+  
+La semántica denotacional dada \textbf{ no representa adecuadamente}
+la evaluación de los lenguajes funcionales.
+\pause
+
+\bigskip
+
+
+Por ejemplo: $(\lambda x. \lambda y. y) (\Delta\Delta)$
+
+
+\bigskip
+
+La aplicación se efectúa cuando el operando se haya evaluado. Desde el punto de vista semántico, las funciones toman valores solamente. 
+
+\end{frame}
+
+
+
+
+\begin{frame}{Semántica Denotacional Eager}
+
+Los ``valores'' (conjunto $V$), representan a las formas canónicas,
+ pero ahora son funciones que sólo toman valores:
+\[ V\ \ \approx\ \  V\rightarrow D\]
+\smallskip
+Definimos el conjunto de resultados posibles como :
+\[D \ =\ V_\perp\]
+
+\end{frame}
+
+
+\begin{frame}{Dominios para Semántica Eager}
+
+  Asumimos la existencia de un dominio $D$, junto con isomorfismos:
+
+  
+\begin{align*}
+\phi\in & V\rightarrow [V\rightarrow D]\\
+\psi\in &[V\rightarrow D] \rightarrow V
+\end{align*}
+
+\begin{align*}
+\phi \circ \psi &= Id_{V\rightarrow D}\\
+  \psi\circ\phi &= Id_{V}\\
+  \shortintertext{\textbf{Notación: }} 
+  \iota_\perp\in & V\rightarrow D
+\end{align*}
+
+\end{frame}
+
+\begin{frame}{Semántica Denotacional del Cálculo Lambda Eager}
+
+Dominio Semántico: $D \ = V_\perp \qquad  V\ \approx\ [V\rightarrow D]$
+\pause
+
+\bigskip
+
+\textbf{Ambientes:} $Env = \langle var\rangle\rightarrow V$
+\pause
+\bigskip
+\begin{align*}
+  \shortintertext{\textbf{Función semántica:}}
+  \se{\_}\in\ \ \langle exp\rangle \rightarrow Env\rightarrow D
+\end{align*}
+\pause
+\vspace{-4ex}
+\begin{align*}
+\shortintertext{\textbf{Ecuaciones semánticas:}}
+  \se{v}\eta &= \iota_\perp (\eta v)\\
+  \pause
+  \se{e_0 e_1}\eta &= (\phi_{\perp\!\!\!\perp}(\se{e_0}\eta))_{\perp\!\!\!\perp} (\se{e_1}\eta)\\
+  \pause
+  \se{\lambda v.e}\eta &=\  \iota_\perp\circ\psi\ (\lambda z\in V. \se{e}[\eta|v:z])
+\end{align*}
+\end{frame}
+
+\begin{frame}{Propiedades de la Semántica Denotacional Eager }
+
+Los teoremas que vimos antes siguen valiendo. 
+\pause
+
+\bigskip
+
+Ya no vale la regla $\beta$, (para contra-ejemplo alcanza un $\bot$):
+
+\bigskip
+
+\[\se{(\lambda x\,y.y)\,(\Delta\,\Delta)}\eta = (\lambda z\in V. \se{e}[\eta|v:z])_{\perp\!\!\!\perp}\, \bot = \bot\]
+
+\medskip
+pero
+\[\se{(\lambda y.y)/x \mapsto(\Delta\,\Delta)}\eta = \se{\lambda y.y}\eta \neq \bot\]
+
+\medskip
+
+\pause Puesto que queremos modelar la evaluación eager, deberíamos
+esperar que $e \Rightarrow_E z$ implique $\se{e}\eta = \se{z}\eta$.
+\bigskip
+
+Lo podemos probar por inducción en la derivación $e \Rightarrow_E z$.
+
+
+\end{frame}
+
+
+\end{document}
+
+
+

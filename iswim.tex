@@ -1,0 +1,746 @@
+\documentclass{beamer}
+\usepackage{pgfpages}
+
+%\setbeameroption{show notes}
+%\setbeameroption{show notes on second screen=right}
+
+\mode<presentation>{
+  \usetheme[shadow=false]{Boadilla}
+  \usefonttheme{professionalfonts}
+  \usefonttheme[onlymath]{serif}
+  \usecolortheme{dolphin}
+  \useinnertheme{circles}
+  \setbeamercovered{transparent} 
+}
+\makeatletter
+\def\beamerorig@set@color{%
+  \pdfliteral{\current@color}%
+  \aftergroup\reset@color
+}
+\def\beamerorig@reset@color{\pdfliteral{\current@color}}
+\makeatother
+\usepackage{amssymb} 
+\usepackage{amsmath,amsthm,mathtools} 
+\usepackage{tikz}
+\usepackage{bussproofs}
+\usepackage{stmaryrd}
+
+%% FONTS
+\usepackage[utf8]{inputenx}
+\usepackage{fontenc}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{ 
+  \hbox{%
+  \begin{beamercolorbox}[wd=.50\paperwidth,ht=2.25ex,dp=1ex,center]{white}%
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.20\paperwidth,ht=2.25ex,dp=1ex,center]{white}%
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.30\paperwidth,ht=2.25ex,dp=1ex,left]{foot}%
+    \textbf{\insertsection}
+  \end{beamercolorbox}
+  }%
+  \vskip0pt%
+}
+\setbeamertemplate{footline}{}
+\setbeamertemplate{headline}{
+\hbox{
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.25ex,dp=1ex,right]{white}%
+    \color{black}\textbf{\insertframenumber{} }\hspace*{2em}
+  \end{beamercolorbox}}
+  \vspace{-.4cm}
+}
+
+\setbeamertemplate{section in toc}{\leftskip=2ex%
+    \usebeamerfont*{section number projected}%
+    \usebeamercolor{section number projected}%
+    \begin{pgfpicture}{-1ex}{2pt}{1ex}{2.2ex}
+      \color{bg}
+      \pgfpathcircle{\pgfpoint{0pt}{1.5ex}}{1.8ex}
+      \pgfusepath{fill}
+      \pgftext[bottom,y=3pt]{\color{fg}\inserttocsectionnumber}
+    \end{pgfpicture}\kern1em%
+  \inserttocsection\par}
+\newcommand{\fifte}[3]{\left\{
+                              \begin{array}{l@{\quad\quad}l}
+                                #2 & \mbox{si }#1 \\
+                                #3 & \mbox{si no}
+                              \end{array} 
+                           \right.}\newcommand{\fassign}[2]{#1 := #2}
+\newcommand{\true}{\textbf{true}}
+\newcommand{\false}{\textbf{false}}
+\newcommand{\fskipc}{\mbox{\textbf{skip}}}
+\newcommand{\fiftec}[3]{\textbf{if}\ #1\ \textbf{then}\ #2\ \textbf{else}\ #3}
+\newcommand{\letrecin}[2]{\textbf{letrec}\ #1\ \textbf{in}\ #2\ }
+\newcommand{\fwhile}[2]{\textbf{while}\ #1\ \textbf{do}\ #2}
+\newcommand{\fnewvar}[3]{\mbox{\textbf{newvar}\ #1:= #2\ \textbf{in}\ #3}}
+\newcommand \supr{\vee}
+\newcommand \infi{\wedge}
+\newcommand{\se}[1]{\mbox{$[\![#1]\!]$}}
+\newcommand{\sems}[1]{\sem{#1}\sigma}
+\newcommand{\overs}[3]{[#1|#2:#3]}
+\newcommand{\commif}[3]{\mathbf{if}\;#1\;\mathbf{then}\;#2\;\mathbf{else}\;#3}
+\newcommand{\commseq}[2]{#1;#2}
+\newcommand{\commassign}[2]{#1:=#2}
+\newcommand{\commskip}{\mathbf{skip}}
+\newcommand{\commwhile}[2]{\mathbf{while}\;#1\;\mathbf{do}\;#2}
+\newcommand{\commnvar}[3]{\mathbf{newvar}\;#1:=#2\;\mathbf{in}\;#3}
+\newcommand{\ptodo}[2]{\forall #1.\ #2}
+\newcommand{\existe}[2]{\exists #1.\ #2}
+\newcommand{\s}{\sigma }
+\newcommand{\Z}{\textbf{Z}}
+\newcommand{\la}{\left\langle }
+\newcommand{\ra}{\right\rangle }
+%\newcommand{\se}[1]{[\![#1]\!]}
+\newcommand{\db}{\perp\!\!\!\perp}
+\newcommand{\sem}[2]{[\![#1]\!]_{#2}}
+\newcommand{\semnat}[1]{\sem{#1}{\nat}}
+\newcommand{\semassert}[1]{\sem{#1}{\assert}}
+\newcommand{\semintexp}[1]{\sem{#1}{\intexp}}
+\newcommand{\semtheta}[1]{\sem{#1}{\theta}}
+\newcommand{\semden}[1]{\sem{#1}{}}
+\newcommand{\semop}[1]{\{\!\![#1]\!\!\}}
+\newcommand{\syn}[1]{<\!\!#1\!\!>}
+\newcommand{\conc}{+\!\!\!+}
+\newcommand{\nat}{\left\langle nat\right\rangle}
+\newcommand{\var}{\left\langle var\right\rangle}
+\newcommand{\pat}{\left\langle pat\right\rangle}
+\newcommand{\boolexp}{\left\langle boolexp\right\rangle}
+\newcommand{\bin}{{\rm bin}}
+\newcommand{\assert}{\left\langle assert\right\rangle}
+\newcommand{\intexp}{\left\langle intexp\right\rangle }
+\newcommand{\comm}{\left\langle comm\right\rangle}
+\newcommand{\fun}{\left\langle fun\right\rangle}
+\newcommand{\fvar}{\left\langle fvar\right\rangle}
+\newcommand{\prog}{\left\langle prog\right\rangle}
+\newcommand{\cnf}{\left\langle cnf\right\rangle}
+\newcommand{\intcnf}{\left\langle intcnf\right\rangle}
+\newcommand{\boolcnf}{\left\langle boolcnf\right\rangle}
+\newcommand{\funcnf}{\left\langle funcnf\right\rangle}
+\newcommand{\tuplecnf}{\left\langle tuplecnf\right\rangle}
+\newcommand{\ife}{\mathbf{if}\ }
+\newcommand{\lete}{\mathbf{let}\ }
+\newcommand{\where}{\ \mathbf{where}\ }
+\newcommand{\ine}{\ \mathbf{in}\ }
+\newcommand{\thene}{\ \mathbf{then}\ }
+\newcommand{\elsee}{\ \mathbf{else}\ }
+\newcommand{\newvar}{\mathbf{newvar}\ }
+\newcommand{\while}{\mathbf{while}\ }
+\newcommand{\val}{\mathbf{val}\ }
+\newcommand{\doc}{\ \mathbf{do}\ }
+\newcommand{\env}{\left\langle env\right\rangle}
+\newcommand{\penv}{\left\langle penv\right\rangle}
+\newcommand{\ex}{\left\langle exp\right\rangle}
+\newcommand{\natconst}{\left\langle natconst\right\rangle}
+\newcommand{\boolconst}{\left\langle boolconst\right\rangle}
+\newcommand{\pvar}{\left\langle pvar\right\rangle}
+\newcommand{\proc}{\ \mathbf{proc}\ }
+\newcommand{\va}[1]{\mathsf{#1}}
+\newcommand{\tagexp}{\left\langle tag \right\rangle}
+
+
+\title{Lenguajes y Compiladores}
+
+%\author{Parte I:  }
+
+\date{2017}
+
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+\beamerdefaultoverlayspecification{<+->}
+
+
+\begin{document}
+
+
+
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+\begin{frame}{Estructura de la materia a grandes rasgos:}
+
+\textbf{Primera Parte: } Lenguaje imperativo
+
+\bigskip
+
+
+\textbf{Segunda Parte: } Lenguaje aplicativo puro, y lenguaje aplicativo con referencias y asignación
+
+\end{frame}
+
+\begin{frame}{Ejes de contenidos de la segunda parte}
+  \tableofcontents
+\end{frame}
+
+\section{Cálculo Lambda}
+
+
+
+\section{Lenguajes Aplicativos puros}
+
+
+\begin{frame}{Lenguajes Aplicativos}
+$
+\begin{array}{rlllll}
+\ex & ::= & \var\  |\  \ex \ex\ |\ \lambda\var.\ex \smallskip\\
+    &  |   & \natconst | \boolconst       \smallskip\\
+& | & -\ex \ |\ \ex + \ex  \ ...   \smallskip\\
+& | & \ \ex\geq \ex \ |\ ...\ | \ \ex\wedge \ex  \ |\ \ex\vee \ex \ |\ \neg\ex\smallskip\\
+& | & \ife \ex\thene \ex\elsee \ex\smallskip\\
+& | & \langle \ex,...,\ex\rangle\smallskip\\
+& | & \ex.\natconst\smallskip\\
+& | & \textbf{letrec}\ v\equiv \lambda u.e_0\ \textbf{in}\ e \smallskip\\
+& | & \textbf{rec}\ e \smallskip\\
+& | & \textbf{error}\ |\ \textbf{typeerror}\smallskip\\
+\natconst & ::= & 0\ |\ 1\ |\ 2\ | ....\smallskip\\
+\end{array}
+$
+
+\end{frame}
+
+
+
+\section{Un Lenguaje Aplicativo con referencias y asignación}
+
+
+\begin{frame}{Lenguaje(s) Iswim-like}
+
+  Peter Landin escribió una serie de artículos en los '60 donde
+  utilizaba el cálculo lambda para dar la semántica de distintos
+  lenguajes. Además definió la máquina abstracta SECD para la
+  evaluación de expresiones (y explicó como programar la máquina
+  abstracta). % Los papers de Landin buscan elucidar los principios que
+  % subyacen los diferentes lenguajes presentando la sintaxis de manera
+  % abstracta y su semántica en términos del cálculo lambda.
+  \bigskip
+  \pause
+
+  Para explicar la asignación de lenguajes imperativos la noción de
+  estado (en el primer paper le alcanzaba con un entorno) y referencias.
+  Casi textualmente: ``el significado de una IAE tiene dos aspectos, el
+  descriptivo tiene que ver con el valor de la expresión; el imperativo
+  con el cambio del estado de la máquina al ejecutar la IAE''.
+  
+  \pause
+  \bigskip
+  
+  El lenguaje Iswim propone incorporar una componente imperativa a un
+  lenguaje aplicativo eager mediante la incorporación de las
+  referencias como un tipo más de valores, y que por lo tanto pueden
+  ser devueltos por una función, o pasados como valor que recibe una
+  función. Este principio es incorporado en los lenguajes Algol 68,
+  Basel, Gendaken y Standard ML.
+
+
+\end{frame}
+
+
+\begin{frame}{Lenguaje Iswim}
+
+
+  El lenguaje Iswim extiende al lenguaje aplicativo eager mediante las
+  siguientes construcciones:
+
+
+\[
+\begin{array}{lll}
+  \ex & ::= & \ldots \\
+ & | & \textbf{ref}\ \ex\ \smallskip\\
+ & | &  \textbf{val}\ \ex\ \smallskip\\
+ & | &   \ex:=\ex  \smallskip\\
+ & | &   \ex=_{ref}\ex 
+\end{array}
+\]
+
+\end{frame}
+
+
+
+
+\begin{frame}
+  La expresión $\textbf{ref}\ e$ extiende el estado generando una
+  locación nueva que aloja el valor producido por $e$ (no hay
+  restricciones para el valor que puede adquirir $e$)
+  \pause
+  \bigskip
+
+  La expresión $\textbf{val}\ e$ estará definida cuando $e$ produzca
+  un valor de tipo referencia, y la expresión completa devolverá lo
+  alojado en esa referencia.
+  \pause
+  \bigskip
+ 
+  La expresión $e:=e'$ produce la modificación en el estado producto
+  de la asignación ($e$ debe producir un valor de tipo referencia),
+  devolviendo un valor especial que llamaremos \textbf{unit} (esto es
+  arbitrario).
+  \pause
+  \bigskip
+ 
+  La expresión $e=_{ref} e'$ comprueba que si ambas expresiones
+  producen (evalúan a) referencias $r$ y $r'$, respectivamente, ambas
+  sean la misma; es decir es una forma de chequear igualdad de
+  punteros.
+\end{frame}
+
+
+\begin{frame}{Fragmento imperativo: skip}
+
+  Note que típicas construcciones del lenguaje imperativo como la
+  iteración y la declaración de variables locales no se incorporan a
+  la sintaxis abstracta. El orden de evaluación eager permite
+  obtenerlas como azucar sintáctico.
+
+  \pause
+
+  \[
+    \textbf{skip}\ =_{def}\ \langle\rangle
+  \]
+
+\end{frame}
+
+\begin{frame}{Fragmento imperativo: secuencia}
+
+  Dado que una frase de tipo $\ex$ tiene el potencial de
+  simultaneamente producir un efecto en el estado y a su vez un valor,
+  podemos modelar la secuencia de comandos a través de un let en el
+  cual el valor producido por la expresión se descarte:
+
+  \[
+    e;e'\ =_{def}\ \textbf{let}\ v=e \ine e'\qquad\qquad(v\notin FV\ e')
+  \]
+  \pause
+
+  Note que aquí es fundamental el orden de evaluación eager para que
+  la secuencia de ejecución de los comandos involucrados se respete.
+
+\end{frame}
+
+
+\begin{frame}{Fragmento imperativo: newvar}
+
+  Ampliar el ambiente con una nueva variable que denote una referencia
+  también puede ser expresado mediante un let:
+
+  \[
+    \newvar v=e\ine e'\quad =_{def}\quad \textbf{let}\ v=\textbf{ref}\ e \ine e'
+  \]
+
+  \pause Agotado el alcance de la declaración local, la referencia al
+  lugar de memoria eventualmente se pierde (pero el lugar de memoria
+  sigue definido). La restauración de $v$ está dada por la semántica
+  de la secuencia.
+  
+
+\end{frame}
+
+\begin{frame}{Fragmento imperativo: while}
+
+La iteración es un tipo espacial de declaración de función:
+
+\[
+\while e\doc e'\ =_{def}\ \textbf{letrec}\ f=\lambda v.\ \ife e\thene e';f\ v\elsee \textbf{skip}\ \ine f\ \la\ra
+\]
+
+Aquí las variables $f$ y $v$ no deben ocurrir en $e$ ni $e'$.
+
+\end{frame}
+
+
+
+\begin{frame}{Noción de Estado en Iswim}
+
+  Suponemos la existencia de un conjunto infinito de locaciones de
+  memoria que siempre alojan un valor del predomino $V$ (y que
+  llamaremos $V_{\mathit{ref}}$).
+  \pause
+
+  \bigskip
+
+  El conjunto de estados $\Sigma$ está formado por funciones parciales
+  definidas en un subconjunto finito de $V_{\mathit{ref}}$.
+
+  \[\Sigma = \bigcup_{F \subset_{\mathit{fin}} V_{\mathit{ref}}} F\rightarrow V\]
+
+  Para $F \subset_{\mathit{fin}} V_{\mathit{ref}}$, $new(F)\in V_{\mathit{ref}}$ nos
+  provee de una referencia con la propiedad $new(F)\notin F$. Por
+  simplicidad sea $new(\sigma)=new(dom(\sigma))$.
+
+\end{frame}
+
+
+
+\begin{frame}{Semántica operacional de Iswim}
+
+Formas Canónicas:
+\[
+\la cnf\ra ::= \ldots\ |\ V_{\mathit{ref}}
+\]
+
+\bigskip
+\pause
+Semántica big-step (evaluación):
+\[
+\s,e \Rightarrow z,\s'
+\]
+
+
+Se define a través de reglas (axiomáticamente)
+
+\end{frame}
+
+
+
+\begin{frame}
+  Todas las reglas aplicativas del lenguaje eager se incorporan con la
+  indicación explícita de cómo se transforma el estado.  \pause
+  \bigskip
+
+  Por ejemplo la regla
+\[
+\begin{array}{c}
+\underline{e \Rightarrow \lambda v.\ e_0\quad e' \Rightarrow z' \quad (e_0/v\rightarrow z') \Rightarrow z}\\
+ee' \Rightarrow z
+\end{array}
+\]
+se transforma en:
+\[
+\begin{array}{c}
+\underline{\s,e \Rightarrow \lambda v.\ e_0,\s'\quad \s', e' \Rightarrow z',\s''\quad \s'', (e_0/v\rightarrow z') \Rightarrow z,\s'''}\\
+\s, ee' \Rightarrow z,\s'''
+\end{array}
+\]
+\end{frame}
+
+
+
+\begin{frame}{Reglas para el fragmento imperativo}
+
+
+\bigskip
+
+$\begin{array}{c}
+\underline{\s, e \Rightarrow r,\s'\quad \s',e' \Rightarrow z',\s''}\\
+\s, e:=e' \Rightarrow z',[\s''|r:z']
+\end{array}
+$
+\pause
+\bigskip
+
+\medskip$\begin{array}{c}
+\s, e \Rightarrow z,\s'\\
+\overline{\s,\textbf{ref}\ e\Rightarrow r,[\s'|r:z]}
+\end{array}
+$
+\qquad ($r=new(\s')$)
+
+\pause
+\bigskip
+
+\medskip$\begin{array}{c}
+\s,e \Rightarrow r,\s'\\
+\overline{\s,\textbf{val}\ e \Rightarrow \s' r,\s'}
+\end{array}
+\qquad (r\in dom(\s'))
+$
+
+\pause
+\bigskip
+
+\medskip$\begin{array}{c}
+\underline{\s,e \Rightarrow r,\s'\quad \s',e' \Rightarrow r',\s''}\\
+\s,e=e' \Rightarrow \lfloor r=r'\rfloor,\s''
+\end{array}
+$
+
+\end{frame}
+
+
+\begin{frame}{Dominios para Semántica denotacional}
+
+
+  \begin{gather*}
+D = ( \Sigma \times V + \{\textbf{error}, \textbf{typeerror}\})_\perp \quad\text{ donde } \\
+\qquad \qquad V = V_{int} + V_{bool} + V_{fun}  + V_{tuple} + V_{\mathit{ref}} 
+\end{gather*}
+
+\medskip
+\noindent Las funciones ahora deben reflejar la posibilidad de cambio
+del estado, es decir, una función no sólo toma el valor sino además
+el estado producido por la evaluación del operando. Por ello:
+\[ V_{fun} = \Sigma \times V \rightarrow D \]
+
+\pause
+
+\medskip
+Como antes, los valores $err,tyerr\in D$  constituyen la denotación de los errores. 
+
+\end{frame}
+
+\begin{frame}{Funciones auxiliares}
+
+\bigskip
+
+Si $f \in \Sigma\times V\rightarrow D$, entonces $f_* \in D \rightarrow D$ se define:
+
+\medskip$f_* \iota_{norm}\la \s,z\ra = f \la\s,z\ra$
+
+\smallskip$f_*\ err =  err$
+
+\smallskip$f_*\ tyerr =  tyerr$
+
+
+\smallskip$f_*\ \perp \ = \ \perp$
+
+\end{frame}
+
+
+
+\begin{frame}{Funciones auxiliares}
+
+
+\medskip\noindent Por otro lado, si $f \in \Sigma\times V_{int}\rightarrow D$, entonces $f_{int} \in \Sigma\times V \rightarrow D$ se define:
+
+\bigskip
+
+\medskip$f_{int} \la \s,\iota_{int} k\ra = f \la\s,k\ra$
+
+\smallskip$f_{int} \la \s,\iota_{\theta} z\ra = tyerr \qquad(\theta\neq int)$
+
+\medskip
+
+\bigskip
+
+\noindent De manera similar se definen los operadores $(\_)_{\mathit{bool}}$, $(\_)_{\mathit{fun}}$, etc.
+
+
+\end{frame}
+
+
+\begin{frame}{Función semántica}
+
+La función semántica será de tipo:
+\[
+\se{\_}\in \ex\rightarrow Env\rightarrow\Sigma\rightarrow D
+\]
+
+\end{frame}
+
+
+\begin{frame}{Ecuaciones semánticas}
+
+La semántica de los construcciones típicamente imperativas es la siguiente:
+
+\bigskip
+
+$\se{\textbf{val}\ e}\eta\s = $
+
+\bigskip
+
+$(\lambda \la\s',r\ra.\ \ife r\in dom(\s') \thene \iota_{norm}\la\s',\s' r\ra \elsee err)_{ref*} (\se{e}\eta\s)$
+\pause
+\bigskip
+
+$\se{\textbf{ref}\ e}\eta\s = (\lambda \la\s',z\ra.\ \iota_{norm}\la[\s'|r_{\s'}:z],\iota_{ref}r_{\s'}\ra)_* (\se{e}\eta\s)$
+
+\bigskip 
+
+\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad$(r_{\s'} = new(\s'))$
+
+
+\end{frame}
+
+
+
+\begin{frame}{Ecuaciones semánticas}
+
+\medskip$\se{e:=e'}\eta\s = (\lambda \la\s',r\ra.\ (\lambda \la\s'',z\ra.\ \iota_{norm} \la[\s''|r:z],z\ra)_* $
+
+\medskip \qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad$(\se{e'}\eta\s') )_{ref*} (\se{e}\eta\s)$
+
+\bigskip
+
+
+\bigskip
+
+$\se{e=_{ref}e'}\eta\s = (\lambda \la\s',r\ra.\ (\lambda \la\s'',z\ra.\ \iota_{norm} \la\s'',\iota_{bool}r=r'\ra)_{ref*}   $
+
+\medskip 
+
+
+\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad$(\se{e'}\eta\s') )_{ref*}(\se{e}\eta\s)$
+
+
+\end{frame}
+
+
+
+\begin{frame}{Ecuaciones semánticas: fragmento puro}
+
+
+\[\se{0}\eta\s = \iota_{norm}\la \s,\iota_{int}0\ra\]
+
+\[\se{\textbf{true}}\eta\s = \iota_{norm}\la \s,\iota_{bool}T\ra \]
+\pause
+\medskip
+
+\begin{align*}
+\se{-e}\eta\s &= (\lambda \la \s',i\ra.\ \iota_{norm}\la \s',\iota_{int}-i\ra)_{int*}(\se{e}\eta\s) \\
+  \se{e+e'}\eta\s &= (\lambda \la \s',i\ra.\\
+  & \phantom{(\lambda \la \right.} (\lambda \la \s'',j\ra.\  \iota_{norm}\la \s'',\iota_{int}i+j\ra)_{int*}(\se{e'}\eta\s'))_{int*} (\se{e}\eta\s)
+\end{align*}
+
+\end{frame}
+
+
+\begin{frame}{Ecuaciones semánticas: operadores del cálculo lambda}
+
+
+\medskip 
+
+$\se{v}\eta\s = \iota_{norm}\la\sigma,\eta\ v\ra$
+\pause
+
+\bigskip 
+
+
+$\se{ee'}\eta\s = (\lambda \la \s',f\ra.\ f_* (\se{e'}\eta\s'))_{fun*}(\se{e}\eta\s)$
+\pause
+\bigskip 
+
+$\se{\lambda v.\  e}\eta\s =  \iota_{norm}\la \s, \iota_{fun}(\lambda \la\s',z\ra.\ \se{e}[\eta|v:z]\s')\ra$
+
+\end{frame}
+
+
+\begin{frame}{Ecuaciones semánticas: letrec}
+
+\medskip $\se{\textbf{letrec}\ w=\lambda v.\  e\ine e'}\eta\s =  \se{e'}[\eta|w:\iota_{fun}f]\s$
+
+\bigskip
+\pause
+\noindent donde 
+
+\medskip$f=\textbf{Y}_{V_{fun}}F$
+
+\medskip $F\ f \ \la\s',z\ra= \se{e}[\eta|w:\iota_{fun} f|v:z]\s'$
+
+\end{frame}
+
+
+\begin{frame}{Algunas propiedades del fragmento imperativo}
+
+
+Dado que una frase de tipo $\ex$ tiene el potencial de simultaneamente producir un efecto en el estado y a su vez un valor, podemos modelar la secuencia de comandos a través de un let en el cual el valor producido por la expresión se descarte:
+
+\[
+e;e'\ =_{def}\ \textbf{let}\ v=e \ine e'\qquad\qquad(v\notin FV\ e')
+\]
+\pause
+La semántica operacional nos permite verificar el significado esperado:
+
+\[\begin{array}{c}
+\underline{\s,e \Rightarrow z,\s'\quad \s',e' \Rightarrow z',\s''}\\
+\s, e;e' \Rightarrow z',\s''
+\end{array}
+\]
+\pause
+\noindent Note que la regla  pone en evidencia que el valor $z$ producido al evaluar $e$ es descartado. 
+\end{frame}
+
+\begin{frame}{Justificación de la semántica de $e_0;e_1$}
+
+\bigskip
+
+\noindent\textbf{Lema}  Si $\s,e \Rightarrow z,\s'$ y $\s',e' \Rightarrow z',\s''$, entonces
+\[
+\s,e;e' \Rightarrow z',\s''
+\]
+
+\bigskip
+
+\noindent\textbf{Lema} $\se{e;e'}\eta\s = (\lambda \la\s',z\ra.\ \se{e'}\eta\s')_*(\se{e}\eta\s)$
+
+\end{frame}
+
+
+\begin{frame}{Semántica de newvar}
+\[
+\newvar v=e\ine e'\ =_{def}\ \textbf{let}\ v=\textbf{ref}\ e \ine e'
+\]
+\pause
+\bigskip
+
+Regla y ecuación semántica resultante (deben ser probadas):
+
+\[\begin{array}{c}
+\underline{\s,e \Rightarrow z,\s'\quad [\s'|r:z],(e'/v\mapsto r) \Rightarrow z',\s''}\\
+\s,\newvar v:=e\ine e' \Rightarrow z',\s''
+\end{array}
+\ \ (r=new(\s'))
+\]
+\pause
+\[
+\se{\newvar v=e\ine e'}\eta\s = \se{e'}[\eta|v:\iota_{ref}r][\s'|r:z]
+\]
+
+\medskip
+
+donde 
+$\se{e}\eta\s = \iota_{norm}\la\s',z\ra$ y $r=new(\s')$
+
+\end{frame}
+
+
+\begin{frame}{Iteración}
+
+$
+\while e\doc e'\ =_{def}\ $
+
+\bigskip
+
+$\textbf{letrec}\ w=\lambda v.\ \ife e\thene e';w\ v\elsee \textbf{skip}\ \ine w\; \la\ra
+$
+
+\bigskip
+
+Aquí las variables $w$ y $v$ no deben ocurrir en $e$ ni $e'$. 
+
+\end{frame}
+
+
+\begin{frame}{Semántica de la iteración}
+
+
+Reglas resultantes:
+
+\[\begin{array}{c}
+\s,e \Rightarrow \textbf{false},\s'\\
+\overline{\s,\while e\doc e' \Rightarrow \la\ra,\s'}
+\end{array}
+\]
+\pause
+\bigskip
+
+\[
+\begin{array}{c}
+\underline{\s,e \Rightarrow \textbf{true},\s'\quad \s',e';\while e \doc e' \Rightarrow z',\s''}\\
+\s,\while e \doc e' \Rightarrow z',\s''
+\end{array}
+\]
+
+\end{frame}
+
+\end{document}
+
+
+
