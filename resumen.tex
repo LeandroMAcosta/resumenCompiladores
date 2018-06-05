@@ -1,0 +1,187 @@
+\documentclass[handout]{beamer}
+% \documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{subfigure}
+
+\mode<presentation>{
+  \usetheme[shadow=false]{Boadilla}
+  \usefonttheme{professionalfonts}
+  \usefonttheme[onlymath]{serif}
+  \usecolortheme{dolphin}
+  \useinnertheme{circles}
+}
+
+\usepackage[spanish]{babel}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{tikz}
+\usepackage{bussproofs}
+\usepackage{stmaryrd}
+
+%% FONTS
+\usepackage[utf8]{inputenx}
+\usepackage{fontenc}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{
+  \hbox{%
+  \begin{beamercolorbox}[wd=.50\paperwidth,ht=2.25ex,dp=1ex,center]{white}%
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.20\paperwidth,ht=2.25ex,dp=1ex,center]{white}%
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.30\paperwidth,ht=2.25ex,dp=1ex,left]{foot}%
+    \textbf{\insertsection}
+  \end{beamercolorbox}
+  }%
+  \vskip0pt%
+}
+\setbeamertemplate{footline}{}
+\setbeamertemplate{headline}{
+\hbox{
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.25ex,dp=1ex,right]{white}%
+    \color{black}\textbf{\insertframenumber{} }\hspace*{2em}
+  \end{beamercolorbox}}
+  \vspace{-.4cm}
+}
+
+\setbeamertemplate{section in toc}{\leftskip=2ex%
+    \usebeamerfont*{section number projected}%
+    \usebeamercolor{section number projected}%
+    \begin{pgfpicture}{-1ex}{2pt}{1ex}{2.2ex}
+      \color{bg}
+      \pgfpathcircle{\pgfpoint{0pt}{1.5ex}}{1.8ex}
+      \pgfusepath{fill}
+      \pgftext[bottom,y=3pt]{\color{fg}\inserttocsectionnumber}
+    \end{pgfpicture}\kern1em%
+  \inserttocsection\par}
+\newcommand{\fifte}[3]{\left\{
+                              \begin{array}{l@{\quad\quad}l}
+                                #2 & \mbox{si }#1 \\
+                                #3 & \mbox{si no}
+                              \end{array}
+                           \right.}\newcommand{\fassign}[2]{#1 := #2}
+\newcommand{\true}{\textbf{true}}
+\newcommand{\false}{\textbf{false}}
+\newcommand{\fskipc}{\mbox{\textbf{skip}}}
+\newcommand{\fiftec}[3]{\textbf{if}\ #1\ \textbf{then}\ #2\ \textbf{else}\ #3}
+\newcommand{\fwhile}[2]{\textbf{while}\ #1\ \textbf{do}\ #2}
+\newcommand{\fnewvar}[3]{\mbox{\textbf{newvar}\ #1:= #2\ \textbf{in}\ #3}}
+\newcommand \supr{\vee}
+\newcommand \infi{\wedge}
+\newcommand{\se}[1]{\mbox{$[\![#1]\!]$}}
+\newcommand{\sems}[1]{\sem{#1}\sigma}
+\newcommand{\overs}[3]{[#1|#2:#3]}
+\newcommand{\commif}[3]{\mathbf{if}\;#1\;\mathbf{then}\;#2\;\mathbf{else}\;#3}
+\newcommand{\commseq}[2]{#1;#2}
+\newcommand{\commassign}[2]{#1:=#2}
+\newcommand{\commskip}{\mathbf{skip}}
+\newcommand{\commwhile}[2]{\mathbf{while}\;#1\;\mathbf{do}\;#2}
+\newcommand{\commnvar}[3]{\mathbf{newvar}\;#1:=#2\;\mathbf{in}\;#3}
+\newcommand{\ptodo}[2]{\forall #1.\ #2}
+\newcommand{\existe}[2]{\exists #1.\ #2}
+\newcommand{\s}{\sigma }
+\newcommand{\Z}{\textbf{Z}}
+\newcommand{\la}{\left\langle }
+\newcommand{\ra}{\right\rangle }
+%\newcommand{\se}[1]{[\![#1]\!]}
+\newcommand{\db}{\perp\!\!\!\perp}
+\newcommand{\sem}[2]{[\![#1]\!]_{#2}}
+\newcommand{\semnat}[1]{\sem{#1}{\nat}}
+\newcommand{\semassert}[1]{\sem{#1}{\assert}}
+\newcommand{\semintexp}[1]{\sem{#1}{\intexp}}
+\newcommand{\semtheta}[1]{\sem{#1}{\theta}}
+\newcommand{\semden}[1]{\sem{#1}{}}
+\newcommand{\semop}[1]{\{\!\![#1]\!\!\}}
+\newcommand{\syn}[1]{<\!\!#1\!\!>}
+\newcommand{\conc}{+\!\!\!+}
+\newcommand{\nat}{\left\langle nat\right\rangle}
+\newcommand{\var}{\left\langle var\right\rangle}
+\newcommand{\boolexp}{\left\langle boolexp\right\rangle}
+\newcommand{\bin}{{\rm bin}}
+\newcommand{\assert}{\left\langle assert\right\rangle}
+\newcommand{\intexp}{\left\langle intexp\right\rangle }
+\newcommand{\comm}{\left\langle comm\right\rangle}
+\newcommand{\fun}{\left\langle fun\right\rangle}
+\newcommand{\fvar}{\left\langle fvar\right\rangle}
+\newcommand{\prog}{\left\langle prog\right\rangle}
+\newcommand{\cnf}{\left\langle cnf\right\rangle}
+\newcommand{\ife}{\mathbf{if}\ }
+\newcommand{\lete}{\mathbf{let}\ }
+\newcommand{\where}{\ \mathbf{where}\ }
+\newcommand{\ine}{\ \mathbf{in}\ }
+\newcommand{\thene}{\ \mathbf{then}\ }
+\newcommand{\elsee}{\ \mathbf{else}\ }
+\newcommand{\newvar}{\mathbf{newvar}\ }
+\newcommand{\while}{\mathbf{while}\ }
+\newcommand{\val}{\mathbf{val}\ }
+\newcommand{\doc}{\ \mathbf{do}\ }
+\newcommand{\env}{\left\langle env\right\rangle}
+\newcommand{\penv}{\left\langle penv\right\rangle}
+\newcommand{\ex}{\left\langle exp\right\rangle}
+\newcommand{\natconst}{\left\langle natconst\right\rangle}
+\newcommand{\boolconst}{\left\langle boolconst\right\rangle}
+\newcommand{\pvar}{\left\langle pvar\right\rangle}
+\newcommand{\proc}{\ \mathbf{proc}\ }
+\newcommand{\va}[1]{\mathsf{#1}}
+
+
+\begin{document}
+El CL puro sólo contiene variables, aplicaciones y la notación lambda (llamada abstracción).
+\[
+\begin{array}{llll}
+\left\langle exp\right\rangle & ::= &  & \text{expresiones o términos}\\
+ & & \  \var & \text{variables} \\
+ & & \mid \ex \ex & \text{aplicación} \\
+ & & \mid \lambda \var.\ \ex & \text{abstracción o expresión lambda} \\
+ \end{array}
+\]
+\textbf{Convención:} La aplicación asocia a izquierda.
+En $\lambda v.e$, la primer ocurrencia de $v$ es ligadora
+y su alcance es $e$.
+\smallskip
+Por ejemplo,
+\smallskip
+\qquad\qquad\qquad$\lambda x.(\lambda y.xyx)x$
+\smallskip
+es lo mismo que
+\smallskip
+\qquad\qquad\qquad$\lambda x.(\lambda y.(xy)x)x$
+
+\smallskip
+
+\textbf{Variables libres:}
+\[
+\begin{array}{llllll}
+FV(v)& = & \{v\} \smallskip\\
+FV(ee')& =  &FV(e) \cup FV(e')\smallskip\\
+FV(\lambda v.e)& = & FV(e)\ -\  \{v\}\ \smallskip\\
+\end{array}
+\]
+
+\textbf{Conjunto de sustituciones:} $\Delta = \var \rightarrow \ex$
+
+\smallskip
+
+\textbf{Operador  sustitución:} $\_/\_ \in \ex \times\Delta \rightarrow \ex$
+\[
+\begin{array}{rll}
+\uncover<3->{
+v/\delta &  = &  \delta v \smallskip\\
+  (ee')/\delta & =& (e/\delta)(e'/\delta)\smallskip\\}
+  \uncover<4->{
+(\lambda v. e)/\delta&  =&  \lambda v_{new}.\  e/[\delta|v: v_{new}]\\
+&&\text{ donde
+$v_{new} \not\in \bigcup_{w \in FV(e) -\{v\}} FV(\delta\ w)$}}
+\end{array}
+\]
+
+\smallskip
+
+\textbf{Renombre: } Cambio en $\lambda v.e$ de la
+  variable ligada $v$ (y todas sus ocurrencias) por una variable $v'$
+  que no ocurra libre en $e$: $\lambda v'.\ e/v\mapsto v'$
+ donde $v'\notin FV(e)$.
+
+\end{document}
