@@ -268,7 +268,7 @@ La idea de ejecución (llamada evaluación) que se implementa habitualmente
 tiene las siguientes diferencias con la relación
 \begin{itemize}
 \item sólo se evalúan expresiones cerradas (es decir, sin variables libres)
-\item es determinística,
+\item es determin\'istica,
 \item no busca formas normales sino formas canónicas.
 \end{itemize}
 
@@ -351,6 +351,147 @@ ee'\ \Rightarrow_E\ z
 $
 
 % =========================== %
+\clearpage
+
+% //// CALCULO LAMBDA DENOTACIONAL ///////////// %
+
+Asumimos la existencia de un dominio $D_{\infty}$, junto con un
+isomorfismo:
+
+$\phi\in D_{\infty}\rightarrow [D_{\infty}\rightarrow D_{\infty}]$
+\quad $\psi\in [D_{\infty}\rightarrow D_{\infty}]\rightarrow D_{\infty}$
+
+\smallskip
+$\phi \circ \psi = Id_{[D_{\infty}\rightarrow D_{\infty}]}$
+y $\psi\circ\phi = Id_{D_{\infty}}$
+
+\medskip
+
+\textbf{Ambientes (Entornos):} $\eta \in Env = \langle var\rangle\rightarrow D_\infty $
+
+\smallskip
+
+\textbf{Función semántica:} $\se{\_}\in\ \ \langle exp\rangle \rightarrow Env\rightarrow D_{\infty}$
+
+\smallskip
+
+
+\textbf{Ecuaciones semánticas:}
+\begin{align*}
+    \se{v}\eta &= \eta v\\[1ex]
+    \se{e_0 e_1}\eta &= \phi(\se{e_0}\eta)\ \se{e_1}\eta\\[1ex]
+    \se{\lambda v.e}\eta &= \psi(\lambda d\in D_\infty. \se{e}[\eta|v:d])
+\end{align*}
+
+\smallskip
+
+Se puede probar que $\se{\Delta\,\Delta}\eta = \bot$.
+
+\textbf{Teorema de Coincidencia:}
+Si $\eta w = \eta' w$ para todo $w\in FV\ e$, entonces
+$\se{e}\eta = \se{e}\eta'.$
+
+\smallskip
+
+\textbf{Teorema de Renombre:} Si $v_{new}\notin FV\ e-\{v\}$,
+entonces $\se{\lambda v_{new}.(e/v\mapsto v_{new})} = \se{\lambda v.e}.$ \pause
+
+\smallskip
+
+\textbf{Sustituciones:} $\Delta \ = \ \ \langle var\rangle \rightarrow  \langle exp\rangle$
+
+\smallskip
+
+\textbf{Teorema de Sustitución}: Si $\se{\delta w}\eta = \eta' w$ para todo $w \in FV\ e$, entonces $\se{e/\delta}\eta = \se{e}\eta'$.
+
+\smallskip
+
+\textbf{Propiedad 3.} \textit{(correctitud de la regla $\beta$):} $\se{(\lambda v.e)e'}\eta = \se{e/v\mapsto e'}\eta$
+
+\smallskip
+
+\textbf{Propiedad 4.} \textit{(correctitud de la regla $\eta$):} $\se{\lambda v.e\,v}\eta = \se{e}\eta, \text{ si } v\notin FV e$
+
+\smallskip
+
+\textbf{Corolario}: Si $e \rightarrow^\ast e'$, entonces $\se{e} = \se{e'}$.
+
+\bigskip
+
+\textbf{Semántica Denotacional Normal}
+
+\smallskip
+$D \ =\ V_\perp$, donde $V\ \ \approx\ \  [D\rightarrow D]$
+\begin{align*}
+\phi\in & V\rightarrow [D\rightarrow D] & \phi \circ \psi &= Id_{D\rightarrow D}\\
+\psi\in &[D\rightarrow D] \rightarrow V & \psi\circ\phi &= Id_{V} \\
+\end{align*}
+\textbf{Notación: } $ \iota_\perp\in V\rightarrow D $
+
+Dominio Semántico: $D \ = V_\perp \qquad  V\ \approx\ [D\rightarrow D]$
+
+\smallskip
+
+\textbf{Ambientes:} $Env = \langle var\rangle\rightarrow D$
+
+\smallskip
+
+\textbf{Función semántica:} $\se{\_}\in\ \ \langle exp\rangle \rightarrow Env\rightarrow D$
+
+\textbf{Ecuaciones semánticas:}
+\begin{align*}
+  \se{v}\eta &= \eta v\\
+  \pause
+  \se{e_0 e_1}\eta &= \phi_{\perp\!\!\!\perp}(\se{e_0}\eta) (\se{e_1}\eta)\\
+  \pause
+  \se{\lambda v.e}\eta &=\  \iota_\perp\circ\psi\ (\lambda d\in D. \se{e}[\eta|v:d])
+\end{align*}
+
+\smallskip
+
+Vale la regla $\beta$, que utiliza la igualdad:
+\[\phi_{\perp\!\!\!\perp}\circ (\iota_\perp \circ \psi) = Id_{D\rightarrow D}\]
+
+
+% ///////////////////// EAGER ///////////////// %
+\textbf{Semántica Denotacional Eager}
+
+Dominio Semántico: $D \ = V_\perp \qquad  V\ \approx\ [V\rightarrow D]$
+
+\begin{align*}
+\phi\in & V\rightarrow [V\rightarrow D] & \phi \circ \  &= Id_{V\rightarrow D}\\
+\psi\in &[V\rightarrow D] \rightarrow V & \psi\circ\phi &= Id_{V}\\
+\end{align*}
+
+\textbf{Notación: } $\iota_\perp\in & V\rightarrow D $
+\textbf{Ambientes:} $Env = \langle var\rangle\rightarrow V$
+
+\textbf{Función semántica:} $\se{\_}\in\ \ \langle exp\rangle \rightarrow Env\rightarrow D $
+
+\textbf{Ecuaciones semánticas:}
+\begin{align*}
+    \se{v}\eta &= \iota_\perp (\eta v)\\
+    \pause
+    \se{e_0 e_1}\eta &= (\phi_{\perp\!\!\!\perp}(\se{e_0}\eta))_{\perp\!\!\!\perp} (\se{e_1}\eta)\\
+    \pause
+    \se{\lambda v.e}\eta &=\  \iota_\perp\circ\psi\ (\lambda z\in V. \se{e}[\eta|v:z])
+\end{align*}
+
+Ya no vale la regla $\beta$, (para contra-ejemplo alcanza un $\bot$):
+
+\[\se{(\lambda x\,y.y)\,(\Delta\,\Delta)}\eta = (\lambda z\in V. \se{e}[\eta|v:z])_{\perp\!\!\!\perp}\, \bot = \bot\]
+
+pero
+\[\se{(\lambda y.y)/x \mapsto(\Delta\,\Delta)}\eta = \se{\lambda y.y}\eta \neq \bot\]
+
+\medskip
+
+\pause Puesto que queremos modelar la evaluación eager, deberíamos
+esperar que $e \Rightarrow_E z$ implique $\se{e}\eta = \se{z}\eta$.
+\bigskip
+
+Lo podemos probar por inducción en la derivación $e \Rightarrow_E z$.
+
 
 
 
