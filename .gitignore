@@ -4,3 +4,6 @@
 *.aux
 *.out
 *.snm
+*.synctex.gz
+*.dvi
+*.DS_Store
