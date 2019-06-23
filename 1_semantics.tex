@@ -1,1 +1,39 @@
 \section{Semántica}
+\subsubsection*{Dirección por sintáxis}
+      \PN Un conjunto de ecuaciones es \textit{dirigido por sintáxis} cuando se satisfacen las siguientes condiciones:
+      \begin{itemize}
+        \item hay una ecuación por cada producción de la gramática abstracta
+        \item cada ecuación que expresa el significado de una frase compuesta, lo hace puramente en función de los significados de sus subfrases inmediatas
+      \end{itemize}
+    
+    \subsubsection*{Composicionalidad}
+      \PN Una semántica se dice que es \textit{composicional} cuando el significado de una frase no depende de ninguna propiedad de sus subfrases, salvo de sus significados.
+
+    \vspace{5mm}
+    \PN Dirección por sintáxis $\Rightarrow$ composicionalidad
+    
+    \subsubsection*{Sustitución}
+      \begin{eqnarray*}
+        \Delta &=& \lang{var} \rightarrow \lang{intexp} \\
+        &\in& \lang{intexp} \times \Delta \rightarrow \lang{intexp} \\
+        (Qv.b)/\delta &=& Qv_{new}.(b/[\delta|v:v_{new}]) \\ \\
+        \text{donde} \; v_{new} &\notin& \bigcup_{\omega \in FV(b-\{v\})} FV(\delta \omega)
+      \end{eqnarray*}
+    
+    \subsubsection*{Propiedades}
+      \begin{itemize}
+        \item \textbf{Teorema de Coincidencia:} expresa que el significado de una frase no puede depender de variables que no ocurran libres en la misma.
+          \PN \textbf{Enunciado:} Si dos estados $\sigma, \sigma'$ coinciden en las variables libres de $p$, entonces da lo mismo evaluar $p$ en $\sigma$ o $\sigma'$.
+          \[
+            (\forall \omega \in FV(p) . \sigma \omega = \sigma' \omega) \Rightarrow \semsAGU{p} = \semsp{p}
+          \]
+        \item \textbf{Teorema de Renombre:} asegura que el significado no depende de las variables ligadas de una frase.
+          \PN \textbf{Enunciado:} Los nombres de las variables ligadas no tienen importancia.
+          \[
+            u \notin FV(q) - \{v\} \Rightarrow \semAGU{\forall u . q/v \rightarrow u} = \semAGU{\forall v . q}
+          \]
+        \item \textbf{Teorema de Sustitución:} Si aplico la sustitución $\delta$ a $p$ y luego evaluo en el estado $\sigma$, puedo obtener el mismo resultado a partir de $p$ sin sustituir si evaluo en un estado que hace el trabajo de $\delta$ y de $\sigma$ (en las variables libres de $p$).
+          \[
+            (\forall \omega \in FV(p) . \semsAGU{\delta \; \omega} = \sigma' \omega) \Rightarrow \semsAGU{p/\delta} = \semsp{p}
+          \]
+      \end{itemize}

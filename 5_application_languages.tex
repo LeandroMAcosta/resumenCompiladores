@@ -1,1 +1,220 @@
 \section{Lenguajes Aplicativos}
+\section{Evaluación}
+    \subsection{Compartido entre Normal y Eager}
+      \PN Para todas las formas canónicas vale: \ov{z \Rightarrow z}
+      \begin{itemize}
+        \item \textbf{Aritméticos y relacionales:} $\oplus\in \{+,-,*,=,\neq,\leq,\geq,...\}, \ \oslash \in \{/, mod\}$
+          \begin{itemize}
+            \begin{multicols}{3}
+            \item $\begin{array}{c}
+              \underline{\ \ e\ \Rightarrow\ \lfloor i\rfloor\ \ }\\
+              -e\ \Rightarrow\ \lfloor -i\rfloor
+              \end{array}
+              $
+            \item $\begin{array}{c}
+              \underline{e\ \Rightarrow\ \lfloor i\rfloor\qquad e'\ \Rightarrow\ \lfloor i'\rfloor}\\
+              e \oplus e'\ \Rightarrow\ \lfloor i\oplus i'\rfloor
+              \end{array}
+              $
+            \item $\begin{array}{c}
+              \underline{e\ \Rightarrow\ \lfloor i\rfloor\qquad e'\ \Rightarrow\ \lfloor i'\rfloor}\\
+              e \oslash e'\ \Rightarrow\ \lfloor i\oslash i'\rfloor
+              \end{array}
+              $
+              
+              \[i'\neq 0\]
+            \end{multicols}
+          \end{itemize}
+        \item \textbf{Booleanos:}
+          \begin{itemize}
+            \begin{multicols}{3}
+            \item $\begin{array}{c}
+              \underline{\ \ e\ \Rightarrow\ \lfloor b\rfloor\ \ }\\
+              \neg e\ \Rightarrow\ \lfloor \neg b\rfloor
+              \end{array}
+              $
+            \item $\begin{array}{c}
+              \underline{\ \ e\ \Rightarrow\ \textbf{true}\ \qquad e_0\ \Rightarrow\ z }\\
+              \textbf{if}\ e\ \textbf{then}\ e_0\  \textbf{else}\ e_1\ \Rightarrow\ z
+              \end{array}
+              $
+            \item $\begin{array}{c}
+              \underline{\ \ e\ \Rightarrow\ \textbf{false}\ \qquad e_1\ \Rightarrow\ z }\\
+              \textbf{if}\ e\ \textbf{then}\ e_0\  \textbf{else}\ e_1\ \Rightarrow\ z
+              \end{array}
+              $
+            \end{multicols}
+          \end{itemize}
+        \item \textbf{Tuplas:}
+        \item \textbf{Recursión:}
+      \end{itemize}
+    
+    \subsection{Normal}    
+      \begin{itemize}
+        \item \textbf{Funciones:}
+          \begin{prooftree}
+            \AxiomC{$e \bigstep \lambda v.e''$}
+            \AxiomC{$(e''/v\to e') \bigstep z$} \RightLabel{(aplicación)}
+            \BinaryInfC{$e e' \bigstep z$}
+          \end{prooftree}
+        \item \textbf{Booleanos:}
+          \begin{multicols}{3}
+            \begin{itemize}
+              \item $e \wedge e' = \IF{e}{e'}{false}$
+              \item $e \vee e' = \IF{e}{true}{e'}$
+              \item $e \Rightarrow e' = \IF{e}{e'}{true}$
+            \end{itemize}
+          \end{multicols}
+        \item \textbf{Tuplas:}
+          \begin{multicols}{3}
+            \vspace{3mm}
+            $\begin{array}{c}
+              \underline{\qquad \qquad \qquad \qquad \qquad \qquad}\\
+              \la e_1, ..., e_n \ra \Rightarrow \la e_1, ..., e_n\ra
+              \end{array}$
+            $\begin{array}{c}
+              \underline{\ \ e \Rightarrow \langle e_1,...,e_n\rangle\qquad e_k \Rightarrow z }\\
+               e.\lfloor k\rfloor \Rightarrow\ z
+              \end{array}$
+            
+            $ k \leq n$
+          \end{multicols}
+          \item \textbf{Recursión:}
+            \[\begin{array}{c}
+              \underline{ e\ (\textbf{rec}\ e) \Rightarrow z }\\
+               \textbf{rec}\ e\Rightarrow \ z
+              \end{array}\]
+      \end{itemize}
+        
+    \subsection{Eager}
+      \begin{itemize}
+        \item \textbf{Funciones:}
+          \begin{prooftree}
+            \AxiomC{$e \bigstep \lambda v.e''$} 
+            \AxiomC{$e' \bigstep z'$}
+            \AxiomC{$(e''/v\to z') \bigstep z$} 
+            \RightLabel{(aplicación)}
+            \TrinaryInfC{$e e' \bigstep z$}
+          \end{prooftree}
+        \item \textbf{Booleanos:} $\owedge \in \{\wedge, \vee, \Rightarrow,...\}$
+          \[\begin{array}{c}
+          \underline{e\ \Rightarrow\ \lfloor b\rfloor\qquad e'\ \Rightarrow\ \lfloor b'\rfloor}\\
+          e \owedge e'\ \Rightarrow\ \lfloor b \owedge b'\rfloor
+          \end{array}\]
+        \item \textbf{Tuplas:}
+          \begin{multicols}{3}
+            $\begin{array}{c}
+              \underline{\ \ e_1 \Rightarrow z_1 \quad ... \quad \ e_n \Rightarrow z_n } \\
+              \langle e_1,...,e_n\rangle\ \Rightarrow\ \langle z_1,...,z_n\rangle
+            \end{array}$
+            \hspace{5mm}
+            $\begin{array}{c}
+              \underline{\ \ e \Rightarrow \langle z_1,...,z_n\rangle }\\
+               e.\lfloor k\rfloor \Rightarrow\ z_k
+              \end{array}$
+            $k \leq n$
+          \end{multicols}
+        \item \textbf{Recursión:}
+          \[\begin{array}{c}
+            \underline{\qquad e/(f\mapsto \lambda v.\letrecin{f \equiv \lambda v.e'}{e'})
+            \Rightarrow z\qquad } f \neq v\\
+            \letrecin{f \equiv \lambda v.e'}{e} \Rightarrow \ z
+          \end{array}\]
+      \end{itemize}
+
+  \section{Semántica denotacional}
+    \subsection{Compartido entre Normal y Eager}
+      \PN $V$: es el conjunto de valores, de la misma forma que a las formas canónicas las llamamos también valores en su momento.
+      \PN $D$: es el conjunto de resultados, que incluyen valores y otras cosas, en este caso, sólo se agrega bottom.
+
+      \begin{multicols}{2}
+        \begin{eqnarray*}
+          D &=& (V + \{\textbf{error}, \textbf{typeerror}\})_\bot \\
+          \iota_{norm} &=& \iota_{\bot} . \iota_{0} \in V \rightarrow D \\
+          err &=& \iota_{\bot} . (\iota_{1} \ error) \in D \\
+          tyerr &=& \iota_{\bot} . (\iota_{1} \ typeerror) \in D
+        \end{eqnarray*}
+
+        \begin{eqnarray*}
+          V &\simeq& V_{int} + V_{bool} + V_{fun} + V_{tuple} \\
+          \phi &\in& \ V \rightarrow\ V_{int} + V_{bool} + V_{fun} + V_{tuple} \\
+          \psi &\in& \ V_{int} + V_{bool} + V_{fun} + V_{tuple} \rightarrow V
+        \end{eqnarray*}
+      \end{multicols}
+
+      \PN Donde: $V_{int} = \mathbb{Z}, V_{bool} = \mathbb{B}$ y $V_{fun}, V_{tuple}$ se definen para cada semántica en particular.
+
+      \begin{multicols}{2}
+        \PN Si $f\in V\rightarrow D$ entonces $f_{*}\in D\rightarrow D$ se define:
+        \begin{eqnarray*}
+          f_* (\iota_{norm}\ z) &=& f\ z\\
+          f_* (err) &=& err\\
+          f_* (tyerr) &=& tyerr\\
+          f_* (\perp) &=& \perp
+        \end{eqnarray*}
+        
+        \PN Si $\ell \in \{int, bool, fun, tuple\}, f \in V_{\ell} \rightarrow D$ entonces $f_{\ell}$ se define:
+        \begin{eqnarray*}
+          f_{\ell} (\iota_{\ell}\ z) &=& f\ z\\
+          f_{\ell} (\iota_{\ell'}\ z) &=& tyerr, \ \text{si } \ell \neq \ell'
+        \end{eqnarray*}
+      \end{multicols}
+
+      \begin{eqnarray*}
+        \iota_{int} &=& \psi . \iota_{0} \in V_{int} \rightarrow V \\
+        \iota_{bool} &=& \psi . \iota_{1} \in V_{bool} \rightarrow V \\
+        \iota_{fun} &=& \psi . \iota_{2} \in V_{fun} \rightarrow V \\
+        \iota_{tuple} &=& \psi . \iota_{3} \in V_{tuple} \rightarrow V \\
+      \end{eqnarray*}
+
+      \begin{eqnarray*}
+        \se{0}\eta &=& \iota_{norm}(\iota_{int} 0) \\
+        \se{\textbf{true}}\eta &=& \iota_{norm}(\iota_{bool} T) \\ \\
+        \se{-e}\eta &=& (\lambda i \in V_{int}. \iota_{norm}(\iota_{int} -i))_{int*}(\se{e}\eta) \\
+        \se{\neg e}\eta &=& (\lambda b \in V_{bool}. \iota_{norm}(\iota_{bool} \neg b))_{bool*}(\se{e}\eta) \\ \\
+        \se{e_0+e_1}\eta &=& (\lambda i \in V_{int}.\ (\lambda j \in V_{int}. \iota_{norm}(\iota_{int} i+j)_{int*}(\se{e_1}\eta))_{int*}(\se{e_0}\eta) \\
+        \se{e_0/e_1'}\eta &=& (\lambda i \in V_{int}. \ (\lambda j \in V_{int}. \ \left\lbrace 
+        \begin{array}{lll}
+          err & j = 0 \\
+          \iota_{norm}(\iota_{int} i/j) & c.c
+        \end{array}\right)_{int*} (\se{e_1}\eta))_{int*} (\se{e_0}\eta) \\
+        \se{\IF{e}{e_0}{e_1}}\eta &=& (\lambda b \in V_{bool}. \ \left\lbrace 
+        \begin{array}{lll}
+          \se{e_0} & si b \\
+          \se{e_1} & c.c \\
+        \end{array}\right)_{bool*} (\se{e}\eta) \\ \\
+        \se{error}\eta &=& err \\
+        \se{typeerror}\eta &=& tyerr \\ \\
+        \se{e.[k]}\eta &=& (\lambda t \in V_{tuple}. \ \left\lbrace 
+        \begin{array}{lll}
+          \iota_{norm} t.k & si \ k \leq \# t \\
+          tyerr & c.c \\
+        \end{array}\right)_{tuple*} (\se{e}\eta)
+      \end{eqnarray*}
+
+    \subsection{Normal}
+      \PN $V_{fun} = D \rightarrow D \qquad V_{tuple} = D^{*}$
+      \begin{eqnarray*}
+        \Env &=& \var \to  D \\
+        \llbracket\_\rrbracket &\in& \expr \to  Env \to  D \\ \\
+        \llbracket v \rrbracket\eta &=& \eta v \\
+        \llbracket e_0\, e_1\rrbracket\eta &=& (\lambda f \in V_{fun}. f(\se{e_1}\eta))_{fun*} (\se{e_0}\eta) \\
+        \llbracket\lambda x.e\rrbracket\eta &=& \iota_{norm}(\iota_{fun}(\lambda d \in D. \se{e}[\eta|x:d])) \\ \\
+        \se{\la e_1, ..., e_n \ra}\eta &=& \iota_{norm}(\iota_{tuple} \la \se{e_1}\eta, ..., \se{e_n}\eta \ra) \\
+        \se{\textbf{rec}\  e} \eta &=& (\lambda f \in  V_{fun}.\ Y f)_{fun*} (\se{e}\eta ) \\
+        \text{donde} && Y \text{ es el operador de menor punto fijo}
+      \end{eqnarray*}
+        
+    \subsection{Eager}
+      \PN $V_{fun} = V \rightarrow D \qquad V_{tuple} = V^{*}$
+      \begin{eqnarray*}
+        Env &=& \var \to V \\
+        \llbracket\_\rrbracket &\in& \expr \to Env \to D \\ \\
+        \llbracket v\rrbracket\eta &=& \iota_{norm}(\eta v) \\
+        \llbracket e_0\, e_1\rrbracket\eta &=& (\lambda f \in V_{fun}. f_{*} (\se{e_1}\eta))_{fun*} (\se{e_0}\eta) \\
+        \llbracket\lambda x.e\rrbracket\eta &=& \iota_{norm}(\iota_{fun}(\lambda z \in V. \se{e}[\eta|x:z])) \\ \\
+        \se{\la e_1, ..., e_n \ra}\eta &=& (\lambda z_1 \in V. ... (\lambda z_n \in V . \iota_{norm}(\iota_{tuple} \la z_1, ..., z_n\ra))_{*} (\se{e_n}\eta) ...)_{*} (\se{e_1}\eta) \\
+        \se{\letrecin{v \equiv \lambda u.e}{e'}}\eta &=& \se{e'} [\eta |v:\iota_{fun} Y_{V_{fun}} F] \\
+        \text{donde} && F\ f\ z = \se{e}[\eta| v: \iota_{fun} f | u:z] \\
+        && Y_{V_{fun}} \text{ es el operador de menor punto fijo sobre } V_{fun}
+      \end{eqnarray*}

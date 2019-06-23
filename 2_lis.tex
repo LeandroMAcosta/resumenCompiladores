@@ -1,1 +1,228 @@
 \section{Lenguaje Imperativo Simple}
+\subsection*{\underline{Semántica Denotacional} (con fallas)}
+      \begin{multicols}{2}
+        \begin{eqnarray*}
+          \semAGU{\_} &\in& \lang{comm} \rightarrow \Sigma \rightarrow \Sigma^{'}_{\bot} \\
+          \semsAGU{\skipp} &=& \sigma \\
+          \semsAGU{\fail} &=& \lang{\abort, \sigma} \\
+          \semsAGU{v := e} &=& [\sigma | v : \semsAGU{e}] \\
+          \semsAGU{\ifthenelse{b}{c_{0}}{c_{1}}} &=& \begin{cases}
+                                                    \semsAGU{c_0} & \text{si } \semsAGU{b} \\
+                                                    \semsAGU{c_1} & c.c \\
+                                                  \end{cases}\\
+          \semsAGU{c_{0};c_{1}} &=& \semAGU{c_{1}}_{\ast} (\semsAGU{c_{0}}) \\
+          \semsAGU{\catch{c_{0}}{c_{1}}} &=& \semAGU{c_{1}}_{+} (\semsAGU{c_{0}}) \\
+          \semsAGU{\newvar{ v:=e}{c}} &=& (\lambda \sigma' \in \Sigma. [\sigma' | v:\sigma v])_{\dag} (\semAGU{c}[\sigma|c:\semsAGU{e}]) \\
+          \semsAGU{\while{b}{c}} &=& \SUP F^{i} \bottom \\ \\
+          F \;\omega\;\sigma &=& \begin{cases}
+                                  \omega_{\ast}(\semsAGU{c}) & \text{si } \semsAGU{b} \\
+                                  \sigma & \text{c.c}
+                                \end{cases}
+          \end{eqnarray*}
+
+          \begin{eqnarray*}
+                                f_{\ast}, f_{+}, f_{\dag} &\in& \Sigma^{'}_{\bot} \rightarrow \Sigma^{'}_{\bot} \\
+          f_{\ast} x &=& \begin{cases}
+                          f \sigma & \text{si } x = \sigma \in \Sigma \\
+                          x & \text{c.c}
+                        \end{cases} \\
+          f_{+} x &=& \begin{cases}
+                        f \sigma & \text{si } x = \lang{\abort, \sigma} \in \{\abort\} \times \Sigma\\
+                        x & \text{c.c}
+                      \end{cases} \\
+          f_{\dag} x &=& \begin{cases}
+                          \lang{\abort, f \sigma} & x = \lang{\abort, \sigma} \\
+                          f x & x \in \Sigma \\
+                          \bot & x = \bot
+                        \end{cases} \\
+        \end{eqnarray*}
+      \end{multicols}
+
+    \subsubsection*{Variables libres y asignables}
+      $\begin{array}{lllllll}
+        & FV(\skipp) &=& \emptyset  &\; FA(\skipp) &=& \emptyset \\
+        & FV(v:=e) &=& \{v\} \cup FV(e)  &\; FA(v:=e) &=& \{v\} \\
+        & FV(c_{0};c_1) &=& FV(c_0) \cup FV(c_{1})  &\; FA(c_0;c_1) &=& FA(c_0) \cup FA(c_1) \\
+        & FV(\ifthenelse{b}{c_0}{c_1}) &=& FV(b) \cup FV(c_0) \cup FV(c_1)  &\; FA(\ifthenelse{b}{c_0}{c_1}) &=& FA(c_0) \cup FA(c_1)\\
+        & FV(\while{b}{c}) &=& FV(b) \cup FV(c) &\; FA(\while{b}{c}) &=& FA(c) \\
+        & FV(\newvar{v:=e}{c}) &=& FV(e) \cup (FV(c) - \{v\})  &\; FA(\newvar{v:=e}{c}) &=& FA(c) - \{v\} \\
+      \end{array}$
+
+    \subsubsection*{Teorema de Coincidencia (TC)}
+      \PN Si dos estados $\sigma$ y $\sigma'$ coinciden en las variables libres de $c$, entonces da lo mismo evaluar $c$ en $\sigma$ o $\sigma'$.
+      \begin{enumerate}
+        \item $\forall \omega \in FV(c) . \; \sigma \omega = \sigma' \omega$ entonces
+          \begin{itemize}
+            \item $\semsAGU{c} = \bot = \semsp{c}$ o
+            \item $\semsAGU{c} \neq \bot \neq \semsp{c}$ y $\forall \omega \in FV(c) . \; \semAGU{c} \sigma \omega = \semAGU{c} \sigma' \omega$
+          \end{itemize}
+        \item Si $\semsAGU{c} \neq \bot$, entonces $\forall \omega \notin FA(c) . \; \semAGU{c} \sigma \omega = \sigma \omega$
+      \end{enumerate}
+  
+    \subsubsection*{Teorema de Renombre (TR)}
+      \PN No importa el nombre de las variables utilizadas en las declaraciones de variables locales, es decir, las ligadas.
+
+      \vspace{3mm}
+      \PN $u \notin FV(c) - \{v\} \Rightarrow \semAGU{\newvar{u := e}{c/v\rightarrow u}} = \semAGU{\newvar{v := e}{c}}$
+
+    \subsubsection*{Teorema de Sustitución (TS)}
+      \PN Si $\delta$ es inyectiva sobre $FV(c)$ y $\forall \omega \in FV(c) . \; \sigma(\delta \omega) = \sigma' \omega$ entonces:
+      \begin{itemize}
+        \item $\semsAGU{c/\delta} = \bot = \semsp{c}$ o
+        \item $\semsAGU{c/\delta} \neq \bot \neq \semsp{c}$ y $\forall \omega \in FV(c) . \; \semsAGU{c/\delta} (\delta \omega) = \semsp{c} \omega$
+      \end{itemize}
+    
+    \subsubsection*{Lema de Sustitución (LS)}
+      \PN Sea $FV(c) \subseteq V \subseteq \lang{var}$ tal que $\delta$ es inyectiva sobre $V$ y $\forall \omega \in V . \; \sigma(\delta \omega) = \sigma' \omega$ entonces:
+      \begin{itemize}
+        \item $\semsAGU{c/\delta} = \bot = \semsp{c}$ o
+        \item $\semsAGU{c/\delta} \neq \bot \neq \semsp{c}$ y $\forall \omega \in V . \semsAGU{c/\delta} (\delta \omega) = \semAGU{c} \sigma' \omega$
+      \end{itemize}
+
+    \pagebreak
+    \subsection*{\underline{Semántica Denotacional} (Completa)}
+      \begin{eqnarray*}
+        \lterm &=& \psi \cp \lbot \cp \iota_0 \cp \lnorm \in \Sigma \rightarrow \Omega \\
+        \labort &=& \psi \cp \lbot \cp \iota_0 \cp \labnorm \in \Sigma \rightarrow \Omega \\
+        \lout &=& \psi \cp \lbot \cp \iota_1 \in \mathbb{Z} \times \Sigma \rightarrow \Omega \\
+        \lin &=& \psi \cp \lbot \cp \iota_2 \in (\mathbb{Z} \rightarrow \Sigma) \rightarrow \Omega \\
+        \bot_{\Omega} &=& \psi(\bot) \in \Omega \\ \\
+        f_{\ast}, f_{+}, f_{\dag} &\in& \Sigma^{'}_{\bot} \rightarrow \Sigma^{'}_{\bot}
+      \end{eqnarray*}
+
+      \begin{multicols}{2}
+        \begin{eqnarray*}
+          \semsAGU{\skipp} &=& \lterm \sigma \\
+          \semsAGU{\fail} &=& \labort \sigma \\
+          \semsAGU{v := e} &=& \lterm [\sigma | v : \semsAGU{e}] \\
+          \semsAGU{!e} &=& \lout(\semsAGU{e}, \lterm \sigma) \\
+          \semsAGU{?v} &=& \lin(\lambda n \in \mathbb{Z}. \lterm [\sigma | v : n]) \\
+          \semsAGU{\ifthenelse{b}{c_{0}}{c_{1}}} &=& \begin{cases}
+            \semsAGU{c_0} \qquad \text{si } \semsAGU{b} \\
+            \semsAGU{c_1} \qquad c.c \\
+          \end{cases}\\
+          \semsAGU{c_{0};c_{1}} &=& \semAGU{c_1}_{\ast} (\semsAGU{c_0}) \\
+          \semsAGU{\catch{c_0}{c_1}} &=& \semAGU{c_1}_{+} (\semsAGU{c_0}) \\
+          \semsAGU{\newvar{ v:=e}{c}} &=& (\lambda \sigma' \in \Sigma. [\sigma' | v:\sigma v])_{\dag} (\semAGU{c}[\sigma|c:\semsAGU{e}]) \\
+          \semsAGU{\while{b}{c}} &=& \SUP F^{i} \bottom \\ \\
+          F \;\omega\;\sigma &=& \begin{cases}
+            \omega_{\ast}(\semsAGU{c}) \qquad \text{si } \semsAGU{b} \\
+            \lterm \sigma \qquad\;\;\;\; \text{c.c}
+            \end{cases}
+          \\ \\ 
+        \end{eqnarray*}
+
+        \begin{eqnarray*}
+          % f_{\ast}, f_{+}, f_{\dag} &\in& \Sigma^{'}_{\bot} \rightarrow \Sigma^{'}_{\bot} \\
+          f_{\ast} x &=& \begin{cases}
+                          \bot_{\Omega} & x = \bot_{\Omega} \\
+                          f \sigma & x = \lterm \sigma \\
+                          \labort \sigma & x = \labort \sigma \\
+                          \lout(n, f_{\ast} \omega) & x = \lout(n, \omega) \\ 
+                          \lin(f_{\ast} \cp g) & x = \lin g 
+                        \end{cases} \\ \\
+            f_{+} x &=& \begin{cases}
+                          \bot_{\Omega} & x = \bot_{\Omega} \\
+                          \lterm \sigma & x = \lterm \sigma \\
+                          f \sigma & x = \labort \sigma \\
+                          \lout(n, f_{+} \omega) & x = \lout(n, \omega) \\ 
+                          \lin(f_{+} \cp g) & x = \lin g 
+                        \end{cases} \\ \\
+                        f_{\dag} x &=& \begin{cases}
+                          \bot_{\Omega} & x = \bot_{\Omega} \\
+                          \lterm(f \sigma) & x = \lterm \sigma \\
+                          \labort(f \sigma) & x = \labort \sigma \\
+                          \lout(n, f_{\dag} \omega) & x = \lout(n, \omega) \\
+                          \lin(f_{\dag} \cp g) & x = \lin g 
+                        \end{cases}
+        \end{eqnarray*}
+      \end{multicols}
+
+    \subsection*{\underline{Semántica Operacional}}
+      \begin{multicols}{2}
+        \[\begin{array}{cll}
+          \overline{\lang{\skipp, \sigma} \rightarrow \sigma} \\ \\ \\
+          
+          \overline{\lang{v := e, \sigma} \rightarrow [\sigma | v : \semsAGU{e}]} \\ \\ \\
+          
+          \lang{c_0, \sigma} \rightarrow \sigma' \\
+          \overline{\lang{c_0;c_1, \sigma} \rightarrow \lang{c_1, \sigma'}} \\ \\
+          \lang{c_0, \sigma} \rightarrow \lang{c'_0, \sigma'} \\
+          \overline{\lang{c_0;c_1, \sigma} \rightarrow \lang{c'_0; c_1, \sigma'}} \\ \\ \\
+
+          (\semsAGU{e} = V) \\
+          \overline{\lang{\ifthenelse{e}{c}{c'}, \sigma} \rightarrow \lang{c, \sigma}} \\ \\
+          (\semsAGU{e} = F) \\
+          \overline{\lang{\ifthenelse{e}{c}{c'}, \sigma} \rightarrow \lang{c', \sigma}} \\ \\ \\
+        \end{array}\]
+
+        \[\begin{array}{cll}
+          (\semsAGU{e} = F) \\
+          \overline{\lang{\while{e}{c}, \sigma} \rightarrow \sigma} \\ \\
+          (\semsAGU{e} = V) \\
+          \overline{\lang{\while{e}{c}, \sigma} \rightarrow \lang{c; \while{e}{c}, \sigma}} \\ \\ \\
+
+          \lang{c, [\sigma | v : \semsAGU{e}]} \rightarrow \sigma' \\
+          \overline{\lang{\newvar{v := e}{c}, \sigma} \rightarrow [\sigma' | v : \sigma v]} \\ \\
+          \lang{c, [\sigma | v : \semsAGU{e}]} \rightarrow \lang{c', \sigma'} \\
+          \overline{\lang{\newvar{v := e}{c}, \sigma} \rightarrow \lang{\newvar{v := \sigma' v}{c'}, [\sigma' | v : \sigma v]}} \\ \\ \\
+
+          \{\!\!\{c\}\!\!\}_{\sigma} = \begin{cases}
+            \bot \qquad \text{si } \lang{c, \sigma} \uparrow \\
+            \sigma' \qquad \text{si existe } \sigma' \text{ tal que } \lang{c, \sigma} \rightarrow^{\ast} \sigma'
+          \end{cases}
+        \end{array}\]
+      \end{multicols}
+      
+      \[\begin{array}{cll}
+        \textbf{Con fallas} \\ \\
+        \overline{\lang{\fail, \sigma} \rightarrow \lang{\abort, \sigma}} \\ \\ \\
+
+        \lang{c_0, \sigma} \rightarrow \lang{\abort, \sigma'} \\
+        \overline{\lang{c_0;c_1, \sigma} \rightarrow \lang{\abort, \sigma'}} \\ \\ \\
+
+        \lang{c_0, \sigma} \rightarrow \sigma' \\
+        \overline{\lang{\catch{c_0}{c_1}, \sigma} \rightarrow \sigma'} \\ \\ \\
+        \lang{c_0, \sigma} \rightarrow \lang{\abort, \sigma'} \\
+        \overline{\lang{\catch{c_0}{c_1}, \sigma} \rightarrow \lang{c_1, \sigma'}} \\ \\ \\
+        \lang{c_0, \sigma} \rightarrow \lang{c'_0, \sigma'} \\
+        \overline{\lang{\catch{c_0}{c_1}, \sigma} \rightarrow \lang{\catch{c'_0}{c_1}, \sigma'}} \\ \\ \\
+
+        \lang{c, \sigma} \rightarrow \lang{\abort, \sigma'} \\
+        \overline{\lang{\newvar{v := e}{c}, \sigma} \rightarrow \lang{\abort, [\sigma' | v : \sigma v]}} \\ \\ \\
+
+        \{\!\!\{c\}\!\!\}_{\sigma} = \begin{cases}
+                                      \bot \qquad\qquad\qquad  \text{si } \lang{c, \sigma} \uparrow \; (\uparrow: \text{ejecución infinita}) \\
+                                      \sigma' \qquad\qquad\qquad \text{si existe } \sigma' \; \text{tal que } \lang{c, \sigma} \rightarrow^{\ast} \sigma' \\
+                                      \lang{\abort, \sigma'} \qquad \text{si existe } \sigma' \; \text{tal que } \lang{c, \sigma} \rightarrow^{\ast} \lang{\abort, \sigma}'
+                                     \end{cases}
+      \end{array}\]
+      
+      \underline{PROPIEDADES:}
+      \begin{itemize}
+        \item \textbf{Lema 1:}
+          \begin{enumerate}
+            \item Si $\lang{c_0, \sigma} \rightarrow^{\ast} \sigma'$ entonces $\lang{c_0;c_1, \sigma} \rightarrow^{\ast} \lang{c_1, \sigma'}$
+            \item Si $\lang{c, [\sigma | v : \semsAGU{e}]} \rightarrow^{\ast} \sigma'$ entonces $\lang{\newvar{v := e}{c}, \sigma} \rightarrow^{\ast} [\sigma' | v : \sigma v]$
+            \item Si $\lang{c, [\sigma | v : \semsAGU{e}]} \rightarrow^{\ast} \lang{c', \sigma'}$ entonces $\lang{\newvar{v := e}{c}, \sigma} \rightarrow^{\ast} \lang{\newvar{v := \sigma' x}{c'}, [\sigma' | v : \sigma v]}$
+          \end{enumerate}
+          
+          \PN \textbf{Prueba:}
+
+        \item \textbf{Lema 2:}
+          \begin{enumerate}
+            \item $\lang{c, \sigma} \rightarrow \sigma' \Rightarrow \semsAGU{c} = \sigma'$
+            \item $\lang{c, \sigma} \rightarrow \lang{c', \sigma'} \Rightarrow \semsAGU{c} = \semAGU{c'}\sigma'$
+          \end{enumerate}
+
+          \PN \textbf{Prueba:}
+
+        \item \textbf{Lema 3:} $\semsAGU{c} = \sigma' \Rightarrow \lang{c, \sigma} \rightarrow^{\ast} \sigma'$
+          
+          \PN \textbf{Prueba:}
+
+        \item \textbf{Teorema:} Para todo comando $c$ se tiene $\{\!\!\{c\}\!\!\} = \semAGU{c}$
+          
+          \PN \textbf{Prueba:}
+
+      \end{itemize}

@@ -1,1 +1,241 @@
-\section{El lenguaje Iswin}
+% \documentclass[12pt,a4paper]{article}
+% \usepackage[utf8]{inputenc}[spanish]
+% \usepackage{amsmath}
+% \usepackage{amsfonts}
+% \usepackage{amssymb}
+% \usepackage{lmodern}
+% \usepackage{amsmath}
+% \usepackage{amsthm}
+% \usepackage{enumerate}
+% \usepackage{graphicx}
+% \usepackage{mathtools}
+% \usepackage{stackrel}
+% \usepackage{multicol}
+% \usepackage{textcomp}
+% \usepackage{ stmaryrd }
+% \usepackage{graphicx}
+% \usepackage{amsmath}
+% \usepackage{t1enc}
+% \usepackage[left=.5cm,right=.5cm,top=1cm,bottom=1.2cm]{geometry}
+
+% \newcommand{\PN}{\par\noindent}
+% \newcommand{\nonterminal}[1]{\langle \mathsf{#1} \rangle}
+% \newcommand{\expr}{\nonterminal{expr}}
+% \newcommand{\var}{\nonterminal{var}}
+% \newcommand{\totrans}{\to^\ast}
+% \newcommand{\bigstep}{\Rightarrow}
+% \newcommand{\bigstepnormal}{\Rightarrow}
+% \newcommand{\bigstepeager}{\Rightarrow}
+% \newcommand{\dinf}{D_\infty}
+% \newcommand{\Env}{\mathit{Env}}
+% \newcommand{\botbot}{\bot\!\!\!\bot}
+% \newcommand{\commif}[3]{\mathbf{if}\;#1\;\mathbf{then}\;#2\;\mathbf{else}\;#3}
+% \newcommand{\commseq}[2]{#1;#2}
+% \newcommand{\commassign}[2]{#1:=#2}
+% \newcommand{\commskip}{\mathbf{skip}}
+% \newcommand{\commwhile}[2]{\mathbf{while}\;#1\;\mathbf{do}\;#2}
+% \newcommand{\commnvar}[3]{\mathbf{newvar}\;#1:=#2\;\mathbf{in}\;#3}
+% \newcommand{\ptodo}[2]{\forall #1.\ #2}
+% \newcommand{\existe}[2]{\exists #1.\ #2}
+% \newcommand{\s}{\sigma }
+% \newcommand{\Z}{\textbf{Z}}
+% \newcommand{\la}{\left\langle }
+% \newcommand{\ra}{\right\rangle }
+% \newcommand{\se}[1]{[\![#1]\!]}
+% \newcommand{\db}{\perp\!\!\!\perp}
+% \newcommand{\sem}[2]{[\![#1]\!]_{#2}}
+% \newcommand{\semnat}[1]{\sem{#1}{\nat}}
+% \newcommand{\semassert}[1]{\sem{#1}{\assert}}
+% \newcommand{\semintexp}[1]{\sem{#1}{\intexp}}
+% \newcommand{\semtheta}[1]{\sem{#1}{\theta}}
+% \newcommand{\semden}[1]{\sem{#1}{}}
+% \newcommand{\semop}[1]{\{\!\![#1]\!\!\}}
+% \newcommand{\syn}[1]{<\!\!#1\!\!>}
+% \newcommand{\conc}{+\!\!\!+}
+% \newcommand{\nat}{\left\langle nat\right\rangle}
+% \newcommand{\boolexp}{\left\langle boolexp\right\rangle}
+% \newcommand{\bin}{{\rm bin}}
+% \newcommand{\assert}{\left\langle assert\right\rangle}
+% \newcommand{\intexp}{\left\langle intexp\right\rangle }
+% \newcommand{\comm}{\left\langle comm\right\rangle}
+% \newcommand{\fun}{\left\langle fun\right\rangle}
+% \newcommand{\fvar}{\left\langle fvar\right\rangle}
+% \newcommand{\cnf}{\left\langle cnf\right\rangle}
+% \newcommand{\ife}{\mathbf{if}\ }
+% \newcommand{\lete}{\mathbf{let}\ }
+% \newcommand{\where}{\ \mathbf{where}\ }
+% \newcommand{\ine}{\ \mathbf{in}\ }
+% \newcommand{\thene}{\ \mathbf{then}\ }
+% \newcommand{\elsee}{\ \mathbf{else}\ }
+% \newcommand{\newvar}{\mathbf{newvar}\ }
+% \newcommand{\while}{\mathbf{while}\ }
+% \newcommand{\val}{\mathbf{val}\ }
+% \newcommand{\doc}{\ \mathbf{do}\ }
+% \newcommand{\env}{\left\langle env\right\rangle}
+% \newcommand{\penv}{\left\langle penv\right\rangle}
+% \newcommand{\natconst}{\left\langle natconst\right\rangle}
+% \newcommand{\refconst}{\left\langle refconst\right\rangle}
+% \newcommand{\refexp}{\left\langle refexp\right\rangle}
+% \newcommand{\boolconst}{\left\langle boolconst\right\rangle}
+% \newcommand{\pvar}{\left\langle pvar\right\rangle}
+% \newcommand{\fenv}{\left\langle fenv\right\rangle}
+% \newcommand{\proc}{\ \mathbf{proc}\ }
+
+% \newcommand{\IF}[3]{\textbf{if} \ #1 \ \textbf{then} \ #2 \ \textbf{else} \ #3}
+% \newcommand{\true}{\textbf{true}}
+% \newcommand{\false}{\textbf{false}}
+% \newcommand{\fskipc}{\mbox{\textbf{skip}}}
+% \newcommand{\fiftec}[3]{\textbf{if}\ #1\ \textbf{then}\ #2\ \textbf{else}\ #3}
+% \newcommand{\letrecin}[2]{\textbf{letrec}\ #1\ \textbf{in}\ #2\ }
+% \newcommand{\fwhile}[2]{\textbf{while}\ #1\ \textbf{do}\ #2}
+% \newcommand{\fnewvar}[3]{\mbox{\textbf{newvar}\ #1:= #2\ \textbf{in}\ #3}}
+% \newcommand \supr{\vee}
+% \newcommand \infi{\wedge}
+% % \newcommand{\se}[1]{\mbox{$[\![#1]\!]$}}
+% \newcommand{\sems}[1]{\sem{#1}\sigma}
+% \newcommand{\overs}[3]{[#1|#2:#3]}
+% \newcommand{\ov}[1]{$\overline{\ #1 \ }$}
+% \newcommand{\pat}{\left\langle pat\right\rangle}
+% \newcommand{\intcnf}{\left\langle intcnf\right\rangle}
+% \newcommand{\boolcnf}{\left\langle boolcnf\right\rangle}
+% \newcommand{\funcnf}{\left\langle funcnf\right\rangle}
+% \newcommand{\tuplecnf}{\left\langle tuplecnf\right\rangle}
+% \newcommand{\va}[1]{\mathsf{#1}}
+% \newcommand{\tagexp}{\left\langle tag \right\rangle}
+% \newcommand{\injD}[1]{\iota_{\underline{#1}}}
+
+
+% \usepackage{amsthm,thmtools,amssymb}
+% \usepackage{verbatim}
+% \declaretheorem[name=Teorema]{theorem}
+% \declaretheorem[name=Propiedad]{property}
+% \declaretheorem[name=Corolario]{corollary}
+
+% \usepackage{bussproofs}
+% \usepackage{stmaryrd}
+% \usepackage[spanish]{babel}
+% \usepackage{amssymb} 
+% \usepackage{amsmath,amsthm,mathtools} 
+% \usepackage{tikz}
+% \usepackage{bussproofs}
+% \usepackage{stmaryrd}
+% \usepackage{pgfpages}
+% \usepackage{fontenc}
+
+% \begin{document}  
+  \section{El lenguaje Iswin}
+    \PN Componente imperativa a un lenguaje aplicativo eager.
+    \[
+      \expr ::= \textbf{skip} \ | \ \textbf{ref} \ \expr \ | \ \textbf{val} \ \expr \ | \  \expr := \expr  \ | \  \expr =_{ref} \expr 
+    \]
+
+    \PN Definiciones:
+    \begin{itemize}
+      \item Rf: conjunto infinito de referencias
+      \item $new(\s) \in Rf$, devuelve una referencia nueva tal que $new(\s) \notin dom(\s)$
+      \item V = $V_{int} + V_{bool} + V_{fun} + V_{tuple} + V_{ref}$
+      \item D = $(\Sigma \times V + \{error, typeerror\})_{\bot}$
+      \item $\iota_{norm} \la \s, z \ra \in D$, $\s \in Sigma, z \in V$
+    \end{itemize}
+  
+    \vspace{3mm}
+    $\begin{array}{lllllll}
+      V_{int} &=& \mathbf{Z} & \iota_{int} &\in& V_{int} \rightarrow V \\
+      V_{bool} &=& \mathbf{B} & \iota_{bool} &\in& V_{bool} \rightarrow V \\
+      V_{fun} &=& \Sigma \times V \rightarrow D & \iota_{fun} &\in& V_{fun} \rightarrow V \\
+      V_{tuple} &=& V^{\ast} & \iota_{tuple} &\in& V_{tuple} \rightarrow V \\
+      V_{ref} &=& Rf & \iota_{ref} &\in& V_{ref} \rightarrow V
+    \end{array}$
+
+    \vspace{3mm}
+    \begin{itemize}
+      \item Si $f \in \Sigma\times V\rightarrow D$, entonces $f_* \in \Sigma\times D \rightarrow D$ se define:
+        \begin{eqnarray*}
+          f_* \ \iota_{norm}\la \s,z\ra &=& f \la\s,z\ra \\
+          f_* \ err &=& err \\
+          f_* \ tyerr &=& tyerr \\
+          f_* \ \bot &=& \bot
+        \end{eqnarray*}
+      \item Si $f \in \Sigma\times V_{int}\rightarrow D$, entonces $f_{int} \in \Sigma\times V \rightarrow D$ se define:
+        \begin{eqnarray*}
+          f_{int} \la \s,\iota_{int} k\ra &=& f \la\s,k\ra \\
+          f_{int} \la \s,\iota_{\theta} z\ra &=& tyerr \qquad(\theta\neq int)
+        \end{eqnarray*}
+    \end{itemize}
+
+    \PN SEMÁNTICA
+    \begin{eqnarray*}
+      \se{\textbf{val}\ e}\eta\s &=& (\lambda \la\s',r\ra.\ \in \Sigma \times V_{ref}.
+        \ \left\lbrace 
+        \begin{array}{lll}
+          \iota_{norm} \la\s',\s' r\ra & r\in dom(\s') \\
+          err & c.c
+        \end{array}\right)_{ref*} (\se{e}\eta\s) \\
+      \se{\textbf{ref} \ e}\eta\s &=& (\lambda \la\s',r\ra \in \Sigma \times V.\ \iota_{norm}\la[\s'|r:z],\iota_{ref}r\ra)_* (\se{e}\eta\s) \text{ donde } r = new(\sigma')\\
+      % kip \qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad$(r_{s} = new(dom\ \s))$
+      \se{e:=e'}\eta\s &=& (\lambda \la\s',r\ra \in \Sigma \times V_{ref}.\ (\lambda \la\s'',z\ra \in \Sigma \times V.\ \iota_{norm} \la[\s''|r:z],z\ra)_* (\se{e'}\eta\s') )_{ref*} (\se{e}\eta\s) \\
+      \se{e=_{ref}e'}\eta\s &=& (\lambda \la\s',r\ra \in \Sigma \times V_{ref}.\ (\lambda \la\s'',z\ra \in \Sigma \times V_{ref}.\ \iota_{norm} \la\s'',\iota_{bool}r=r'\ra)_{ref*} (\se{e'}\eta\s') )_{ref*}(\se{e}\eta\s) \\ \\
+      \se{0}\eta\s &=& \iota_{norm}\la \s,\iota_{int}0\ra \\
+      \se{\textbf{true}}\eta\s &=& \iota_{norm}\la \s,\iota_{bool}T\ra \\
+      \se{-e}\eta\s &=& (\lambda \la \s',i\ra.\ \iota_{norm}\la \s',\iota_{int}-i\ra)_{int*}(\se{e}\eta\s) \\
+      \se{\neg e}\eta\s &=& (\lambda \la \s',b\ra.\ \iota_{norm}\la \s',\iota_{bool}\neg b\ra)_{bool*}(\se{e}\eta\s) \\
+      \se{e+e'}\eta\s &=& (\lambda \la \s',i\ra \in \Sigma \times V_{int}.(\lambda \la \s'',j\ra \in \Sigma \times V_{int}.\  \iota_{norm}\la \s'',\iota_{int}i+j\ra)_{int*}(\se{e'}\eta\s'))_{int*}(\se{e}\eta\s) \\ \\
+      \se{ee'}\eta\s &=& (\lambda \la \s',f\ra \in \Sigma \times V_{fun}.\ f_* (\se{e'}\eta\s'))_{fun*}(\se{e}\eta\s) \\
+      \se{\lambda v.\  e'}\eta\s &=&  \iota_{norm}\la \s, \iota_{fun}(\lambda \la\s',z\ra \in \Sigma \times V.\ \se{e}[\eta|v:z]\s')\ra \\
+      \se{\textbf{letrec}\ w &=& \lambda v.\  e\ine e'}\eta\s \ = \ \se{e'}[\eta|w:\iota_{fun}f]\s \\
+      \text{donde} && \\
+      f &=& \textbf{Y}_{V_{fun}}F \\
+      F\ f \ \la\s',z\ra &=& \se{e}[\eta|w:\iota_{fun} f|v:z]\s'
+    \end{eqnarray*}
+
+    \subsection{Semántica operacional de Iswim}   
+      \[\begin{array}{c}
+        \underline{\s,e \Rightarrow \lambda v.\ e_0,\s'\quad \s',e' \Rightarrow z',\s''\quad \s'', (e_0/v\rightarrow z') \Rightarrow z,\s'''}\\
+        ee',\s \Rightarrow z,\s''' \\ \\
+        \underline{\s,e \Rightarrow r,\s'\quad \s',e' \Rightarrow z,\s''} \\
+        \s,e:=e' \Rightarrow z,[\s''|r:z] \\ \\
+        \s,e \Rightarrow z,\s' \\
+        \overline{\s,\textbf{ref}\ e \Rightarrow r,[\s'|r:z]} \\ \\
+        \s,e \Rightarrow r,\s' \\
+        \overline{\s,\textbf{val}\ e \Rightarrow \s' r,\s'} \\ \\
+        \underline{\s,e \Rightarrow r,\s'\quad \s',e' \Rightarrow r',\s''} \\
+        \s,e=_{ref}e' \Rightarrow \lfloor r=r'\rfloor,\s'' 
+      \end{array}\]
+
+    \subsection{Algunas propiedades del fragmento imperativo}
+      \begin{itemize}
+        \item $e;e'\ =_{def}\ \textbf{let}\ v=e \ine e'\qquad\qquad(v\notin FV\ e')$
+          \[\begin{array}{c}
+            \underline{\s,e \Rightarrow z,\s'\quad \s',e' \Rightarrow z',\s''}\\
+            e;e',s \Rightarrow z',\s''
+            \end{array}
+          \]
+          \[
+          \se{e;e'}\eta\s = (\lambda \la\s',z\ra.\ \se{e'}\eta\s')_*(\se{e}\eta\s)
+          \]
+        \item $\newvar v=e\ine e'\ =_{def}\ \textbf{let}\ v=\textbf{ref}\ e \ine e'$
+          \[\begin{array}{c}
+          \underline{\s,e \Rightarrow z,\s'\quad [\s'|r:z],(e'/v\mapsto r) \Rightarrow z',\s''}\\
+          \s,\newvar v:=e\ine e' \Rightarrow z',\s''
+          \end{array}
+          \ \ (r=new(dom\ \s'))
+          \]
+          \[
+          \se{\newvar v=e\ine e'}\eta\s = (\lambda \la \s', z\ra.\se{e'}[\eta|v:\iota_{ref}r][\s'|r:z])_{*}(\se{e}\eta\s)\quad\text{donde } r = new(dom\  \s') 
+          \]
+        \item $\while e\doc e'\ =_{def}\ \textbf{letrec}\ w=\lambda v.\ \ife e\thene e';w\;\textbf{skip}\elsee \textbf{skip}\ \ine w\; \textbf{skip}$
+        
+        donde $w$ y $v$ no deben ocurrir en $e$ ni $e'$
+        \[\begin{array}{c}
+          \s,e \Rightarrow \textbf{false},\s'\\
+          \overline{\while e\doc e',s \Rightarrow \la\ra,\s'}
+          \end{array}
+          \qquad
+          \begin{array}{c}
+          \underline{\s,e \Rightarrow \textbf{true},\s'\quad e';\while e \doc \s',e' \Rightarrow z',\s''}\\
+          \while e \doc e',s \Rightarrow z',\s''
+          \end{array}
+          \]
+      \end{itemize}
+
+    % \end{document}
