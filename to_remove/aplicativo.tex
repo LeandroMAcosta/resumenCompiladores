@@ -1,0 +1,1299 @@
+\documentclass[handout]{beamer}
+\usepackage{pgfpages}
+%\setbeameroption{show notes}
+%\setbeameroption{show notes on second screen=right}
+
+\mode<presentation>{
+  \usetheme[shadow=false]{Boadilla}
+  \usefonttheme{professionalfonts}
+  \usefonttheme[onlymath]{serif}
+  \usecolortheme{dolphin}
+  \useinnertheme{circles}
+  \setbeamercovered{transparent} 
+}
+\makeatletter
+\def\beamerorig@set@color{%
+  \pdfliteral{\current@color}%
+  \aftergroup\reset@color
+}
+\def\beamerorig@reset@color{\pdfliteral{\current@color}}
+\makeatother
+\usepackage[spanish]{babel}
+\usepackage{amssymb} 
+\usepackage{amsmath,amsthm,mathtools} 
+\usepackage{tikz}
+\usepackage{bussproofs}
+\usepackage{stmaryrd}
+
+%% FONTS
+\usepackage[utf8]{inputenx}
+\usepackage{fontenc}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{ 
+  \hbox{%
+  \begin{beamercolorbox}[wd=.50\paperwidth,ht=2.25ex,dp=1ex,center]{white}%
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.20\paperwidth,ht=2.25ex,dp=1ex,center]{white}%
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.30\paperwidth,ht=2.25ex,dp=1ex,left]{foot}%
+    \textbf{\insertsection}
+  \end{beamercolorbox}
+  }%
+  \vskip0pt%
+}
+\setbeamertemplate{footline}{}
+\setbeamertemplate{headline}{
+\hbox{
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.25ex,dp=1ex,right]{white}%
+    \color{black}\textbf{\insertframenumber{} }\hspace*{2em}
+  \end{beamercolorbox}}
+  \vspace{-.4cm}
+}
+
+\setbeamertemplate{section in toc}{\leftskip=2ex%
+    \usebeamerfont*{section number projected}%
+    \usebeamercolor{section number projected}%
+    \begin{pgfpicture}{-1ex}{2pt}{1ex}{2.2ex}
+      \color{bg}
+      \pgfpathcircle{\pgfpoint{0pt}{1.5ex}}{1.8ex}
+      \pgfusepath{fill}
+      \pgftext[bottom,y=3pt]{\color{fg}\inserttocsectionnumber}
+    \end{pgfpicture}\kern1em%
+  \inserttocsection\par}
+\newcommand{\fifte}[3]{\left\{
+                              \begin{array}{l@{\quad\quad}l}
+                                #2 & \mbox{si }#1 \\
+                                #3 & \mbox{si no}
+                              \end{array} 
+                           \right.}\newcommand{\fassign}[2]{#1 := #2}
+\newcommand{\true}{\textbf{true}}
+\newcommand{\false}{\textbf{false}}
+\newcommand{\fskipc}{\mbox{\textbf{skip}}}
+\newcommand{\fiftec}[3]{\textbf{if}\ #1\ \textbf{then}\ #2\ \textbf{else}\ #3}
+\newcommand{\letrecin}[2]{\textbf{letrec}\ #1\ \textbf{in}\ #2\ }
+\newcommand{\fwhile}[2]{\textbf{while}\ #1\ \textbf{do}\ #2}
+\newcommand{\fnewvar}[3]{\mbox{\textbf{newvar}\ #1:= #2\ \textbf{in}\ #3}}
+\newcommand \supr{\vee}
+\newcommand \infi{\wedge}
+\newcommand{\se}[1]{\mbox{$[\![#1]\!]$}}
+\newcommand{\sems}[1]{\sem{#1}\sigma}
+\newcommand{\overs}[3]{[#1|#2:#3]}
+\newcommand{\commif}[3]{\mathbf{if}\;#1\;\mathbf{then}\;#2\;\mathbf{else}\;#3}
+\newcommand{\commseq}[2]{#1;#2}
+\newcommand{\commassign}[2]{#1:=#2}
+\newcommand{\commskip}{\mathbf{skip}}
+\newcommand{\commwhile}[2]{\mathbf{while}\;#1\;\mathbf{do}\;#2}
+\newcommand{\commnvar}[3]{\mathbf{newvar}\;#1:=#2\;\mathbf{in}\;#3}
+\newcommand{\ptodo}[2]{\forall #1.\ #2}
+\newcommand{\existe}[2]{\exists #1.\ #2}
+\newcommand{\s}{\sigma }
+\newcommand{\Z}{\textbf{Z}}
+\newcommand{\la}{\left\langle }
+\newcommand{\ra}{\right\rangle }
+%\newcommand{\se}[1]{[\![#1]\!]}
+\newcommand{\db}{\perp\!\!\!\perp}
+\newcommand{\sem}[2]{[\![#1]\!]_{#2}}
+\newcommand{\semnat}[1]{\sem{#1}{\nat}}
+\newcommand{\semassert}[1]{\sem{#1}{\assert}}
+\newcommand{\semintexp}[1]{\sem{#1}{\intexp}}
+\newcommand{\semtheta}[1]{\sem{#1}{\theta}}
+\newcommand{\semden}[1]{\sem{#1}{}}
+\newcommand{\semop}[1]{\{\!\![#1]\!\!\}}
+\newcommand{\syn}[1]{<\!\!#1\!\!>}
+\newcommand{\conc}{+\!\!\!+}
+\newcommand{\nat}{\left\langle nat\right\rangle}
+\newcommand{\var}{\left\langle var\right\rangle}
+\newcommand{\pat}{\left\langle pat\right\rangle}
+\newcommand{\boolexp}{\left\langle boolexp\right\rangle}
+\newcommand{\bin}{{\rm bin}}
+\newcommand{\assert}{\left\langle assert\right\rangle}
+\newcommand{\intexp}{\left\langle intexp\right\rangle }
+\newcommand{\comm}{\left\langle comm\right\rangle}
+\newcommand{\fun}{\left\langle fun\right\rangle}
+\newcommand{\fvar}{\left\langle fvar\right\rangle}
+\newcommand{\prog}{\left\langle prog\right\rangle}
+\newcommand{\cnf}{\left\langle cnf\right\rangle}
+\newcommand{\intcnf}{\left\langle intcnf\right\rangle}
+\newcommand{\boolcnf}{\left\langle boolcnf\right\rangle}
+\newcommand{\funcnf}{\left\langle funcnf\right\rangle}
+\newcommand{\tuplecnf}{\left\langle tuplecnf\right\rangle}
+\newcommand{\ife}{\mathbf{if}\ }
+\newcommand{\lete}{\mathbf{let}\ }
+\newcommand{\where}{\ \mathbf{where}\ }
+\newcommand{\ine}{\ \mathbf{in}\ }
+\newcommand{\thene}{\ \mathbf{then}\ }
+\newcommand{\elsee}{\ \mathbf{else}\ }
+\newcommand{\newvar}{\mathbf{newvar}\ }
+\newcommand{\while}{\mathbf{while}\ }
+\newcommand{\val}{\mathbf{val}\ }
+\newcommand{\doc}{\ \mathbf{do}\ }
+\newcommand{\env}{\left\langle env\right\rangle}
+\newcommand{\penv}{\left\langle penv\right\rangle}
+\newcommand{\ex}{\left\langle exp\right\rangle}
+\newcommand{\natconst}{\left\langle natconst\right\rangle}
+\newcommand{\boolconst}{\left\langle boolconst\right\rangle}
+\newcommand{\pvar}{\left\langle pvar\right\rangle}
+\newcommand{\proc}{\ \mathbf{proc}\ }
+\newcommand{\va}[1]{\mathsf{#1}}
+\newcommand{\tagexp}{\left\langle tag \right\rangle}
+\newcommand{\injD}[1]{\iota_{\underline{#1}}}
+
+\title{Lenguaje Aplicativo, eager y normal}
+
+%\author{Parte I:  }
+
+\date{2017}
+
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+\beamerdefaultoverlayspecification{<+->}
+
+
+\begin{document}
+
+
+
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+\begin{frame}{Estructura de la materia a grandes rasgos:}
+
+\textbf{Primera Parte: } Lenguaje imperativo
+
+\bigskip
+
+
+\textbf{Segunda Parte: } Lenguaje aplicativo puro, y lenguaje aplicativo con referencias y asignación
+
+\end{frame}
+
+\begin{frame}{Ejes de contenidos de la segunda parte}
+  \tableofcontents
+\end{frame}
+
+\section{Cálculo Lambda}
+
+
+\section{Lenguajes Aplicativos puros}
+\note{Si bien en el cálculo lambda podemos programar (recordemos que
+  podemos codificar las funciones recursivas), es un lenguaje un tanto
+  difícil de usar.
+
+  Para ello extendemos el lenguaje con constantes naturales y booleanas,
+  operadores aritméticos, booleanos y relacionales.
+
+  Notemos que no tenemos una forma externa de definir funciones recursivas
+  pero podríamos utilizar el operador de menor punto fijo que ya vimos.
+
+  Además introducimos dos nuevas expresiones que no querremos usar
+  inmediatamente, pero que nos permitirán tener un tipo de run-time error
+  y de run-time type-error (ver el práctico).
+
+}
+
+\begin{frame}{Lenguajes Aplicativos}
+$
+\begin{array}{rrllll}
+\uncover<1->{\ex & ::=  & \var |\  \ex \ex\ |\ \lambda\var.\ex \smallskip\\ }
+\uncover<2->{    & \mid & \natconst | \boolconst       \smallskip\\ }
+\uncover<3->{
+    & \mid & -\ex \ |\ \ex + \ex  \ |\ \ex * \ex \ |... \smallskip\\
+    & \mid & \ex\geq \ex  \ |\ \ex\leq \ex \ |\ \ex< \ex \ | ... \smallskip\\
+    & \mid & \ex\wedge \ex  \ |\ \ex\vee \ex \ |\ \neg\ex\smallskip\\
+    & \mid & \ife \ex\thene \ex\elsee \ex\smallskip\\}
+\uncover<4->{    & \mid & \textbf{error}\ |\ \textbf{typeerror}\smallskip\\}
+   & & \\
+\uncover<2->{
+\natconst & ::= & 0\ |\ 1\ |\ 2\ | ....\smallskip\\
+\boolconst & ::= & \textbf{true}\ | \ \textbf{false}}
+\end{array}
+$
+
+\end{frame}
+
+
+\begin{frame}{Evaluación Eager}
+  \note{Las formas canónicas son las abstracciones, las constantes
+    booleanas, las constantes naturales y los negativos (vistos como
+    frases son el árbol con el menos unario y una constante natural.
+
+    En las reglas que siguen a continuación vamos a utilizar el 
+    siguiente mecanismo notacional:
+
+    Si $b$ representa una constante booleana, entonces
+    $\lfloor b \rfloor$ es la frase correspondiente a esa constante;
+    por metacircularidad, definimos $\lfloor \neg b \rfloor$ como la
+    constante que resulta de negar la constante $b$. Por ejemplo,
+    $\lfloor \neg\, \textbf{true} \rfloor$ es $\textbf{false}$.
+    La misma notación la usaremos con enteros y expresiones enteras.
+
+}
+
+\textbf{Formas canónicas}
+
+\bigskip
+
+$
+\begin{array}{llllll}
+\cnf & ::= & \intcnf\  |\  \boolcnf\ |\ \funcnf \smallskip\\
+    &     &      \smallskip\\
+\intcnf & ::= & ...\ | \ -2\ | \ -1\ | \ 0\ |\ 1\ |\ 2\ | ...\smallskip\\
+\boolcnf & ::= & \boolconst\smallskip\\
+\funcnf & ::= & \lambda \var.\ex\\
+\end{array}
+$ \pause
+
+\bigskip
+
+No hay formas canónicas para los errores.
+
+\end{frame}
+
+
+\begin{frame}{Reglas para $\Rightarrow_E$}
+
+  \textbf{Notación:} $z$ es una metavariable para $\cnf$, $c$ para
+  $\intcnf$ ó para $\boolcnf$, e $i$ para $\intcnf$.
+
+\bigskip
+
+Regla para las formas canónicas
+
+\bigskip
+
+$\begin{array}{c}
+\overline{z\ \Rightarrow_E\ z}
+\end{array}
+$
+
+
+\bigskip
+
+\medskip
+
+Regla para la aplicación
+
+\bigskip
+
+$\begin{array}{c}
+\underline{e\ \Rightarrow_E\ \lambda v.e_0\qquad e'\ \Rightarrow_E\ z'\qquad(e_0/v\mapsto z')\ \Rightarrow_E\ z}\\
+ee'\ \Rightarrow_E\ z
+\end{array}
+$
+
+\end{frame}
+
+
+\begin{frame}{Reglas para $\Rightarrow_E$}
+
+
+Regla para las operaciones enteras y booleanas:
+
+\bigskip
+
+$\begin{array}{c}
+\underline{e\ \Rightarrow_E\ \lfloor i\rfloor\qquad e'\ \Rightarrow_E\ \lfloor i'\rfloor}\\
+e+e'\ \Rightarrow_E\ \lfloor i+i'\rfloor
+\end{array}
+$\pause
+
+\bigskip
+
+Generalizando:
+
+\bigskip
+
+
+$\begin{array}{c}
+\underline{e\ \Rightarrow_E\ \lfloor c\rfloor\qquad e'\ \Rightarrow_E\ \lfloor c'\rfloor}\\
+e \oplus e'\ \Rightarrow_E\ \lfloor c\oplus c'\rfloor
+\end{array}
+$
+
+\qquad\qquad\qquad\qquad\qquad\qquad donde $\oplus\in \{+,-,*,=,\neq,\leq,\geq,...\}$
+
+
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Reglas para $\Rightarrow_E$}
+
+
+Regla para las operaciones enteras y booleanas:
+
+\bigskip
+
+$\begin{array}{c}
+\underline{\ \ e\ \Rightarrow_E\ \lfloor c\rfloor\ \ }\\
+\sim e\ \Rightarrow_E\ \lfloor \sim c\rfloor
+\end{array}
+$
+donde $\sim\in \{-,\neg\}$ \pause
+
+\bigskip
+
+
+\bigskip
+
+
+$\begin{array}{c}
+\underline{e\ \Rightarrow_E\ \lfloor i\rfloor\qquad e'\ \Rightarrow_E\ \lfloor i'\rfloor}\\
+e \oplus e'\ \Rightarrow_E\ \lfloor i\oplus i'\rfloor
+\end{array}
+$
+($i'\neq 0$)
+
+\qquad\qquad\qquad\qquad\qquad\qquad donde $\oplus\in \{/,\ \div\}$
+
+
+\end{frame}
+
+
+
+
+
+\begin{frame}{Reglas para $\Rightarrow_E$}
+
+  \note{El operador de menor punto fijo que dimos antes no sirve para
+    la evaluación eager, pero podemos construirnos otro operador que
+    suspenda la computación artificialmente:
+
+    $Y_E = \lambda f. (\lambda x . f\ (\lambda h . (x\ x) h)) (\lambda
+    x . f\ (\lambda h . (x\ x) h)) $
+    
+}
+
+\bigskip
+
+$\begin{array}{c}
+\underline{\ \ e\ \Rightarrow_E\ \textbf{true}\ \qquad e_0\ \Rightarrow_E\ z }\\
+\textbf{if}\ e\ \textbf{then}\ e_0\  \textbf{else}\ e_1\ \Rightarrow_E\ z
+\end{array}
+$
+
+\bigskip
+
+\bigskip
+
+$\begin{array}{c}
+\underline{\ \ e\ \Rightarrow_E\ \textbf{false}\ \qquad e_1\ \Rightarrow_E\ z }\\
+\textbf{if}\ e\ \textbf{then}\ e_0\  \textbf{else}\ e_1\ \Rightarrow_E\ z
+\end{array}
+$ \pause
+
+% \bigskip
+
+% $\ast$: ¿Se puede usar el operador de punto fijo para tener funciones recursivas? 
+
+\end{frame}
+
+
+%%%%%%%%%  EVAL   NORMAL
+
+
+\begin{frame}{Evaluación Normal}
+
+\textbf{Formas Canónicas:} Las mismas (por ahora). 
+
+\bigskip
+
+Regla para las formas canónicas
+
+\bigskip
+
+$\begin{array}{c}
+\overline{z\ \Rightarrow_N\ z}
+\end{array}
+$
+
+\bigskip
+
+\medskip
+
+Regla para la aplicación
+
+\bigskip
+
+
+$\begin{array}{c}
+\underline{e\ \Rightarrow_N\ \lambda v.e_0\qquad \qquad(e_0/v\mapsto e')\ \Rightarrow_N\ z}\\
+ee'\ \Rightarrow_N\ z
+\end{array}
+$
+\end{frame}
+
+
+\begin{frame}{Más reglas para $\Rightarrow_N$}
+
+Regla ``lazy'' para las operaciones booleanas:
+
+\bigskip
+
+$\begin{array}{c}
+\underline{e\ \Rightarrow_N\ \textbf{false}}\\
+e\wedge e'\ \Rightarrow_N\ \textbf{false}
+\end{array}
+$ \pause
+
+
+\bigskip
+
+\bigskip
+
+
+Alternativa: uso de abreviaturas 
+
+\bigskip
+
+$\begin{array}{lll}
+e\wedge e' & =_{def}&  \textbf{if}\ e\ \textbf{then}\ e'\  \textbf{else}\ \textbf{false}\ \smallskip\\
+e\vee e' & =_{def}&  \textbf{if}\ e\ \textbf{then}\ \textbf{true}\  \textbf{else}\ e' \\
+&\ \ \vdots 
+\end{array}
+$
+
+
+\end{frame}
+
+
+%%%%%%%%%% SEM DEN EAGER
+
+
+
+\begin{frame}{Semántica Denotacional Eager}
+
+Para el CLE:  
+
+\bigskip
+
+\qquad\qquad $D = V_{\perp}$
+
+
+\bigskip 
+
+\qquad\qquad$V\ \simeq \ V_{fun}\qquad \text{con } V_{fun}= [V\rightarrow D]$ \pause
+
+\bigskip 
+
+\bigskip
+
+Para el Lenguaje Aplicativo Eager: 
+
+
+\bigskip
+
+\qquad\qquad$D\ = \ (V + \{\textbf{error}\} + \{\textbf{typeerror}\})_\perp$
+
+\bigskip
+
+\qquad\qquad$V\ \simeq\ V_{int}\ +\ V_{bool}\ +\ V_{fun}$
+
+\bigskip
+Notar que $V$ es un predominio: no hay un elemento mínimo!
+\medskip
+
+¿Cómo son las cadenas en $V$?
+\end{frame}
+
+
+
+
+
+\begin{frame}[t]{Semántica Denotacional Eager: Valores}
+
+
+\[ V\ \simeq\ V_{int}\,+\, V_{bool}\, +\, V_{fun} \qquad D\ = \ (V + \{\textbf{error}\} + \{\textbf{typeerror}\})_\perp\]
+
+\begin{flalign*}
+V_{int} &=\mathbb{Z}\\
+V_{bool} & =\{T,F\}\\
+V_{fun} & = [V\rightarrow D] &
+\end{flalign*}
+\pause
+
+\bigskip
+
+Ahora el isomorfismo $\phi$ y su inversa $\psi$ tienen tipos:
+\begin{flalign*}
+\phi\in & \ V \rightarrow\ V_{int} + V_{bool} + V_{fun} &\\
+\psi\in & \ V_{int} + V_{bool} + V_{fun} \rightarrow V
+\end{flalign*}
+
+\vspace{10ex}
+\end{frame}
+
+
+\begin{frame}{Funciones auxiliares}
+
+$\iota_{int}\in V_{int}\rightarrow V$ se define:
+
+\[\iota_{int} = \psi \circ \iota_0\]
+
+donde 
+
+\[\iota_0\in V_{int}\rightarrow V_{int}+V_{bool}+V_{fun}\]\pause
+
+\bigskip
+
+Lo mismo para booleanos y funciones:
+
+\bigskip
+
+$\iota_{int}\in V_{int}\rightarrow V$
+
+\medskip
+
+$\iota_{bool}\in V_{bool}\rightarrow V$
+
+\medskip
+
+$\iota_{fun}\in V_{fun}\rightarrow V$
+
+
+\end{frame}
+
+
+
+
+\begin{frame}{Constructores de $D$}
+
+
+\qquad\qquad$D\ = \ (V + \{\textbf{error}\} + \{\textbf{typeerror}\})_\perp$
+
+
+\bigskip
+
+$err = (\iota_\perp \circ\iota_{1})(\textbf{error}) = \iota_\perp(\iota_{1}\ (\textbf{error}))$ 
+
+\bigskip
+
+$tyerr = (\iota_\perp \circ\iota_{2})(\textbf{typeerror})$\pause
+
+\bigskip
+
+$\iota_{norm} \in V \rightarrow D\qquad\qquad \iota_{norm} = \iota_\perp\circ\iota_0$ \pause
+
+\bigskip
+
+Uso habitual: $\iota_{norm} \circ \iota_{int} \in V_{int} \to D$ 
+
+\medskip
+
+Abreviatura: $\injD{int} = \iota_{norm} \circ \iota_{int} \in V_{int} \to D$
+
+\medskip
+
+En general:
+$\injD{\theta} = \iota_{norm} \circ \iota_{\theta} \in V_{\theta} \to
+D \enspace \text{ con } \theta \in \{int, bool, fun\}$.
+
+\end{frame}
+
+
+\begin{frame}{Más funciones auxiliares}
+
+Si $f\in V\rightarrow D$ entonces $f_{*}\in D\rightarrow D$  se define:
+
+\bigskip
+\begin{align*}
+f_* (\iota_{norm}\ z) &= f\ z\\
+f_* (err) & = err\\
+f_* (tyerr) &= tyerr\\
+f_* (\perp) &= \perp
+\end{align*}
+\end{frame}
+
+
+
+\begin{frame}{Más funciones auxiliares}
+
+Si $f\in V_{int}\rightarrow D$ entonces $f_{int}\in V\rightarrow D$  se define:
+
+\begin{flalign*}
+f_{int} (\iota_{int}\ i) &= f\ i\\
+f_{int} (\iota_{bool}\ b) &= tyerr\\
+f_{int} (\iota_{fun}\ f) &= tyerr &
+\end{flalign*}
+\pause
+\medskip
+
+Si $f\in V_{int}\rightarrow D$, entonces podemos componer las dos transformaciones
+
+\[(f_{int})_{*}\in D\rightarrow D\]
+que lo escribimos
+\[f_{int*}\in D\rightarrow D\]
+
+\end{frame}
+
+
+\begin{frame}{Más funciones auxiliares}
+
+Si $f\in V_{\theta}\rightarrow D$ entonces $f_{\theta}\in V\rightarrow D$  se define:
+\[
+  \begin{array}{rcl}
+    f_{\theta} (\iota_{\theta}\, x) &= & f\ x \\
+    f_{\theta} (\iota_{\theta'}\, y)&= & tyerr\ \quad \text{ si $\theta \neq \theta'$} 
+  \end{array}
+\]\pause
+
+\medskip
+
+En general: si $f\in V_{\theta}\rightarrow D$, entonces 
+
+\[ 
+  \begin{array}{rcl}
+    f_{\theta*} &\in &D \rightarrow D\qquad \text{ satisfaciendo}\\
+    f_{\theta*} (\injD{\theta}\, x) &= & f\ x \\
+    f_{\theta*} (\injD{\theta'}\, y)&= & tyerr\ \quad \text{ si $\theta \neq \theta'$} \\
+    f_{\theta*} (err) & = & err \\
+    f_{\theta*} (tyerr) & = & tyerr \\
+    f_{\theta*} (\perp) & = & \perp
+  \end{array}
+\]
+
+
+\end{frame}
+
+
+\begin{frame}{Ecuaciones semánticas}
+
+\[
+\begin{array}{lcl}
+\multicolumn{3}{l}{Env = \var \to V }\\
+\multicolumn{3}{l}{\se{\_} \in \ex \to Env \to D}\\[4ex]
+\se{0}\eta &=& \iota_{\underline{int}} 0\smallskip\\
+\se{\textbf{true}}\eta &=& \iota_{\underline{bool}} T\smallskip\\ \pause
+\sem{-e}{}\eta& = & (\lambda i\in V_{int}.\  \iota_{\underline{int}}\lfloor -i\rfloor)_{int*}(\sem{e}{}\eta)\smallskip\\ \pause
+\sem{e+e'}{}\eta& = & (\lambda i\in V_{int}.\ (\lambda i'\in V_{int}.\  \iota_{\underline{int}}\lfloor i+i'\rfloor )_{int*}(\sem{e'}{}\eta))_{int*}(\sem{e}{}\eta)\smallskip\\
+& \ \ \vdots \\ \pause
+\sem{e/e'}{}\eta &=&  \left(\lambda i\in V_{int}.\ (\lambda i'\in V_{int}.\smallskip \right.\\
+& & \quad \textbf{if}\ i'=0\ \textbf{then}\ err\ \textbf{else}\ \iota_{\underline{int}}\lfloor i/i'\rfloor )_{int*}(\sem{e'}{}\eta))_{int*}(\sem{e}{}\eta)
+\end{array}
+\]
+
+\end{frame}
+
+
+\begin{frame}{Ecuaciones semánticas}
+
+\[
+\begin{array}{lcl}
+\multicolumn{3}{l}{Env = \var \to V }\\
+\multicolumn{3}{l}{\se{\_} \in \ex \to Env \to D}\\[4ex]
+\se{v}\eta &=& \iota_{norm} (\eta\, v)\smallskip\\
+\sem{ee'}{}\eta& = & (\lambda f\in V_{fun}.\ (\lambda z\in V.\ f\ z)_*(\sem{e'}{}\eta))_{fun*}(\sem{e}{}\eta)\smallskip\\ \pause
+& =  & (\lambda f\in V_{fun}.\ f_*(\sem{e'}{}\eta))_{fun*}(\sem{e}{}\eta)\smallskip\medskip\\ \pause
+\sem{\lambda v. e}{}\eta& = & \iota_{\underline{fun}}(\lambda z\in V.\ \sem{e}{}[\eta|v:z])\\[1cm] \pause
+\sem{\textbf{error}}{}\eta& = & err\smallskip\\
+\sem{\textbf{typeerror}}{}\eta& = & tyerr\smallskip\\
+\end{array}
+\]
+
+\end{frame}
+
+
+
+
+
+
+
+%%%% SEM DENOT NORMAL
+
+
+\begin{frame}{Semántica Denotacional Normal}
+
+Para el CLN:  
+
+\bigskip
+
+\qquad\qquad $D = V_{\perp}$
+
+
+\bigskip 
+
+\qquad\qquad$V\ \simeq \ V_{fun}\qquad \text{con } V_{fun}= [D\rightarrow D]$\pause
+
+\bigskip 
+
+\bigskip
+
+Para el Lenguaje Aplicativo Normal (lo mismo que el eager): 
+
+
+\bigskip
+
+\qquad\qquad$D\ = \ (V + \{\textbf{error}\} + \{\textbf{typeerror}\})_\perp$
+
+\bigskip
+
+\qquad\qquad$V\ \simeq\ V_{int}\ +\ V_{bool}\ +\ V_{fun}$
+
+
+\end{frame}
+
+
+
+
+
+\begin{frame}{Semántica Denotacional Normal: Valores}
+
+
+$V\ \simeq\ V_{int}\ +\ V_{bool}\ +\ V_{fun}$
+
+\bigskip
+
+\bigskip
+
+
+$V_{int}=\textbf{Z}$
+
+\smallskip
+
+$V_{bool}=\{V,F\}$
+
+\smallskip
+
+$V_{fun}= [D\rightarrow D]$\pause
+\medskip
+
+\medskip
+
+Los isomorfismos $\phi$ y $\psi$, lo mismo que las funciones auxiliares $\iota_{\theta}\in V_{\theta}\rightarrow V$, los resultados $err$ y $tyerr$, la función $\iota_{norm} \in V \rightarrow D$, y las extensiones $f_{*}\in D\rightarrow D$ y $f_{\theta} \in V\rightarrow D$  se definen de la misma manera. 
+\end{frame}
+
+
+
+\begin{frame}{Funciones semánticas}
+
+Entornos normales: 
+
+\medskip
+
+
+$Env = \var \rightarrow D$ \pause
+
+
+\bigskip
+
+
+\bigskip
+
+Función semántica:
+
+\medskip
+
+$\sem{ \_ }{}^{exp} \in \ex \rightarrow Env \rightarrow D$
+
+\bigskip
+
+
+\end{frame}
+
+
+
+\begin{frame}{Ecuaciones semánticas}
+
+La mayoría de las ecuaciones son las mismas. Vamos a señalar aquellas que presentan algún cambio. 
+
+
+\bigskip
+
+Evaluación lazy de las expresiones booleanas:
+
+\bigskip
+¿Cuál es el problema con :
+
+$\sem{e\vee e'}{}\eta =$
+
+\bigskip
+
+\qquad$(\lambda b\in V_{bool}.\ \textbf{if}\ b\ \textbf{then}\ \iota_{\underline{bool}} T\ $
+
+\smallskip
+
+
+\qquad\qquad\qquad\qquad$\textbf{else}\  (\lambda b'\in V_{bool}.  \iota_{\underline{bool}} b' )_{bool*}(\sem{e'}{}\eta)$
+
+\smallskip
+
+\qquad$)_{bool*}(\sem{e}{}\eta)
+$ ? \pause \bigskip
+
+
+$\sem{e\vee e'}{}\eta = (\lambda b\in V_{bool}.\ \textbf{if}\ b\ \textbf{then}\ \iota_{\underline{bool}} T\ \textbf{else}\ \sem{e'}{}\eta)_{bool*}(\sem{e}{}\eta)$ ?
+
+\end{frame}
+
+
+\begin{frame}{Ecuaciones semánticas}
+
+Cálculo lambda:
+
+\bigskip
+
+
+$
+\begin{array}{lcl}
+\sem{v}{}\eta& = & \eta\ v\smallskip\\ \pause
+\sem{ee'}{}\eta& = & (\lambda f\in V_{fun}.\ f\ \sem{e'}{}\eta)_{fun*}(\sem{e}{}\eta)\smallskip\\ \pause
+\sem{\lambda v. e}{}\eta& = & \iota_{\underline{fun}}(\lambda d\in D.\ \sem{e}{}[\eta|v:d])\smallskip\\
+\end{array}
+$
+
+\end{frame}
+
+
+
+%%%% TUPLAS 
+
+
+
+
+
+\begin{frame}{Tuplas}
+
+$
+\begin{array}{rlllll}
+\ex & ::= & \langle \ex,...,\ex \rangle\smallskip\\
+& & \ex. \tagexp \smallskip\\
+& &\\
+\tagexp &::= &\natconst\\
+\end{array}
+$ \pause
+
+\bigskip
+
+Los componentes de la tupla pueden ser de distintos tipos:\medskip
+
+Ejemplo $M :$  $\langle 2, \lambda\ x . \Delta\,\Delta, \lambda\ f\ x. f\, (f\, x)  \rangle $\medskip \pause
+
+y las usamos accediendo a sus campos:
+
+$(M.0\, M.1)\,M.2 $
+
+
+\end{frame}
+
+
+
+\begin{frame}{Evaluación de las Tuplas}
+
+\textbf{Formas canónicas: }
+
+\medskip
+
+$
+\begin{array}{rlllll}
+\cnf & ::= & \intcnf\ | \  \boolcnf\ | \ \funcnf \ | \  \tuplecnf\smallskip\\
+\end{array}
+$
+\pause
+\bigskip
+
+\textbf{Formas canónicas de las tuplas para la evaluación Eager: }
+
+\medskip
+
+$
+\begin{array}{rlllll}
+\tuplecnf & ::= & \langle\cnf,...,\cnf\rangle\smallskip\\
+\end{array}
+$
+\pause
+
+\bigskip
+
+\textbf{Formas canónicas de tuplas para la evaluación Normal: }
+
+\medskip
+
+$
+\begin{array}{rlllll}
+\tuplecnf & ::= & \langle\ex,...,\ex\rangle\smallskip\\
+\end{array}
+$
+
+\end{frame}
+
+
+
+\begin{frame}{Reglas para la evaluación Eager (Tuplas)}
+
+\bigskip
+
+
+
+$\begin{array}{c}
+\underline{\ \ e_0 \Rightarrow_E z_0\quad ... \quad \ e_{n-1} \Rightarrow_E z_{n-1} }\\
+\langle e_0,...,e_{n-1}\rangle\ \Rightarrow_E\ \langle z_0,...,z_{n-1}\rangle
+\end{array}
+$
+
+\pause
+\bigskip
+
+\bigskip
+
+$\begin{array}{c}
+\underline{\ \ e \Rightarrow_E \langle z_0,...,z_{n-1}\rangle }\\
+ e.\lfloor k\rfloor \Rightarrow_E\ z_k
+\end{array}
+\ (k<n)$
+
+\end{frame}
+
+
+\begin{frame}{Reglas para la evaluación Normal (Tuplas)}
+
+\bigskip
+
+No hay regla para la tupla $\langle e_0,...,e_{n-1}\rangle $ porque es una forma canónica. 
+
+\bigskip
+
+\bigskip
+\pause
+$\begin{array}{c}
+\underline{\ \ e \Rightarrow_N \langle e_0,...,e_{n-1}\rangle\qquad e_k \Rightarrow_N z }\\
+ e.\lfloor k\rfloor \Rightarrow_N\ z
+\end{array}
+\ (k<n)$
+
+\end{frame}
+
+
+
+\begin{frame}{Semántica denotacional de las tuplas}
+
+$V\ \simeq\ V_{int}\ +\ V_{bool}\ +\ V_{fun}\ +\ V_{tuple}$
+
+\pause
+\bigskip
+
+\textbf{Semántica denotacional Eager:}
+
+\begin{align*}
+V_{tuple}= V^* = &\bigcup_{n \in \mathbb{N}} V^n  \\
+    =  & \{ \langle \rangle \} \cup \{ \langle v \rangle | v \in V\} \cup \ldots \{ \langle v_1, \ldots, v_n \rangle | v_i \in V\}
+\end{align*}
+
+Notar que $\langle \iota_{\mathit{tuple}}\langle \iota_{int} 2 , \iota_{bool}T \rangle \rangle\in V_{tuple}$
+\pause
+\bigskip
+
+\textbf{Semántica denotacional Normal:}
+
+\medskip
+
+$V_{tuple}= D^*$
+
+\end{frame}
+
+\begin{frame}{Ecuaciones semánticas Eager}
+
+\bigskip
+
+$
+\se{\langle e_0,...,e_{n-1}\rangle }\eta = $
+
+\bigskip
+
+$\qquad(\lambda z_{0}\in V.$
+
+\medskip
+
+
+$\qquad\qquad(\lambda z_{1}\in V.$
+
+\medskip
+
+\qquad\qquad\qquad$ ...(\lambda z_{n-1}\in V.\ \iota_{\underline{tuple}}\langle z_0,...,z_{n-1}\rangle)_*(\se{e_{n-1}})...$
+
+\medskip
+
+\qquad\qquad$)_*(\se{e_{1}}\eta)  $
+
+\medskip
+
+\qquad$)_*(\se{e_{0}}\eta)  $
+\end{frame}
+
+\begin{frame}{Ecuaciones semánticas Eager}
+
+\bigskip
+
+$
+\se{e.\lfloor k\rfloor }\eta = $
+
+\bigskip
+
+$\qquad(\lambda t\in V_{tuple}.\ $
+
+\medskip
+
+
+$\qquad\qquad\text{if}\ k\geq |t|\ \text{then} \ tyerr\ \text{else}\ \iota_{norm}t_k $
+
+\medskip
+
+\qquad$)_{tuple*}(\se{e}\eta)  $
+\end{frame}
+
+
+\begin{frame}{Ecuaciones semánticas Normales}
+
+\bigskip
+
+$
+\se{\langle e_0,...,e_{n-1}\rangle }\eta = \langle \se{e_{0}}\eta,...,\se{e_{n-1}}\eta\rangle$
+
+\bigskip
+
+\pause
+$
+\se{e.\lfloor k\rfloor }\eta = $
+
+\bigskip
+
+$\qquad(\lambda t\in V_{tuple}.\ $
+
+\medskip
+
+
+$\qquad\qquad\text{if}\ k\geq |t|\ \text{then} \ tyerr\ \text{else}\ t_k $
+
+\medskip
+
+\qquad$)_{tuple*}(\se{e}\eta)  $
+\end{frame}
+
+
+
+
+
+
+
+
+
+%%%%% PATRONES
+
+
+
+\begin{frame}{Definiciones locales y patrones}
+
+\[
+\begin{array}{lll}
+\ex & ::=& \textbf{let}\ \pat \equiv \ex, \ldots, \pat \equiv \ex\ \textbf{in}\ \ex \smallskip\\
+& &  \lambda \pat.\ex \smallskip\\
+\\
+\pat& ::= &\var | \langle\,\pat,\ldots,\pat\,\rangle
+\end{array}
+\]
+\pause
+\bigskip
+
+Por ejemplo,  podemos escribir 
+\[\lambda \langle\,u,\langle\,v,w\rangle\rangle.u w v\] 
+en vez de 
+\[ \lambda t. (t.0) (t.1.1) (t.1.0) \]
+\pause
+\medskip
+\[ (\lambda \langle\,u,\langle\,v,w\rangle\rangle.u w v)\, \langle M ,\langle N , P \rangle \rangle "\!\!\Rightarrow\!\!" M\, P\, N \]
+\end{frame}
+
+\begin{frame}
+
+Se definen como abreviaturas (azucar sintactico): 
+
+\[\lambda \langle\,p_1,\ldots,p_n\,\rangle.e\ \ =\] 
+\[\lambda v.\ \textbf{let}\ p_1 \equiv v.0, \ldots, p_n \equiv v.[n-1]\ \textbf{in}\ e\]
+donde $v$ es una variable nueva (no ocurre libre en $e$ ni en ninguno de los
+patrones).
+\pause
+\medskip
+\[ \textbf{let}\ p_1 \equiv e_1, \ldots, p_n \equiv e_n\ \textbf{in}\ e\ \ =\]
+\[(\lambda p_1\ldots\lambda p_n.e) e_1 \ldots e_n\]
+
+\end{frame}
+
+
+\begin{frame}
+
+Aplicando repetidamente estas dos transformaciones podemos eliminar los patrones
+que no sean variables y las definiciones locales (let) obteniendo una expresión
+cuya semántica ya está definida.
+\pause
+\bigskip
+
+Tener en cuenta que cuando $n = 0$,
+$\textbf{let}\ p_1 \equiv e_1, \ldots, p_n \equiv e_n\ \textbf{in}\ e$ quedará
+$\textbf{let}\ \textbf{in}\ e$, esto en realidad es directamente la expresión $e$ 
+
+\end{frame}
+
+
+%%%%% RECURSION
+
+\begin{frame}{Recursión} 
+
+\bigskip
+
+$
+\begin{array}{llll}
+\ex  ::= & \textbf{letrec}\var \equiv \lambda \var.\ex\ \textbf{in}\ \ex&\text{(Eval. Eager)}\smallskip\\
+&    \textbf{rec}\ \ex& \text{(Eval. Normal)}
+\end{array}
+$
+
+\bigskip
+
+\bigskip
+
+
+El letrec permite hacer definiciones recursivas como
+
+\[\letrecin{\textit{fact} \equiv \lambda n.\ \textbf{if} \  n = 0\ \textbf{then}\ 1\ \textbf{else}\ n * \textit{fact} (n-1)}{\textit{fact}\  2} \]
+
+\end{frame}
+
+
+\begin{frame}{Regla para la Evaluación Eager}
+
+
+\bigskip
+
+\bigskip
+
+\qquad\qquad$\begin{array}{c}
+\underline{\qquad (e/v\mapsto \lambda u.e_0^*)
+     \Rightarrow_E z\qquad }\\
+ \letrecin{v \equiv \lambda u.e_0}{e} \Rightarrow_E\ z
+\end{array}$
+
+
+\bigskip
+
+donde
+
+\bigskip
+
+\qquad\qquad\qquad$e_0^*\ \  = \  \ \letrecin{v \equiv \lambda u.e_0}{e_0}$
+
+
+
+\end{frame}
+
+
+
+\begin{frame}{Regla para la Evaluación Normal}
+
+
+\bigskip
+
+\bigskip
+
+\qquad\qquad\qquad$\begin{array}{c}
+\underline{ e\ (\textbf{rec}\ e) \Rightarrow_N z }\\
+ \textbf{rec}\ e\Rightarrow_N\ z
+\end{array}$
+
+\end{frame}
+
+
+
+
+
+\begin{frame}{Semántica Denotacional Eager (Recursión)}
+
+\[\se{\letrecin{v \equiv \lambda u.e_0}{e}} \eta \  = \ \se{ e} [\eta |v:\iota_{fun}g]\]
+
+
+\end{frame}
+
+\begin{frame}{Semántica Denotacional Eager (Recursión)}
+
+\[\se{\letrecin{v \equiv \lambda u.e_0}{e}} \eta \  = \ \se{ e} [\eta |v:\iota_{fun}g]\]
+
+\bigskip
+
+donde $g$ es el menor punto fijo de 
+
+\[F\ f\ z = \se{e}[\eta| v: \iota_{fun} f,\ u:z]\]
+
+\end{frame}
+
+
+
+\begin{frame}{Semántica Denotacional Eager (Recursión)}
+
+\[\se{\letrecin{v \equiv \lambda u.e_0}{e}} \eta \  = \ \se{ e} [\eta |v:\iota_{fun}g]\]
+
+\bigskip
+
+donde $g$ es el menor punto fijo de 
+
+\[F\ f\ z = \se{e}[\eta| v: \iota_{fun} f,\ u:z]\]
+
+o sea 
+
+
+\[g = \textbf{Y}_{V_{fun}}\ F\qquad\qquad\textbf{Y}_{V_{fun}} F\  =\  \sqcup_i F^i \bot\]
+
+\end{frame}
+
+\begin{frame}{Semántica Denotacional Eager (Recursión)}
+
+\[\se{\letrecin{v \equiv \lambda u.e_0}{e}} \eta \  = \ \se{ e} [\eta |v:\iota_{fun}g]\]
+
+\bigskip
+
+donde $g$ es el menor punto fijo de 
+
+\[F\ f\ z = \se{e}[\eta| v: \iota_{fun} f,\ u:z]\]
+
+o sea 
+
+
+\[g = \textbf{Y}_{V_{fun}}\ F\qquad\qquad\textbf{Y}_{V_{fun}} F\  =\  \sqcup_i F^i \bot\]
+
+
+\[g = \textbf{Y}_{V_{fun}}(\lambda f\in V_{fun}.\lambda z\in V.\se{e}[\eta| v: \iota_{fun} f,\ u:z] )\]
+
+\end{frame}
+
+
+\begin{frame}{Semántica Denotacional Normal (Recursión)}
+
+\[ \se{\textbf{rec}\  e} \eta \ =\  (\lambda f \in  V_{fun}.\ \textbf{Y}_D f)_{fun*} (\se{e}\eta ) \]
+
+\bigskip
+
+donde $\textbf{Y}_{D}$ es el operador de menor punto fijo
+
+\[\textbf{Y}_D f\  =\  \sqcup_i f^i \bot\]
+
+\end{frame}
+
+
+\section{Un Lenguaje Aplicativo con referencias y asignación}
+
+
+\end{document}
+
+
+

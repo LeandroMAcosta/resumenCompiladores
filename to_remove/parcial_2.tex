@@ -1,0 +1,568 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}[spanish]
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{mathtools}
+\usepackage{stackrel}
+\usepackage{multicol}
+\usepackage{textcomp}
+\usepackage{ stmaryrd }
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{t1enc}
+\usepackage[left=.5cm,right=.5cm,top=1cm,bottom=1.2cm]{geometry}
+
+\newcommand{\PN}{\par\noindent}
+\newcommand{\nonterminal}[1]{\langle \mathsf{#1} \rangle}
+\newcommand{\expr}{\nonterminal{expr}}
+\newcommand{\var}{\nonterminal{var}}
+\newcommand{\totrans}{\to^\ast}
+\newcommand{\bigstep}{\Rightarrow}
+\newcommand{\bigstepnormal}{\Rightarrow}
+\newcommand{\bigstepeager}{\Rightarrow}
+\newcommand{\dinf}{D_\infty}
+\newcommand{\Env}{\mathit{Env}}
+\newcommand{\botbot}{\bot\!\!\!\bot}
+\newcommand{\commif}[3]{\mathbf{if}\;#1\;\mathbf{then}\;#2\;\mathbf{else}\;#3}
+\newcommand{\commseq}[2]{#1;#2}
+\newcommand{\commassign}[2]{#1:=#2}
+\newcommand{\commskip}{\mathbf{skip}}
+\newcommand{\commwhile}[2]{\mathbf{while}\;#1\;\mathbf{do}\;#2}
+\newcommand{\commnvar}[3]{\mathbf{newvar}\;#1:=#2\;\mathbf{in}\;#3}
+\newcommand{\ptodo}[2]{\forall #1.\ #2}
+\newcommand{\existe}[2]{\exists #1.\ #2}
+\newcommand{\s}{\sigma }
+\newcommand{\Z}{\textbf{Z}}
+\newcommand{\la}{\left\langle }
+\newcommand{\ra}{\right\rangle }
+\newcommand{\se}[1]{[\![#1]\!]}
+\newcommand{\db}{\perp\!\!\!\perp}
+\newcommand{\sem}[2]{[\![#1]\!]_{#2}}
+\newcommand{\semnat}[1]{\sem{#1}{\nat}}
+\newcommand{\semassert}[1]{\sem{#1}{\assert}}
+\newcommand{\semintexp}[1]{\sem{#1}{\intexp}}
+\newcommand{\semtheta}[1]{\sem{#1}{\theta}}
+\newcommand{\semden}[1]{\sem{#1}{}}
+\newcommand{\semop}[1]{\{\!\![#1]\!\!\}}
+\newcommand{\syn}[1]{<\!\!#1\!\!>}
+\newcommand{\conc}{+\!\!\!+}
+\newcommand{\nat}{\left\langle nat\right\rangle}
+\newcommand{\boolexp}{\left\langle boolexp\right\rangle}
+\newcommand{\bin}{{\rm bin}}
+\newcommand{\assert}{\left\langle assert\right\rangle}
+\newcommand{\intexp}{\left\langle intexp\right\rangle }
+\newcommand{\comm}{\left\langle comm\right\rangle}
+\newcommand{\fun}{\left\langle fun\right\rangle}
+\newcommand{\fvar}{\left\langle fvar\right\rangle}
+\newcommand{\cnf}{\left\langle cnf\right\rangle}
+\newcommand{\ife}{\mathbf{if}\ }
+\newcommand{\lete}{\mathbf{let}\ }
+\newcommand{\where}{\ \mathbf{where}\ }
+\newcommand{\ine}{\ \mathbf{in}\ }
+\newcommand{\thene}{\ \mathbf{then}\ }
+\newcommand{\elsee}{\ \mathbf{else}\ }
+\newcommand{\newvar}{\mathbf{newvar}\ }
+\newcommand{\while}{\mathbf{while}\ }
+\newcommand{\val}{\mathbf{val}\ }
+\newcommand{\doc}{\ \mathbf{do}\ }
+\newcommand{\env}{\left\langle env\right\rangle}
+\newcommand{\penv}{\left\langle penv\right\rangle}
+\newcommand{\natconst}{\left\langle natconst\right\rangle}
+\newcommand{\refconst}{\left\langle refconst\right\rangle}
+\newcommand{\refexp}{\left\langle refexp\right\rangle}
+\newcommand{\boolconst}{\left\langle boolconst\right\rangle}
+\newcommand{\pvar}{\left\langle pvar\right\rangle}
+\newcommand{\fenv}{\left\langle fenv\right\rangle}
+\newcommand{\proc}{\ \mathbf{proc}\ }
+
+\newcommand{\IF}[3]{\textbf{if} \ #1 \ \textbf{then} \ #2 \ \textbf{else} \ #3}
+\newcommand{\true}{\textbf{true}}
+\newcommand{\false}{\textbf{false}}
+\newcommand{\fskipc}{\mbox{\textbf{skip}}}
+\newcommand{\fiftec}[3]{\textbf{if}\ #1\ \textbf{then}\ #2\ \textbf{else}\ #3}
+\newcommand{\letrecin}[2]{\textbf{letrec}\ #1\ \textbf{in}\ #2\ }
+\newcommand{\fwhile}[2]{\textbf{while}\ #1\ \textbf{do}\ #2}
+\newcommand{\fnewvar}[3]{\mbox{\textbf{newvar}\ #1:= #2\ \textbf{in}\ #3}}
+\newcommand \supr{\vee}
+\newcommand \infi{\wedge}
+% \newcommand{\se}[1]{\mbox{$[\![#1]\!]$}}
+\newcommand{\sems}[1]{\sem{#1}\sigma}
+\newcommand{\overs}[3]{[#1|#2:#3]}
+\newcommand{\ov}[1]{$\overline{\ #1 \ }$}
+\newcommand{\pat}{\left\langle pat\right\rangle}
+\newcommand{\intcnf}{\left\langle intcnf\right\rangle}
+\newcommand{\boolcnf}{\left\langle boolcnf\right\rangle}
+\newcommand{\funcnf}{\left\langle funcnf\right\rangle}
+\newcommand{\tuplecnf}{\left\langle tuplecnf\right\rangle}
+\newcommand{\va}[1]{\mathsf{#1}}
+\newcommand{\tagexp}{\left\langle tag \right\rangle}
+\newcommand{\injD}[1]{\iota_{\underline{#1}}}
+
+
+\usepackage{amsthm,thmtools,amssymb}
+\usepackage{verbatim}
+\declaretheorem[name=Teorema]{theorem}
+\declaretheorem[name=Propiedad]{property}
+\declaretheorem[name=Corolario]{corollary}
+
+\usepackage{bussproofs}
+\usepackage{stmaryrd}
+\usepackage[spanish]{babel}
+\usepackage{amssymb} 
+\usepackage{amsmath,amsthm,mathtools} 
+\usepackage{tikz}
+\usepackage{bussproofs}
+\usepackage{stmaryrd}
+\usepackage{pgfpages}
+\usepackage{fontenc}
+
+\title{Resumen Lenguajes y Compiladores}
+
+\begin{document}
+	\begin{center}
+		\Huge \textbf{Resumen Lenguajes y Compiladores: \\ Segundo Parcial} \\
+		\large Agustín Curto
+  \end{center}
+
+  % \tableofcontents
+
+  \section{Cálculo Lambda}
+    \[
+      \begin{array}{rcll}
+        \expr &::= && \text{término lambda, o expresión} \\
+            &|& \var & \text{variable} \\
+            &|& \expr \expr & \text{aplicación, el primero es el operador y el segundo el operando} \\
+            &|& \lambda \var.\expr & \text{abstracción o expresión lambda} \\
+      \end{array}
+    \]
+
+    \begin{eqnarray*}
+      FV(v) &=& \{v\} \\
+      FV(e_0 e_1) &=& FV(e_0)\cup FV(e_1) \\
+      FV(\lambda v.e) &=& FV(e) - \{v\}
+    \end{eqnarray*}
+        
+    \PN También se define sustitución:
+    \begin{eqnarray*}
+      \Delta &=& \var \to \expr \\
+      \_/\_ &\in& \expr \times \Delta \to \expr \\
+      v/\delta &=& \delta v \\
+      (e_0 e_1)/\delta &=& (e_0/\delta) (e_1/\delta) \\
+      (\lambda v.e)/\delta &=& \lambda v'.(e/[\delta|v:v']) \\
+      && \text{ donde } v' \not\in \bigcup_{w \in FV(e) - \{v\}} FV(\delta w)
+    \end{eqnarray*}
+        
+    \begin{property} \hfill
+      \begin{enumerate}
+      \item si para todo $w \in FV(e)$, $\delta w = \delta' w$ entonces
+        $(e/\delta) = (e/\delta')$
+      \item sea $i$ la sustitución identidad, entonces $e/i = e$.
+      \item $FV(e/\delta) = \bigcup_{w\in FV(e)} FV(\delta w)$
+      \end{enumerate}
+    \end{property}
+
+    \PN Definiciones:
+    \begin{itemize}
+      \item Expresión cerrada: sin variables libres
+      \item Forma canónica: abstracciones $(\lambda x.e)$
+      \item \textit{Redex}: expresión de la forma $(\lambda v.e) e'$.
+      \item Formal normal: expresión sin rédices.
+        \PN No necesariamente son abstracciones, por ejemplo, $(\lambda x.y) (\lambda z.z)$ $\beta$-contrae a $y$ es es formal normal pero no canónica.
+    \end{itemize}
+        
+    \paragraph{Renombre ($\alpha$)}
+      La operación de cambiar una ocurrencia de la expresión lambda
+        $\lambda v.e$ por $\lambda v'.(e/v \to v')$ donde
+        $v' \not\in FV(e) - \{v\}$ se llama renombre o cambio de variable
+        ligada.
+
+    \paragraph{Contracción ($\beta$)}  
+      Es la aplicación de una función
+        $(\lambda v.e)$ a su argumento $e'$. Debe calcularse reemplazando las
+        ocurrencias libres de $v$ en $e$ por $e'$, es decir $(e/v\to e')$.
+        
+    \begin{theorem}{Church-Rosser.}
+      Si $e \totrans e_0$ y $e \totrans e_1$, entonces existe $e'$ tal que
+      $e_0 \totrans e'$ y $e_1 \totrans e'$.
+    \end{theorem}
+        
+    \begin{corollary}
+      Salvo renombre, toda expresión tiene a lo sumo una forma normal.
+    \end{corollary}
+
+    \vspace{3mm}
+    \PN NO TODA EXPRESIÓN TINE FORMAL NORMAL (contraejemplos).
+    \begin{itemize}
+      \item $\Delta = (\lambda x.xx)$
+      \item $\Delta' = (\lambda x.xxy)$
+    \end{itemize}
+
+    \begin{property}
+      Una aplicación cerrada no puede ser forma normal.
+    \end{property}
+
+    \begin{itemize}
+      \item Si una expresión cerrada, es forma normal entonces es foerma canónica.
+      \item Al revés no vale, contrajemplo $\lambda x. (\lambda y. y) x$.
+    \end{itemize}
+
+    \subsection{Evaluación}
+      \PN En este tipo de semántica operacional se describen la relación entre los términos y sus valores, que también son términos, formaas canónicas. Llamamos $\Rightarrow$ a esta relación. Cuando decimos que $e \Rightarrow z$ se cumple, estamos diciendo que existe un árbol de derivación que prueba $e \Rightarrow z$.
+      
+      \vspace{3mm}
+      \PN Puede ocurrir que la evaluación eager no termine mientras que la normal si, por ejemplo: $(\lambda x. \lambda y. y) (\Delta\Delta) \Rightarrow_{N} \lambda y.y$, mientras que en eager diverge.
+      
+      \paragraph{Regla $\eta$}
+        Un $\eta$-redex es una expresión de la forma $\lambda v.e\, v$ donde $v \not\in  FV(e)$. Gracias a la
+          regla $\beta$, uno obtiene que $(\lambda v.e\,v) e'$ contrae a $e\, e'$ para toda expresión $e'$. Si
+          uno asume que toda expresión lambda denota una función, $\lambda v.e\,v$ y $e$ parecen
+          comportarse extensionalmente igual: cuando se las aplica a $e'$, ambas dan $e e'$.
+          Esto motiva la regla $\eta$:
+
+      \begin{prooftree}
+        \AxiomC{\ }
+        \RightLabel{si $v \not\in FV(e)$}
+        \UnaryInfC{$(\lambda v.e v) \to e$}
+      \end{prooftree}
+    
+    \subsection{Semántica denotacional del cálculo lambda}
+      \PN Sea $\dinf \cong [\dinf \to \dinf]$, donde $\dinf \rightarrow \dinf$ se refiere al espacio de funciones continuas donde todas tiene punto fijo, y sean:
+        \[
+          \begin{array}{rl}
+          \phi \,\in\, & \dinf \to  [\dinf \to  \dinf]\\
+          \psi \,\in\, & [\dinf \to  \dinf] \to  \dinf
+          \end{array}
+        \]
+        los isomorfismos tales que
+        \begin{align*}
+        \phi . \psi &= id\\
+        \psi . \phi &= id
+        \end{align*}
+
+        \begin{eqnarray*}
+          \text{Ambiente: } \Env &=& \var \to \dinf \\
+          \eta &\in& \Env \\
+          \llbracket\_\rrbracket &\in& \expr \to  Env \to  \dinf \\ \\
+          \llbracket v\rrbracket\eta &=& \eta\, v \\
+          \llbracket e_0\, e_1\rrbracket\eta &=& \phi(\llbracket e_0\rrbracket \eta) (\llbracket e_1\rrbracket\eta) \\
+          \llbracket\lambda x.e\rrbracket\eta &=& \psi(\lambda d \in \dinf. \llbracket e\rrbracket[\eta |v:d]) \\
+        \end{eqnarray*}        
+        
+    \begin{theorem}{Coincidencia} Si $\eta\, w$ = $\eta'\, w$ para todo $w \in FV(e)$,
+      entonces $\llbracket e\rrbracket \eta = \llbracket e\rrbracket \eta'$.
+    \end{theorem}
+        
+    \begin{theorem}{Sustitución} Si $\llbracket \delta\, w\rrbracket\eta = \eta' w$ para todo
+      $w \in FV(e)$, entonces $\llbracket e/\delta\rrbracket \eta =\llbracket e\rrbracket\eta'$.
+    \end{theorem}
+    
+    \begin{theorem}{Sustitución Finita} $\llbracket e/v_1\to e_1, \ldots,
+      v_n\to e_n\rrbracket\eta = \llbracket e\rrbracket[\eta|v_1:
+      \llbracket e_1\rrbracket\eta|\ldots|v_n:\llbracket e_n\rrbracket\eta]$.
+    \end{theorem}
+    
+    \begin{theorem}{Renombre} Si $v' \not\in FV(e)-\{v\}$, entonces
+      $\llbracket\lambda v'.(e/v\to v')\rrbracket = \llbracket\lambda
+      v.e\rrbracket$.
+    \end{theorem}
+        
+    \begin{property}(correctitud de la regla $\beta$): $\llbracket(\lambda v.e)\, e'\rrbracket = \llbracket e/v\to e'\rrbracket$.
+    \end{property}
+        
+    \begin{property}
+      (correctitud de la regla $\eta$): Si $v \not\in FV(e)$, entonces
+      $\llbracket\lambda v.e v\rrbracket = \llbracket e\rrbracket$.
+    \end{property}
+        
+    \PN Asumiremos que $\llbracket\Delta \Delta\rrbracket\eta = \bot$.
+
+    \subsubsection{Normal}
+      \begin{eqnarray*}
+        D &=& V_\bot, \text{ donde } V \cong [D \to  D] \\ \\
+        \phi &\in& V \to  [D \to  D] \\
+        \psi &\in& [D \to  D] \to  V \\ \\ 
+        \lambda d &\in& D. \bot \text{ bottom de } D \rightarrow D \\
+        \psi(\lambda d &\in& D. \bot) \text{ bottom de V pero no de D} \\ \\
+        \phi_{\botbot} &\in& D \to  [D \to  D] \\
+        \iota_\bot . \psi &\in& [D \to  D] \to  D \\ \\
+        \Env &=& \var \to  D \\
+        \llbracket\_\rrbracket &\in& \expr \to  Env \to  D \\ \\
+        \llbracket v \rrbracket\eta &=& \eta v \\
+        \llbracket e_0\, e_1\rrbracket\eta &=& \phi_{\botbot} (\llbracket e_0\rrbracket\eta) (\llbracket e_1\rrbracket\eta) \\
+        \llbracket\lambda x.e\rrbracket\eta &=& (\iota_\bot . \psi)(\lambda d \in D. \llbracket e\rrbracket[\eta|v:d])
+      \end{eqnarray*}
+
+      \PN Los teoremas antes vistos junto con la regla $\beta$ siguen valiendo pero no la regla $\eta$, pues $\se{\lambda y. \Delta\Delta} = \psi(\lambda d \in D.\bot)$ mientras que $\se{\Delta\Delta} = \bot$.
+    
+    \subsubsection{Eager}
+      \begin{eqnarray*}
+        D &=& V_\bot, \text{ donde } V \cong [V \to D] \\ \\
+        \phi &\in& V \to [V \to D] \\
+        \psi &\in& [V \to D] \to V \\ \\
+        \phi_{\botbot} &\in& D \to [V \to D] \\
+        \iota_\bot . \psi &\in& [V \to D] \to D \\ \\
+        Env &=& \var \to V \\
+        \llbracket\_\rrbracket &\in& \expr \to Env \to D \\ \\
+        \llbracket v\rrbracket\eta &=& \iota_\bot (\eta v) \\
+        \llbracket e_0\, e_1\rrbracket\eta &=& (\phi_{\botbot} (\llbracket e_0\rrbracket\eta))_{\botbot}\, (\llbracket e_1\rrbracket\eta)\\
+        \llbracket\lambda x.e\rrbracket\eta &=& (\iota_\bot . \psi)(\lambda z \in V. \llbracket e\rrbracket[\eta|x:z])
+      \end{eqnarray*}
+
+      \PN Los teoremas antes vistos (salvo sustitución) siguen valiendo pero no las reglas $\beta, \eta$.
+        
+  \section{Gramáticas}
+    \[
+      \begin{array}{rcl@{\hspace{1cm}}l}
+        \expr &::= && \text{término lambda, o expresión} \\
+            &|& \var & \text{variable} \\
+            &|& \expr \expr & \text{aplicación, el primero es el operador y el segundo el operando} \\
+            &|& \lambda \var.\expr & \text{abstracción o expresión lambda} \\
+            &|& \natconst | \boolconst \\
+            &|& -\expr \ |\ \expr + \expr  \ |\ \expr * \expr \ |... & \text{operadores aritméticos}\\
+            &|& \expr\geq \expr  \ |\ \expr\leq \expr \ |\ \expr< \expr \ | ... & \text{operadores relacionales}\\
+            &|& \expr\wedge \expr  \ |\ \expr\vee \expr \ |\ \neg\expr & \text{operadores lógicos} \\
+            &|& \ife \expr\thene \expr\elsee \expr \\
+            &|& \textbf{error}\ |\ \textbf{typeerror} \\
+            &|& \textbf{letrec}\var \equiv \lambda \var.\expr\ \textbf{in}\ \expr&\text{(Eval. Eager)} \\
+            &|& \textbf{rec}\ \expr& \text{(Eval. Normal)} \\
+            \natconst & ::= & 0\ |\ 1\ |\ 2\ | .... \\
+            \boolconst & ::= & \textbf{true}\ | \ \textbf{false}
+      \end{array}
+    \]
+
+    \textbf{Formas canónicas}
+    \[
+      \begin{array}{llllll}
+      \cnf & ::= & \intcnf\  |\  \boolcnf\ |\ \funcnf \ | \tuplecnf \\
+      \intcnf & ::= & ...\ | \ -2\ | \ -1\ | \ 0\ |\ 1\ |\ 2\ | ... \\
+      \boolcnf & ::= & \boolconst \\
+      \funcnf & ::= & \lambda \var.\expr \\
+      \tuplecnf & ::= & \la \la cnf \ra, ..., \la cnf \ra \ra
+      \end{array}
+    \]
+  \section{Evaluación}
+    \subsection{Compartido entre Normal y Eager}
+      \PN Para todas las formas canónicas vale: \ov{z \Rightarrow z}
+      \begin{itemize}
+        \item \textbf{Aritméticos y relacionales:} $\oplus\in \{+,-,*,=,\neq,\leq,\geq,...\}, \ \oslash \in \{/, mod\}$
+          \begin{itemize}
+            \begin{multicols}{3}
+            \item $\begin{array}{c}
+              \underline{\ \ e\ \Rightarrow\ \lfloor i\rfloor\ \ }\\
+              -e\ \Rightarrow\ \lfloor -i\rfloor
+              \end{array}
+              $
+            \item $\begin{array}{c}
+              \underline{e\ \Rightarrow\ \lfloor i\rfloor\qquad e'\ \Rightarrow\ \lfloor i'\rfloor}\\
+              e \oplus e'\ \Rightarrow\ \lfloor i\oplus i'\rfloor
+              \end{array}
+              $
+            \item $\begin{array}{c}
+              \underline{e\ \Rightarrow\ \lfloor i\rfloor\qquad e'\ \Rightarrow\ \lfloor i'\rfloor}\\
+              e \oslash e'\ \Rightarrow\ \lfloor i\oslash i'\rfloor
+              \end{array}
+              $
+              
+              \[i'\neq 0\]
+            \end{multicols}
+          \end{itemize}
+        \item \textbf{Booleanos:}
+          \begin{itemize}
+            \begin{multicols}{3}
+            \item $\begin{array}{c}
+              \underline{\ \ e\ \Rightarrow\ \lfloor b\rfloor\ \ }\\
+              \neg e\ \Rightarrow\ \lfloor \neg b\rfloor
+              \end{array}
+              $
+            \item $\begin{array}{c}
+              \underline{\ \ e\ \Rightarrow\ \textbf{true}\ \qquad e_0\ \Rightarrow\ z }\\
+              \textbf{if}\ e\ \textbf{then}\ e_0\  \textbf{else}\ e_1\ \Rightarrow\ z
+              \end{array}
+              $
+            \item $\begin{array}{c}
+              \underline{\ \ e\ \Rightarrow\ \textbf{false}\ \qquad e_1\ \Rightarrow\ z }\\
+              \textbf{if}\ e\ \textbf{then}\ e_0\  \textbf{else}\ e_1\ \Rightarrow\ z
+              \end{array}
+              $
+            \end{multicols}
+          \end{itemize}
+        \item \textbf{Tuplas:}
+        \item \textbf{Recursión:}
+      \end{itemize}
+    
+    \subsection{Normal}    
+      \begin{itemize}
+        \item \textbf{Funciones:}
+          \begin{prooftree}
+            \AxiomC{$e \bigstep \lambda v.e''$}
+            \AxiomC{$(e''/v\to e') \bigstep z$} \RightLabel{(aplicación)}
+            \BinaryInfC{$e e' \bigstep z$}
+          \end{prooftree}
+        \item \textbf{Booleanos:}
+          \begin{multicols}{3}
+            \begin{itemize}
+              \item $e \wedge e' = \IF{e}{e'}{false}$
+              \item $e \vee e' = \IF{e}{true}{e'}$
+              \item $e \Rightarrow e' = \IF{e}{e'}{true}$
+            \end{itemize}
+          \end{multicols}
+        \item \textbf{Tuplas:}
+          \begin{multicols}{3}
+            \vspace{3mm}
+            $\begin{array}{c}
+              \underline{\qquad \qquad \qquad \qquad \qquad \qquad}\\
+              \la e_1, ..., e_n \ra \Rightarrow \la e_1, ..., e_n\ra
+              \end{array}$
+            $\begin{array}{c}
+              \underline{\ \ e \Rightarrow \langle e_1,...,e_n\rangle\qquad e_k \Rightarrow z }\\
+               e.\lfloor k\rfloor \Rightarrow\ z
+              \end{array}$
+            
+            $ k \leq n$
+          \end{multicols}
+          \item \textbf{Recursión:}
+            \[\begin{array}{c}
+              \underline{ e\ (\textbf{rec}\ e) \Rightarrow z }\\
+               \textbf{rec}\ e\Rightarrow \ z
+              \end{array}\]
+      \end{itemize}
+        
+    \subsection{Eager}
+      \begin{itemize}
+        \item \textbf{Funciones:}
+          \begin{prooftree}
+            \AxiomC{$e \bigstep \lambda v.e''$} 
+            \AxiomC{$e' \bigstep z'$}
+            \AxiomC{$(e''/v\to z') \bigstep z$} 
+            \RightLabel{(aplicación)}
+            \TrinaryInfC{$e e' \bigstep z$}
+          \end{prooftree}
+        \item \textbf{Booleanos:} $\owedge \in \{\wedge, \vee, \Rightarrow,...\}$
+          \[\begin{array}{c}
+          \underline{e\ \Rightarrow\ \lfloor b\rfloor\qquad e'\ \Rightarrow\ \lfloor b'\rfloor}\\
+          e \owedge e'\ \Rightarrow\ \lfloor b \owedge b'\rfloor
+          \end{array}\]
+        \item \textbf{Tuplas:}
+          \begin{multicols}{3}
+            $\begin{array}{c}
+              \underline{\ \ e_1 \Rightarrow z_1 \quad ... \quad \ e_n \Rightarrow z_n } \\
+              \langle e_1,...,e_n\rangle\ \Rightarrow\ \langle z_1,...,z_n\rangle
+            \end{array}$
+            \hspace{5mm}
+            $\begin{array}{c}
+              \underline{\ \ e \Rightarrow \langle z_1,...,z_n\rangle }\\
+               e.\lfloor k\rfloor \Rightarrow\ z_k
+              \end{array}$
+            $k \leq n$
+          \end{multicols}
+        \item \textbf{Recursión:}
+          \[\begin{array}{c}
+            \underline{\qquad e/(f\mapsto \lambda v.\letrecin{f \equiv \lambda v.e'}{e'})
+            \Rightarrow z\qquad } f \neq v\\
+            \letrecin{f \equiv \lambda v.e'}{e} \Rightarrow \ z
+          \end{array}\]
+      \end{itemize}
+
+  \section{Semántica denotacional}
+    \subsection{Compartido entre Normal y Eager}
+      \PN $V$: es el conjunto de valores, de la misma forma que a las formas canónicas las llamamos también valores en su momento.
+      \PN $D$: es el conjunto de resultados, que incluyen valores y otras cosas, en este caso, sólo se agrega bottom.
+
+      \begin{multicols}{2}
+        \begin{eqnarray*}
+          D &=& (V + \{\textbf{error}, \textbf{typeerror}\})_\bot \\
+          \iota_{norm} &=& \iota_{\bot} . \iota_{0} \in V \rightarrow D \\
+          err &=& \iota_{\bot} . (\iota_{1} \ error) \in D \\
+          tyerr &=& \iota_{\bot} . (\iota_{1} \ typeerror) \in D
+        \end{eqnarray*}
+
+        \begin{eqnarray*}
+          V &\simeq& V_{int} + V_{bool} + V_{fun} + V_{tuple} \\
+          \phi &\in& \ V \rightarrow\ V_{int} + V_{bool} + V_{fun} + V_{tuple} \\
+          \psi &\in& \ V_{int} + V_{bool} + V_{fun} + V_{tuple} \rightarrow V
+        \end{eqnarray*}
+      \end{multicols}
+
+      \PN Donde: $V_{int} = \mathbb{Z}, V_{bool} = \mathbb{B}$ y $V_{fun}, V_{tuple}$ se definen para cada semántica en particular.
+
+      \begin{multicols}{2}
+        \PN Si $f\in V\rightarrow D$ entonces $f_{*}\in D\rightarrow D$ se define:
+        \begin{eqnarray*}
+          f_* (\iota_{norm}\ z) &=& f\ z\\
+          f_* (err) &=& err\\
+          f_* (tyerr) &=& tyerr\\
+          f_* (\perp) &=& \perp
+        \end{eqnarray*}
+        
+        \PN Si $\ell \in \{int, bool, fun, tuple\}, f \in V_{\ell} \rightarrow D$ entonces $f_{\ell}$ se define:
+        \begin{eqnarray*}
+          f_{\ell} (\iota_{\ell}\ z) &=& f\ z\\
+          f_{\ell} (\iota_{\ell'}\ z) &=& tyerr, \ \text{si } \ell \neq \ell'
+        \end{eqnarray*}
+      \end{multicols}
+
+      \begin{eqnarray*}
+        \iota_{int} &=& \psi . \iota_{0} \in V_{int} \rightarrow V \\
+        \iota_{bool} &=& \psi . \iota_{1} \in V_{bool} \rightarrow V \\
+        \iota_{fun} &=& \psi . \iota_{2} \in V_{fun} \rightarrow V \\
+        \iota_{tuple} &=& \psi . \iota_{3} \in V_{tuple} \rightarrow V \\
+      \end{eqnarray*}
+
+      \begin{eqnarray*}
+        \se{0}\eta &=& \iota_{norm}(\iota_{int} 0) \\
+        \se{\textbf{true}}\eta &=& \iota_{norm}(\iota_{bool} T) \\ \\
+        \se{-e}\eta &=& (\lambda i \in V_{int}. \iota_{norm}(\iota_{int} -i))_{int*}(\se{e}\eta) \\
+        \se{\neg e}\eta &=& (\lambda b \in V_{bool}. \iota_{norm}(\iota_{bool} \neg b))_{bool*}(\se{e}\eta) \\ \\
+        \se{e_0+e_1}\eta &=& (\lambda i \in V_{int}.\ (\lambda j \in V_{int}. \iota_{norm}(\iota_{int} i+j)_{int*}(\se{e_1}\eta))_{int*}(\se{e_0}\eta) \\
+        \se{e_0/e_1'}\eta &=& (\lambda i \in V_{int}. \ (\lambda j \in V_{int}. \ \left\lbrace 
+        \begin{array}{lll}
+          err & j = 0 \\
+          \iota_{norm}(\iota_{int} i/j) & c.c
+        \end{array}\right)_{int*} (\se{e_1}\eta))_{int*} (\se{e_0}\eta) \\
+        \se{\IF{e}{e_0}{e_1}}\eta &=& (\lambda b \in V_{bool}. \ \left\lbrace 
+        \begin{array}{lll}
+          \se{e_0} & si b \\
+          \se{e_1} & c.c \\
+        \end{array}\right)_{bool*} (\se{e}\eta) \\ \\
+        \se{error}\eta &=& err \\
+        \se{typeerror}\eta &=& tyerr \\ \\
+        \se{e.[k]}\eta &=& (\lambda t \in V_{tuple}. \ \left\lbrace 
+        \begin{array}{lll}
+          \iota_{norm} t.k & si \ k \leq \# t \\
+          tyerr & c.c \\
+        \end{array}\right)_{tuple*} (\se{e}\eta)
+      \end{eqnarray*}
+
+    \subsection{Normal}
+      \PN $V_{fun} = D \rightarrow D \qquad V_{tuple} = D^{*}$
+      \begin{eqnarray*}
+        \Env &=& \var \to  D \\
+        \llbracket\_\rrbracket &\in& \expr \to  Env \to  D \\ \\
+        \llbracket v \rrbracket\eta &=& \eta v \\
+        \llbracket e_0\, e_1\rrbracket\eta &=& (\lambda f \in V_{fun}. f(\se{e_1}\eta))_{fun*} (\se{e_0}\eta) \\
+        \llbracket\lambda x.e\rrbracket\eta &=& \iota_{norm}(\iota_{fun}(\lambda d \in D. \se{e}[\eta|x:d])) \\ \\
+        \se{\la e_1, ..., e_n \ra}\eta &=& \iota_{norm}(\iota_{tuple} \la \se{e_1}\eta, ..., \se{e_n}\eta \ra) \\
+        \se{\textbf{rec}\  e} \eta &=& (\lambda f \in  V_{fun}.\ Y f)_{fun*} (\se{e}\eta ) \\
+        \text{donde} && Y \text{ es el operador de menor punto fijo}
+      \end{eqnarray*}
+        
+    \subsection{Eager}
+      \PN $V_{fun} = V \rightarrow D \qquad V_{tuple} = V^{*}$
+      \begin{eqnarray*}
+        Env &=& \var \to V \\
+        \llbracket\_\rrbracket &\in& \expr \to Env \to D \\ \\
+        \llbracket v\rrbracket\eta &=& \iota_{norm}(\eta v) \\
+        \llbracket e_0\, e_1\rrbracket\eta &=& (\lambda f \in V_{fun}. f_{*} (\se{e_1}\eta))_{fun*} (\se{e_0}\eta) \\
+        \llbracket\lambda x.e\rrbracket\eta &=& \iota_{norm}(\iota_{fun}(\lambda z \in V. \se{e}[\eta|x:z])) \\ \\
+        \se{\la e_1, ..., e_n \ra}\eta &=& (\lambda z_1 \in V. ... (\lambda z_n \in V . \iota_{norm}(\iota_{tuple} \la z_1, ..., z_n\ra))_{*} (\se{e_n}\eta) ...)_{*} (\se{e_1}\eta) \\
+        \se{\letrecin{v \equiv \lambda u.e}{e'}}\eta &=& \se{e'} [\eta |v:\iota_{fun} Y_{V_{fun}} F] \\
+        \text{donde} && F\ f\ z = \se{e}[\eta| v: \iota_{fun} f | u:z] \\
+        && Y_{V_{fun}} \text{ es el operador de menor punto fijo sobre } V_{fun}
+      \end{eqnarray*}
+\end{document}

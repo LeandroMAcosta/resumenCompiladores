@@ -1,0 +1,499 @@
+\documentclass[handout]{beamer}
+% \documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{subfigure}
+
+\mode<presentation>{
+  \usetheme[shadow=false]{Boadilla}
+  \usefonttheme{professionalfonts}
+  \usefonttheme[onlymath]{serif}
+  \usecolortheme{dolphin}
+  \useinnertheme{circles}
+}
+
+\usepackage[spanish]{babel}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{tikz}
+\usepackage{bussproofs}
+\usepackage{stmaryrd}
+
+%% FONTS
+\usepackage[utf8]{inputenx}
+\usepackage{fontenc}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{
+  \hbox{%
+  \begin{beamercolorbox}[wd=.50\paperwidth,ht=2.25ex,dp=1ex,center]{white}%
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.20\paperwidth,ht=2.25ex,dp=1ex,center]{white}%
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.30\paperwidth,ht=2.25ex,dp=1ex,left]{foot}%
+    \textbf{\insertsection}
+  \end{beamercolorbox}
+  }%
+  \vskip0pt%
+}
+\setbeamertemplate{footline}{}
+\setbeamertemplate{headline}{
+\hbox{
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.25ex,dp=1ex,right]{white}%
+    \color{black}\textbf{\insertframenumber{} }\hspace*{2em}
+  \end{beamercolorbox}}
+  \vspace{-.4cm}
+}
+
+\setbeamertemplate{section in toc}{\leftskip=2ex%
+    \usebeamerfont*{section number projected}%
+    \usebeamercolor{section number projected}%
+    \begin{pgfpicture}{-1ex}{2pt}{1ex}{2.2ex}
+      \color{bg}
+      \pgfpathcircle{\pgfpoint{0pt}{1.5ex}}{1.8ex}
+      \pgfusepath{fill}
+      \pgftext[bottom,y=3pt]{\color{fg}\inserttocsectionnumber}
+    \end{pgfpicture}\kern1em%
+  \inserttocsection\par}
+\newcommand{\fifte}[3]{\left\{
+                              \begin{array}{l@{\quad\quad}l}
+                                #2 & \mbox{si }#1 \\
+                                #3 & \mbox{si no}
+                              \end{array}
+                           \right.}\newcommand{\fassign}[2]{#1 := #2}
+\newcommand{\true}{\textbf{true}}
+\newcommand{\false}{\textbf{false}}
+\newcommand{\fskipc}{\mbox{\textbf{skip}}}
+\newcommand{\fiftec}[3]{\textbf{if}\ #1\ \textbf{then}\ #2\ \textbf{else}\ #3}
+\newcommand{\fwhile}[2]{\textbf{while}\ #1\ \textbf{do}\ #2}
+\newcommand{\fnewvar}[3]{\mbox{\textbf{newvar}\ #1:= #2\ \textbf{in}\ #3}}
+\newcommand \supr{\vee}
+\newcommand \infi{\wedge}
+\newcommand{\se}[1]{\mbox{$[\![#1]\!]$}}
+\newcommand{\sems}[1]{\sem{#1}\sigma}
+\newcommand{\overs}[3]{[#1|#2:#3]}
+\newcommand{\commif}[3]{\mathbf{if}\;#1\;\mathbf{then}\;#2\;\mathbf{else}\;#3}
+\newcommand{\commseq}[2]{#1;#2}
+\newcommand{\commassign}[2]{#1:=#2}
+\newcommand{\commskip}{\mathbf{skip}}
+\newcommand{\commwhile}[2]{\mathbf{while}\;#1\;\mathbf{do}\;#2}
+\newcommand{\commnvar}[3]{\mathbf{newvar}\;#1:=#2\;\mathbf{in}\;#3}
+\newcommand{\ptodo}[2]{\forall #1.\ #2}
+\newcommand{\existe}[2]{\exists #1.\ #2}
+\newcommand{\s}{\sigma }
+\newcommand{\Z}{\textbf{Z}}
+\newcommand{\la}{\left\langle }
+\newcommand{\ra}{\right\rangle }
+%\newcommand{\se}[1]{[\![#1]\!]}
+\newcommand{\db}{\perp\!\!\!\perp}
+\newcommand{\sem}[2]{[\![#1]\!]_{#2}}
+\newcommand{\semnat}[1]{\sem{#1}{\nat}}
+\newcommand{\semassert}[1]{\sem{#1}{\assert}}
+\newcommand{\semintexp}[1]{\sem{#1}{\intexp}}
+\newcommand{\semtheta}[1]{\sem{#1}{\theta}}
+\newcommand{\semden}[1]{\sem{#1}{}}
+\newcommand{\semop}[1]{\{\!\![#1]\!\!\}}
+\newcommand{\syn}[1]{<\!\!#1\!\!>}
+\newcommand{\conc}{+\!\!\!+}
+\newcommand{\nat}{\left\langle nat\right\rangle}
+\newcommand{\var}{\left\langle var\right\rangle}
+\newcommand{\boolexp}{\left\langle boolexp\right\rangle}
+\newcommand{\bin}{{\rm bin}}
+\newcommand{\assert}{\left\langle assert\right\rangle}
+\newcommand{\intexp}{\left\langle intexp\right\rangle }
+\newcommand{\comm}{\left\langle comm\right\rangle}
+\newcommand{\fun}{\left\langle fun\right\rangle}
+\newcommand{\fvar}{\left\langle fvar\right\rangle}
+\newcommand{\prog}{\left\langle prog\right\rangle}
+\newcommand{\cnf}{\left\langle cnf\right\rangle}
+\newcommand{\ife}{\mathbf{if}\ }
+\newcommand{\lete}{\mathbf{let}\ }
+\newcommand{\where}{\ \mathbf{where}\ }
+\newcommand{\ine}{\ \mathbf{in}\ }
+\newcommand{\thene}{\ \mathbf{then}\ }
+\newcommand{\elsee}{\ \mathbf{else}\ }
+\newcommand{\newvar}{\mathbf{newvar}\ }
+\newcommand{\while}{\mathbf{while}\ }
+\newcommand{\val}{\mathbf{val}\ }
+\newcommand{\doc}{\ \mathbf{do}\ }
+\newcommand{\env}{\left\langle env\right\rangle}
+\newcommand{\penv}{\left\langle penv\right\rangle}
+\newcommand{\ex}{\left\langle exp\right\rangle}
+\newcommand{\natconst}{\left\langle natconst\right\rangle}
+\newcommand{\boolconst}{\left\langle boolconst\right\rangle}
+\newcommand{\pvar}{\left\langle pvar\right\rangle}
+\newcommand{\proc}{\ \mathbf{proc}\ }
+\newcommand{\va}[1]{\mathsf{#1}}
+
+
+\begin{document}
+El CL puro sólo contiene variables, aplicaciones y la notación lambda (llamada abstracción).
+\[
+\begin{array}{llll}
+\left\langle exp\right\rangle & ::= &  & \text{expresiones o términos}\\
+ & & \  \var & \text{variables} \\
+ & & \mid \ex \ex & \text{aplicación} \\
+ & & \mid \lambda \var.\ \ex & \text{abstracción o expresión lambda} \\
+ \end{array}
+\]
+\textbf{Convención:} La aplicación asocia a izquierda.
+En $\lambda v.e$, la primer ocurrencia de $v$ es ligadora
+y su alcance es $e$.
+\smallskip
+Por ejemplo,
+\smallskip
+\qquad\qquad\qquad$\lambda x.(\lambda y.xyx)x$
+\smallskip
+es lo mismo que
+\smallskip
+\qquad\qquad\qquad$\lambda x.(\lambda y.(xy)x)x$
+
+\smallskip
+
+\textbf{Variables libres:}
+\[
+\begin{array}{llllll}
+FV(v)& = & \{v\} \smallskip\\
+FV(ee')& =  &FV(e) \cup FV(e')\smallskip\\
+FV(\lambda v.e)& = & FV(e)\ -\  \{v\}\ \smallskip\\
+\end{array}
+\]
+
+\textbf{Conjunto de sustituciones:} $\Delta = \var \rightarrow \ex$
+
+\smallskip
+
+\textbf{Operador  sustitución:} $\_/\_ \in \ex \times\Delta \rightarrow \ex$
+\[
+\begin{array}{rll}
+\uncover<3->{
+v/\delta &  = &  \delta v \smallskip\\
+  (ee')/\delta & =& (e/\delta)(e'/\delta)\smallskip\\}
+  \uncover<4->{
+(\lambda v. e)/\delta&  =&  \lambda v_{new}.\  e/[\delta|v: v_{new}]\\
+&&\text{ donde
+$v_{new} \not\in \bigcup_{w \in FV(e) -\{v\}} FV(\delta\ w)$}}
+\end{array}
+\]
+
+\smallskip
+
+\textbf{Renombre: } Cambio en $\lambda v.e$ de la
+  variable ligada $v$ (y todas sus ocurrencias) por una variable $v'$
+  que no ocurra libre en $e$: $\lambda v'.\ e/v\mapsto v'$
+ donde $v'\notin FV(e)$.
+
+\smallskip
+
+$\alpha$-\textbf{conversión}: Si $e_1$ se obtiene a partir de $e_0$ por 0
+o más renombres de ocurrencias de subfrases. También se dice que $e_0$
+$\alpha$-convierte a $e_1$.
+
+\smallskip
+
+\textbf{Notación para expresiones $\alpha$- convertibles}: $e_0\equiv e_1$
+
+\smallskip
+
+\textbf{Redex:} Es una expresión de la forma $(\lambda v.e) e'$
+
+\smallskip
+
+\textbf{Contracción $\beta$}: Reemplaza en $e_0$ una
+ocurrencia de un redex ($\lambda v.e) e'$ por su contracción
+$(e/v\mapsto e')$, y luego efectúa cero o más renombres de cualquier
+subexpresión.
+
+\clearpage
+
+\textbf{Notación}: Si $e_1$ es el resultado de una contracción $\beta$ de $e_0$, entonces escribimos
+\[e_0\rightarrow e_1\]
+
+\smallskip
+
+\textbf{Forma normal:} expresión sin redices.
+Las formas normales representan configuraciones terminales.
+Por eso la semántica operacional del cálculo lambda consiste
+en efectuar contracciones $\beta$ hasta obtener formas normales.
+
+\bigskip
+\bigskip
+
+$\rightarrow^*$ denota la clausura transitiva y refexiva de $\rightarrow$
+
+(o sea, aplicar $\rightarrow$ cero o más veces)
+
+\smallskip
+
+\textbf{Formalmente:}
+
+$e\rightarrow^* e'$ si y sólo si existen $e_0,...,e_{n}$ (con $n\geq 0$) tales que:
+
+\quad$e=e_0\rightarrow e_1\rightarrow ... \rightarrow e_{n}= e'$
+
+Notar que si $n = 0$ entonces $e=e'$
+
+\clearpage
+\smallskip
+
+\textbf{Teorema de Church-Rosser} Si  $e\rightarrow^* e_0$  y $e\rightarrow^* e_1$,
+entonces existe $e'$ tal que $e_0\rightarrow^* e'$ y $e_1\rightarrow^*  e'$.
+
+\begin{tikzpicture}
+  \node (e) at (2,2) {$e$} ;
+  \node (e0) at (0,0) {$e_0$} ;
+  \node (e1) at (4,0) {$e_1$} ;
+  \node (e2) at (2,-2) {$e'$} ;
+  \draw [->,-latex] (e) -- node [at end,above=1mm] {$^\ast$} (e0);
+  \draw [->,-latex] (e) -- node [at end,above=1mm] {$^\ast$} (e1) ;
+  \draw [style=dashed,->,-latex] (e0) -> node [at end,above=1mm] {$^\ast$} (e2) ;
+  \draw [style=dashed,->,-latex] (e1) -> node [at end,above=1mm] {$^\ast$} (e2) ;
+\end{tikzpicture}
+
+\textbf{Corolario 1.} Salvo renombre, toda expresión tiene a lo sumo
+una forma normal.
+
+\bigskip
+\textbf{Regla $\eta$:} Un $\eta$-redex es una expresión de la forma $\lambda v.e v$, donde $v\notin FV\ e$
+
+\begin{prooftree}
+  \AxiomC{ } \RightLabel{si $v\notin FV\ e$\qquad ($\eta$)}
+  \UnaryInfC{$\lambda v.e\, v \to e$}
+\end{prooftree}
+
+\clearpage
+
+La idea de ejecución (llamada evaluación) que se implementa habitualmente
+tiene las siguientes diferencias con la relación
+\begin{itemize}
+\item sólo se evalúan expresiones cerradas (es decir, sin variables libres)
+\item es determin\'istica,
+\item no busca formas normales sino formas canónicas.
+\end{itemize}
+
+\bigskip
+
+\textbf{Evaluación (en orden) normal}: lenguajes funcionales lazy (Haskell)
+
+\medskip
+
+\textbf{Evaluación eager o estricta}: lenguajes estrictos (ML).
+
+\bigskip
+
+La noción de forma canónica depende de la definición de evaluación. Se define
+una noción de forma canónica para la evaluación normal, y otra para la
+evaluación eager. En el caso del cálculo lambda coinciden: \textbf{son las abstracciones}
+
+\medskip
+
+\textbf{Propiedad}: Una aplicación cerrada no puede ser forma normal. \pause
+
+\bigskip
+
+\textbf{Corolario}:  Una expresión cerrada que es forma normal es
+también forma canónica.
+
+\clearpage
+
+\textbf{Semántica natural o big-step:}   En este tipo de semántica, uno
+no describe un paso de ejecución,
+sino directamente una relación entre los términos y sus valores (que
+también son términos, son formas canónicas).Llamaremos $\Rightarrow$ a
+esta relación.
+
+\medskip
+% ========== NORMAL ============ %
+\textbf{Reglas para} $\Rightarrow_N$
+
+Regla para las formas canónicas
+
+$\begin{array}{c}
+\overline{\lambda v.e\ \Rightarrow_N\ \lambda v.e}
+\end{array}
+$
+
+\smallskip
+
+Regla para la aplicación
+
+\smallskip
+
+$\begin{array}{c}
+\underline{e\ \Rightarrow_N\ \lambda v.e_0\qquad (e_0/v\mapsto e')\ \Rightarrow_N\ z}\\
+ee'\ \Rightarrow_N\ z
+\end{array}
+$
+% ========== EAGER ============ %
+
+\smallskip
+
+\textbf{Reglas para} $\Rightarrow_E$
+
+Regla para las formas canónicas
+
+$\begin{array}{c}
+\overline{\lambda v.e\ \Rightarrow_E\ \lambda v.e}
+\end{array}
+$
+
+\smallskip
+
+Regla para la aplicación
+
+\smallskip
+
+$\begin{array}{c}
+\underline{e\ \Rightarrow_E\ \lambda v.e_0\qquad e'\ \Rightarrow_E\ z'\qquad(e_0/v\mapsto z')\ \Rightarrow_E\ z}\\
+ee'\ \Rightarrow_E\ z
+\end{array}
+$
+
+% =========================== %
+\clearpage
+
+% //// CALCULO LAMBDA DENOTACIONAL ///////////// %
+
+Asumimos la existencia de un dominio $D_{\infty}$, junto con un
+isomorfismo:
+
+$\phi\in D_{\infty}\rightarrow [D_{\infty}\rightarrow D_{\infty}]$
+\quad $\psi\in [D_{\infty}\rightarrow D_{\infty}]\rightarrow D_{\infty}$
+
+\smallskip
+$\phi \circ \psi = Id_{[D_{\infty}\rightarrow D_{\infty}]}$
+y $\psi\circ\phi = Id_{D_{\infty}}$
+
+\medskip
+
+\textbf{Ambientes (Entornos):} $\eta \in Env = \langle var\rangle\rightarrow D_\infty $
+
+\smallskip
+
+\textbf{Función semántica:} $\se{\_}\in\ \ \langle exp\rangle \rightarrow Env\rightarrow D_{\infty}$
+
+\smallskip
+
+
+\textbf{Ecuaciones semánticas:}
+\begin{align*}
+    \se{v}\eta &= \eta v\\[1ex]
+    \se{e_0 e_1}\eta &= \phi(\se{e_0}\eta)\ \se{e_1}\eta\\[1ex]
+    \se{\lambda v.e}\eta &= \psi(\lambda d\in D_\infty. \se{e}[\eta|v:d])
+\end{align*}
+
+\smallskip
+
+Se puede probar que $\se{\Delta\,\Delta}\eta = \bot$.
+
+\textbf{Teorema de Coincidencia:}
+Si $\eta w = \eta' w$ para todo $w\in FV\ e$, entonces
+$\se{e}\eta = \se{e}\eta'.$
+
+\smallskip
+
+\textbf{Teorema de Renombre:} Si $v_{new}\notin FV\ e-\{v\}$,
+entonces $\se{\lambda v_{new}.(e/v\mapsto v_{new})} = \se{\lambda v.e}.$ \pause
+
+\smallskip
+
+\textbf{Sustituciones:} $\Delta \ = \ \ \langle var\rangle \rightarrow  \langle exp\rangle$
+
+\smallskip
+
+\textbf{Teorema de Sustitución}: Si $\se{\delta w}\eta = \eta' w$ para todo $w \in FV\ e$, entonces $\se{e/\delta}\eta = \se{e}\eta'$.
+
+\smallskip
+
+\textbf{Propiedad 3.} \textit{(correctitud de la regla $\beta$):} $\se{(\lambda v.e)e'}\eta = \se{e/v\mapsto e'}\eta$
+
+\smallskip
+
+\textbf{Propiedad 4.} \textit{(correctitud de la regla $\eta$):} $\se{\lambda v.e\,v}\eta = \se{e}\eta, \text{ si } v\notin FV e$
+
+\smallskip
+
+\textbf{Corolario}: Si $e \rightarrow^\ast e'$, entonces $\se{e} = \se{e'}$.
+
+\bigskip
+
+\textbf{Semántica Denotacional Normal}
+
+\smallskip
+$D \ =\ V_\perp$, donde $V\ \ \approx\ \  [D\rightarrow D]$
+\begin{align*}
+\phi\in & V\rightarrow [D\rightarrow D] & \phi \circ \psi &= Id_{D\rightarrow D}\\
+\psi\in &[D\rightarrow D] \rightarrow V & \psi\circ\phi &= Id_{V} \\
+\end{align*}
+\textbf{Notación: } $ \iota_\perp\in V\rightarrow D $
+
+Dominio Semántico: $D \ = V_\perp \qquad  V\ \approx\ [D\rightarrow D]$
+
+\smallskip
+
+\textbf{Ambientes:} $Env = \langle var\rangle\rightarrow D$
+
+\smallskip
+
+\textbf{Función semántica:} $\se{\_}\in\ \ \langle exp\rangle \rightarrow Env\rightarrow D$
+
+\textbf{Ecuaciones semánticas:}
+\begin{align*}
+  \se{v}\eta &= \eta v\\
+  \pause
+  \se{e_0 e_1}\eta &= \phi_{\perp\!\!\!\perp}(\se{e_0}\eta) (\se{e_1}\eta)\\
+  \pause
+  \se{\lambda v.e}\eta &=\  \iota_\perp\circ\psi\ (\lambda d\in D. \se{e}[\eta|v:d])
+\end{align*}
+
+\smallskip
+
+Vale la regla $\beta$, que utiliza la igualdad:
+\[\phi_{\perp\!\!\!\perp}\circ (\iota_\perp \circ \psi) = Id_{D\rightarrow D}\]
+
+
+% ///////////////////// EAGER ///////////////// %
+\textbf{Semántica Denotacional Eager}
+
+Dominio Semántico: $D \ = V_\perp \qquad  V\ \approx\ [V\rightarrow D]$
+
+\begin{align*}
+\phi\in & V\rightarrow [V\rightarrow D] & \phi \circ \  &= Id_{V\rightarrow D}\\
+\psi\in &[V\rightarrow D] \rightarrow V & \psi\circ\phi &= Id_{V}\\
+\end{align*}
+
+\textbf{Notación: } $\iota_\perp\in & V\rightarrow D $
+\textbf{Ambientes:} $Env = \langle var\rangle\rightarrow V$
+
+\textbf{Función semántica:} $\se{\_}\in\ \ \langle exp\rangle \rightarrow Env\rightarrow D $
+
+\textbf{Ecuaciones semánticas:}
+\begin{align*}
+    \se{v}\eta &= \iota_\perp (\eta v)\\
+    \pause
+    \se{e_0 e_1}\eta &= (\phi_{\perp\!\!\!\perp}(\se{e_0}\eta))_{\perp\!\!\!\perp} (\se{e_1}\eta)\\
+    \pause
+    \se{\lambda v.e}\eta &=\  \iota_\perp\circ\psi\ (\lambda z\in V. \se{e}[\eta|v:z])
+\end{align*}
+
+Ya no vale la regla $\beta$, (para contra-ejemplo alcanza un $\bot$):
+
+\[\se{(\lambda x\,y.y)\,(\Delta\,\Delta)}\eta = (\lambda z\in V. \se{e}[\eta|v:z])_{\perp\!\!\!\perp}\, \bot = \bot\]
+
+pero
+\[\se{(\lambda y.y)/x \mapsto(\Delta\,\Delta)}\eta = \se{\lambda y.y}\eta \neq \bot\]
+
+\medskip
+
+\pause Puesto que queremos modelar la evaluación eager, deberíamos
+esperar que $e \Rightarrow_E z$ implique $\se{e}\eta = \se{z}\eta$.
+\bigskip
+
+Lo podemos probar por inducción en la derivación $e \Rightarrow_E z$.
+
+
+
+
+
+\end{document}

@@ -1,104 +1,8 @@
 \documentclass[12pt,a4paper]{article}
-\usepackage[utf8]{inputenc}[spanish]
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
-\usepackage{lmodern}
-\usepackage{amsmath}
-\usepackage{amsbsy}
-\usepackage{amsthm}
-\usepackage{enumerate}
-\usepackage{graphicx}
-\usepackage{mathtools}
-\usepackage{stackrel}
-\usepackage{multicol}
-\usepackage{hyperref}
-\usepackage{cleveref}
-\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
-\providecommand{\abs}[1]{\lvert#1\rvert}
+\include{packages}
+\include{commands}
 
-% Párrafo
-\newcommand{\PN}{\par\noindent}
-% Comillas izquierdas
-\newcommand{\CL}{\textquotedblleft}
-% Comillas derechas
-\newcommand{\CR}{\textquotedblright}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% TEACHERS COMMANDS
-\newcommand{\true}{\textbf{true}}
-\newcommand{\false}{\textbf{false}}
-\newcommand{\fskipc}{\mbox{\textbf{skip}}}
-\newcommand{\fiftec}[3]{\textbf{if}\ #1\ \textbf{then}\ #2\ \textbf{else}\ #3}
-\newcommand{\fwhile}[2]{\textbf{while}\ #1\ \textbf{do}\ #2}
-\newcommand{\fnewvar}[3]{\mbox{\textbf{newvar}\ #1:= #2\ \textbf{in}\ #3}}
-\newcommand \supr{\vee}
-\newcommand \infi{\wedge}
-\newcommand{\se}[1]{\mbox{$[\![#1]\!]$}}
-\newcommand{\sems}[1]{\sem{#1}\sigma}
-\newcommand{\overs}[3]{[#1|#2:#3]}
-\newcommand{\commif}[3]{\mathbf{if}\;#1\;\mathbf{then}\;#2\;\mathbf{else}\;#3}
-\newcommand{\commseq}[2]{#1;#2}
-\newcommand{\commassign}[2]{#1:=#2}
-\newcommand{\commskip}{\mathbf{skip}}
-\newcommand{\commwhile}[2]{\mathbf{while}\;#1\;\mathbf{do}\;#2}
-\newcommand{\commnvar}[3]{\mathbf{newvar}\;#1:=#2\;\mathbf{in}\;#3}
-\newcommand{\ptodo}[2]{\forall #1.\ #2}
-\newcommand{\existe}[2]{\exists #1.\ #2}
-\newcommand{\s}{\sigma }
-\newcommand{\Z}{\textbf{Z}}
-\newcommand{\la}{\left\langle }
-\newcommand{\ra}{\right\rangle }
-\newcommand{\db}{\perp\!\!\!\perp}
-\newcommand{\sem}[2]{[\![#1]\!]_{#2}}
-\newcommand{\semnat}[1]{\sem{#1}{\nat}}
-\newcommand{\semassert}[1]{\sem{#1}{\assert}}
-\newcommand{\semintexp}[1]{\sem{#1}{\intexp}}
-\newcommand{\semtheta}[1]{\sem{#1}{\theta}}
-\newcommand{\semden}[1]{\sem{#1}{}}
-\newcommand{\semop}[1]{\{\!\![#1]\!\!\}}
-\newcommand{\syn}[1]{<\!\!#1\!\!>}
-\newcommand{\conc}{+\!\!\!+}
-\newcommand{\nat}{\left\langle nat\right\rangle}
-\newcommand{\var}{\left\langle var\right\rangle}
-\newcommand{\boolexp}{\left\langle boolexp\right\rangle}
-\newcommand{\bin}{{\rm bin}}
-\newcommand{\assert}{\left\langle assert\right\rangle}
-\newcommand{\intexp}{\left\langle intexp\right\rangle }
-\newcommand{\comm}{\left\langle comm\right\rangle}
-\newcommand{\fun}{\left\langle fun\right\rangle}
-\newcommand{\fvar}{\left\langle fvar\right\rangle}
-\newcommand{\prog}{\left\langle prog\right\rangle}
-\newcommand{\cnf}{\left\langle cnf\right\rangle}
-\newcommand{\ife}{\mathbf{if}\ }
-\newcommand{\lete}{\mathbf{let}\ }
-\newcommand{\where}{\ \mathbf{where}\ }
-\newcommand{\ine}{\ \mathbf{in}\ }
-\newcommand{\thene}{\ \mathbf{then}\ }
-\newcommand{\elsee}{\ \mathbf{else}\ }
-\newcommand{\newvar}{\mathbf{newvar}\ }
-\newcommand{\while}{\mathbf{while}\ }
-\newcommand{\val}{\mathbf{val}\ }
-\newcommand{\doc}{\ \mathbf{do}\ }
-\newcommand{\env}{\left\langle env\right\rangle}
-\newcommand{\penv}{\left\langle penv\right\rangle}
-\newcommand{\ex}{\left\langle exp\right\rangle}
-\newcommand{\natconst}{\left\langle natconst\right\rangle}
-\newcommand{\boolconst}{\left\langle boolconst\right\rangle}
-\newcommand{\pvar}{\left\langle pvar\right\rangle}
-\newcommand{\proc}{\ \mathbf{proc}\ }
-\newcommand{\va}[1]{\mathsf{#1}}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Teoremas
-\newtheorem{theorem}[equation]{Theorem}
-\newtheorem{lemma}[equation]{Lemma}
-\newtheorem{proposition}[equation]{Proposition}
-\newtheorem{corollary}[equation]{Corollary}
-
-\author{Agustín Curto, agucurto95@gmail.com \\
-			  Francisco Nievas, frannievas@gmail.com}
+\author{Agustín Curto, agucurto95@gmail.com}
 \title{Resumen de la materia \\Lenguajes y Compiladores}
 \date{2019}
 
@@ -108,7 +12,7 @@
 	\tableofcontents
 
 	\vspace{5cm}
-	\PN \textbf{Nota:} Este resumen se corresponde con la materia dictada en el año 2019. Los autores no se
+	\PN \textbf{Nota:} Este resumen se corresponde con la materia dictada en el año 2019. El autor no se
 	responsabilizan de posibles cambios que pudiesen realizarse en los temas dictados en la misma, así como tampoco de
 	errores involuntarios que pudiesen existir en dicho resumen.
 
@@ -121,8 +25,10 @@
 
 	\pagebreak
 
-	% \input{1_}
-	% \input{2_}
-	% \input{3_}
-	% \input{4_}
+	\input{1_semantics}
+	\input{2_lis}
+	\input{3_recursion}
+	\input{4_lambda_calculus}
+	\input{5_application_languages}
+	\input{6_iswin}
 \end{document}
