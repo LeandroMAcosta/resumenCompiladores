@@ -1,4 +1,23 @@
 \section{Semántica}
+  \subsubsection*{Gramáticas}
+    $\begin{array}{llllll}
+      \intexp & ::= & 0\ | \ 1\ | \ 2\ | \ ... & \assert & ::= & \textbf{true}\ |\ \textbf{false}\ \\
+      & & \var\   & & & \intexp = \intexp\ \\
+      & & -\intexp\  & & & \intexp < \intexp\ \\ 
+      & & \intexp + \intexp\ \qquad & & & \intexp \leq \intexp\ \\ 
+      & & \intexp * \intexp\  & & & \intexp > \intexp\ \\
+      & & \intexp - \intexp\ & & & \intexp \geq \intexp\ \\
+      & & \intexp / \intexp\  & & & \neg\assert\ \\
+      & & \intexp \% \intexp & & & \assert \vee\assert\ \\
+      & & & & & \assert \wedge\assert\ \\
+      & & & & & \exists\var . \assert  \\
+      & & & & & \forall\var . \assert  \\
+    \end{array}$
+
+  \subsubsection*{Función Semántica}
+    \PN Es una función que a cada frase abstracta del lenguaje le asigna una denotación en un dominio determinado.
+
+  \vspace{3mm}
   \PN Todas las funciones son totales, es decir, que está definida para todas las expresiones.
 
   \subsubsection*{Dirección por sintáxis}
