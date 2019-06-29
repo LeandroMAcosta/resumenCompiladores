@@ -199,29 +199,35 @@
     \end{cases}
     \]
 
-    \[\begin{array}{cll}
-      \textbf{Con fallas} \\ \\
-      \overline{\lang{\fail, \sigma} \rightarrow \lang{\abort, \sigma}} \\ \\ \\
+  \subsubsection*{Con fallas}
+    \begin{multicols}{2}
+      \[\begin{array}{cll}
+        \overline{\lang{\fail, \sigma} \rightarrow \lang{\abort, \sigma}} \\ \\ \\
 
-      \lang{c_0, \sigma} \rightarrow \lang{\abort, \sigma'} \\
-      \overline{\lang{c_0;c_1, \sigma} \rightarrow \lang{\abort, \sigma'}} \\ \\ \\
+        \lang{c_0, \sigma} \rightarrow \lang{\abort, \sigma'} \\
+        \overline{\lang{c_0;c_1, \sigma} \rightarrow \lang{\abort, \sigma'}} \\ \\ \\
 
-      \lang{c_0, \sigma} \rightarrow \sigma' \\
-      \overline{\lang{\catch{c_0}{c_1}, \sigma} \rightarrow \sigma'} \\ \\ \\
-      \lang{c_0, \sigma} \rightarrow \lang{\abort, \sigma'} \\
-      \overline{\lang{\catch{c_0}{c_1}, \sigma} \rightarrow \lang{c_1, \sigma'}} \\ \\ \\
-      \lang{c_0, \sigma} \rightarrow \lang{c'_0, \sigma'} \\
-      \overline{\lang{\catch{c_0}{c_1}, \sigma} \rightarrow \lang{\catch{c'_0}{c_1}, \sigma'}} \\ \\ \\
+        \lang{c_0, \sigma} \rightarrow \sigma' \\
+        \overline{\lang{\catch{c_0}{c_1}, \sigma} \rightarrow \sigma'} \\ \\ \\
+      \end{array}\]
+      \[\begin{array}{cll}
+        \lang{c_0, \sigma} \rightarrow \lang{\abort, \sigma'} \\
+        \overline{\lang{\catch{c_0}{c_1}, \sigma} \rightarrow \lang{c_1, \sigma'}} \\ \\ \\
+        \lang{c_0, \sigma} \rightarrow \lang{c'_0, \sigma'} \\
+        \overline{\lang{\catch{c_0}{c_1}, \sigma} \rightarrow \lang{\catch{c'_0}{c_1}, \sigma'}} \\ \\ \\
 
-      \lang{c, \sigma} \rightarrow \lang{\abort, \sigma'} \\
-      \overline{\lang{\newvar{v := e}{c}, \sigma} \rightarrow \lang{\abort, [\sigma' | v : \sigma v]}} \\ \\ \\
+        \lang{c, \sigma} \rightarrow \lang{\abort, \sigma'} \\
+        \overline{\lang{\newvar{v := e}{c}, \sigma} \rightarrow \lang{\abort, [\sigma' | v : \sigma v]}}
+      \end{array}\]
+    \end{multicols}
 
+    \begin{eqnarray*}
       \{\!\!\{c\}\!\!\}_{\sigma} = \begin{cases}
-                                    \bot \qquad\qquad\qquad  \text{si } \lang{c, \sigma} \uparrow \; (\uparrow: \text{ejecución infinita}) \\
-                                    \sigma' \qquad\qquad\qquad \text{si existe } \sigma' \; \text{tal que } \lang{c, \sigma} \rightarrow^{\ast} \sigma' \\
-                                    \lang{\abort, \sigma'} \qquad \text{si existe } \sigma' \; \text{tal que } \lang{c, \sigma} \rightarrow^{\ast} \lang{\abort, \sigma}'
-                                    \end{cases}
-    \end{array}\]
+        \bot \qquad\qquad\qquad  \text{si } \lang{c, \sigma} \uparrow \; (\uparrow: \text{ejecución infinita}) \\
+        \sigma' \qquad\qquad\qquad \text{si existe } \sigma' \; \text{tal que } \lang{c, \sigma} \rightarrow^{\ast} \sigma' \\
+        \lang{\abort, \sigma'} \qquad \text{si existe } \sigma' \; \text{tal que } \lang{c, \sigma} \rightarrow^{\ast} \lang{\abort, \sigma}'
+      \end{cases}
+    \end{eqnarray*}
 
     \underline{PROPIEDADES:}
     \begin{itemize}
