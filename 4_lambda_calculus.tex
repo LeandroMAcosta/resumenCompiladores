@@ -1,124 +1,134 @@
 \section{Cálculo Lambda}
-    \[
-      \begin{array}{rcll}
-        \expr &::= && \text{término lambda, o expresión} \\
-            &|& \var & \text{variable} \\
-            &|& \expr \expr & \text{aplicación, el primero es el operador y el segundo el operando} \\
-            &|& \lambda \var.\expr & \text{abstracción o expresión lambda} \\
-      \end{array}
-    \]
+  \[
+    \begin{array}{rcll}
+      \expr &::= && \text{término lambda, o expresión} \\
+          &|& \var & \text{variable} \\
+          &|& \expr \expr & \text{aplicación, el primero es el operador y el segundo el operando} \\
+          &|& \lambda \var.\expr & \text{abstracción o expresión lambda} \\
+    \end{array}
+  \]
 
-    \begin{eqnarray*}
-      FV(v) &=& \{v\} \\
-      FV(e_0 e_1) &=& FV(e_0)\cup FV(e_1) \\
-      FV(\lambda v.e) &=& FV(e) - \{v\}
-    \end{eqnarray*}
+  \begin{eqnarray*}
+    FV(v) &=& \{v\} \\
+    FV(e_0 e_1) &=& FV(e_0)\cup FV(e_1) \\
+    FV(\lambda v.e) &=& FV(e) - \{v\}
+  \end{eqnarray*}
         
-    \PN También se define sustitución:
-    \begin{eqnarray*}
-      \Delta &=& \var \to \expr \\
-      \_/\_ &\in& \expr \times \Delta \to \expr \\
-      v/\delta &=& \delta v \\
-      (e_0 e_1)/\delta &=& (e_0/\delta) (e_1/\delta) \\
-      (\lambda v.e)/\delta &=& \lambda v'.(e/[\delta|v:v']) \\
-      && \text{ donde } v' \not\in \bigcup_{w \in FV(e) - \{v\}} FV(\delta w)
-    \end{eqnarray*}
+  \PN También se define sustitución:
+  \begin{eqnarray*}
+    \Delta &=& \var \to \expr \\
+    \_/\_ &\in& \expr \times \Delta \to \expr \\
+    v/\delta &=& \delta v \\
+    (e_0 e_1)/\delta &=& (e_0/\delta) (e_1/\delta) \\
+    (\lambda v.e)/\delta &=& \lambda v'.(e/[\delta|v:v']) \\
+    && \text{ donde } v' \not\in \bigcup_{w \in FV(e) - \{v\}} FV(\delta w)
+  \end{eqnarray*}
         
-    \begin{property} \hfill
-      \begin{enumerate}
-      \item si para todo $w \in FV(e)$, $\delta w = \delta' w$ entonces
-        $(e/\delta) = (e/\delta')$
-      \item sea $i$ la sustitución identidad, entonces $e/i = e$.
-      \item $FV(e/\delta) = \bigcup_{w\in FV(e)} FV(\delta w)$
-      \end{enumerate}
-    \end{property}
+  \begin{property} \hfill
+    \begin{enumerate}
+    \item si para todo $w \in FV(e)$, $\delta w = \delta' w$ entonces
+      $(e/\delta) = (e/\delta')$
+    \item sea $i$ la sustitución identidad, entonces $e/i = e$.
+    \item $FV(e/\delta) = \bigcup_{w\in FV(e)} FV(\delta w)$
+    \end{enumerate}
+  \end{property}
 
-    \PN Definiciones:
-    \begin{itemize}
-      \item Expresión cerrada: sin variables libres
-      \item Forma canónica: abstracciones $(\lambda x.e)$
-      \item \textit{Redex}: expresión de la forma $(\lambda v.e) e'$.
-      \item Formal normal: expresión sin rédices.
-        \PN No necesariamente son abstracciones, por ejemplo, $(\lambda x.y) (\lambda z.z)$ $\beta$-contrae a $y$ es es formal normal pero no canónica.
-    \end{itemize}
+  \PN Definiciones:
+  \begin{itemize}
+    \item Expresión cerrada: sin variables libres
+    \item Forma canónica: abstracciones $(\lambda x.e)$
+    \item \textit{Redex}: expresión de la forma $(\lambda v.e) e'$.
+    \item Expresion lambda cerrada: $\lambda v.e$ tal que $FV(e) = \{v\}$
+    \item Formal normal: expresión sin rédices. No necesariamente son abstracciones, por ejemplo, $(\lambda x.y) (\lambda z.z)$ $\beta$-contrae a $y$ es es formal normal pero no canónica.
+  \end{itemize}
         
-    \paragraph{Renombre ($\alpha$)}
-      La operación de cambiar una ocurrencia de la expresión lambda
-        $\lambda v.e$ por $\lambda v'.(e/v \to v')$ donde
-        $v' \not\in FV(e) - \{v\}$ se llama renombre o cambio de variable
-        ligada.
+  \paragraph{Renombre ($\alpha$)}
+    La operación de cambiar una ocurrencia de la expresión lambda
+      $\lambda v.e$ por $\lambda v'.(e/v \to v')$ donde
+      $v' \not\in FV(e) - \{v\}$ se llama renombre o cambio de variable
+      ligada.
 
-    \paragraph{Contracción ($\beta$)}  
-      Es la aplicación de una función
-        $(\lambda v.e)$ a su argumento $e'$. Debe calcularse reemplazando las
-        ocurrencias libres de $v$ en $e$ por $e'$, es decir $(e/v\to e')$.
+  \paragraph{Contracción ($\beta$)}  
+    Es la aplicación de una función
+      $(\lambda v.e)$ a su argumento $e'$. Debe calcularse reemplazando las
+      ocurrencias libres de $v$ en $e$ por $e'$, es decir $(e/v\to e')$.
         
-    \begin{theorem}{Church-Rosser.}
-      Si $e \totrans e_0$ y $e \totrans e_1$, entonces existe $e'$ tal que
-      $e_0 \totrans e'$ y $e_1 \totrans e'$.
-    \end{theorem}
+  \begin{theorem}{Church-Rosser.}
+    Si $e \totrans e_0$ y $e \totrans e_1$, entonces existe $e'$ tal que
+    $e_0 \totrans e'$ y $e_1 \totrans e'$.
+  \end{theorem}
         
-    \begin{corollary}
-      Salvo renombre, toda expresión tiene a lo sumo una forma normal.
-    \end{corollary}
+  \begin{corollary}
+    Salvo renombre, toda expresión tiene a lo sumo una forma normal.
+  \end{corollary}
 
-    \vspace{3mm}
-    \PN NO TODA EXPRESIÓN TINE FORMAL NORMAL (contraejemplos).
-    \begin{itemize}
-      \item $\Delta = (\lambda x.xx)$
-      \item $\Delta' = (\lambda x.xxy)$
-    \end{itemize}
+  \vspace{3mm}
+  \PN NO TODA EXPRESIÓN TIENE FORMA NORMAL (contraejemplos).
+  \begin{itemize}
+    \item Sea $\Delta = (\lambda x.xx)$, $\Delta \Delta$ no es forma normal
+    \item Sea $\Delta' = (\lambda x.xxy)$, $\Delta' \Delta'$ no es forma normal
+  \end{itemize}
+  
+  \begin{property}
+    Una aplicación cerrada no puede ser forma normal.
+  \end{property}
+  \begin{proof}
+    \PN Sea $e$ una aplicación cerrada, es decir $e = e_0 e_1 ...$. Si $e_0$ fuera una variable, $e$ no sería cerrada, por ende $e_0$ es una abstracción. Por lo tanto $e$ contiene el redex $e_0 e_1$ y por esto no es normal.
+  \end{proof}
 
-    \begin{property}
-      Una aplicación cerrada no puede ser forma normal.
-    \end{property}
+  \begin{corollary}
+    Si una expresión cerrada, es forma normal entonces es forma canónica.
+  \end{corollary}
+  \PN Al revés no vale, contrajemplo $\lambda x. (\lambda y. y) x$.
 
-    \begin{itemize}
-      \item Si una expresión cerrada, es forma normal entonces es foerma canónica.
-      \item Al revés no vale, contrajemplo $\lambda x. (\lambda y. y) x$.
-    \end{itemize}
+  \subsubsection*{Diferencias entre $\rightarrow$ y $\Rightarrow$}
+    \begin{enumerate}
+      \item solo se evaluan expresiones cerradas
+      \item es determinística
+      \item no busca formas normales sino formas canónicas
+    \end{enumerate}
 
-    \subsection{Evaluación}
-      \PN En este tipo de semántica operacional se describen la relación entre los términos y sus valores, que también son términos, formaas canónicas. Llamamos $\Rightarrow$ a esta relación. Cuando decimos que $e \Rightarrow z$ se cumple, estamos diciendo que existe un árbol de derivación que prueba $e \Rightarrow z$.
-      
-      \vspace{3mm}
-      \PN Puede ocurrir que la evaluación eager no termine mientras que la normal si, por ejemplo: $(\lambda x. \lambda y. y) (\Delta\Delta) \Rightarrow_{N} \lambda y.y$, mientras que en eager diverge.
-      
-      \paragraph{Regla $\eta$}
-        Un $\eta$-redex es una expresión de la forma $\lambda v.e\, v$ donde $v \not\in  FV(e)$. Gracias a la
-          regla $\beta$, uno obtiene que $(\lambda v.e\,v) e'$ contrae a $e\, e'$ para toda expresión $e'$. Si
-          uno asume que toda expresión lambda denota una función, $\lambda v.e\,v$ y $e$ parecen
-          comportarse extensionalmente igual: cuando se las aplica a $e'$, ambas dan $e e'$.
-          Esto motiva la regla $\eta$:
-
-      \begin{prooftree}
-        \AxiomC{\ }
-        \RightLabel{si $v \not\in FV(e)$}
-        \UnaryInfC{$(\lambda v.e v) \to e$}
-      \end{prooftree}
+  \subsection{Evaluación}
+    \PN En este tipo de semántica operacional se describen la relación entre los términos y sus valores, que también son términos, formas canónicas. Llamamos $\Rightarrow$ a esta relación. Cuando decimos que $e \Rightarrow z$ se cumple, estamos diciendo que existe un árbol de derivación que prueba $e \Rightarrow z$.
     
-    \subsection{Semántica denotacional del cálculo lambda}
-      \PN Sea $\dinf \cong [\dinf \to \dinf]$, donde $\dinf \rightarrow \dinf$ se refiere al espacio de funciones continuas donde todas tiene punto fijo, y sean:
-        \[
-          \begin{array}{rl}
-          \phi \,\in\, & \dinf \to  [\dinf \to  \dinf]\\
-          \psi \,\in\, & [\dinf \to  \dinf] \to  \dinf
-          \end{array}
-        \]
-        los isomorfismos tales que
-        \begin{align*}
-        \phi . \psi &= id\\
-        \psi . \phi &= id
-        \end{align*}
+    \vspace{3mm}
+    \PN Puede ocurrir que la evaluación eager no termine mientras que la normal si, por ejemplo: $(\lambda x. \lambda y. y) (\Delta\Delta) \Rightarrow_{N} \lambda y.y$, mientras que en eager diverge.
+    
+    \paragraph{Regla $\eta$}
+      Un $\eta$-redex es una expresión de la forma $\lambda v.e\, v$ donde $v \not\in  FV(e)$. Gracias a la
+        regla $\beta$, uno obtiene que $(\lambda v.e\,v) e'$ contrae a $e\, e'$ para toda expresión $e'$. Si
+        uno asume que toda expresión lambda denota una función, $\lambda v.e\,v$ y $e$ parecen
+        comportarse extensionalmente igual: cuando se las aplica a $e'$, ambas dan $e e'$.
+        Esto motiva la regla $\eta$:
 
-        \begin{eqnarray*}
-          \text{Ambiente: } \Env &=& \var \to \dinf \\
-          \eta &\in& \Env \\
-          \llbracket\_\rrbracket &\in& \expr \to  Env \to  \dinf \\ \\
-          \llbracket v\rrbracket\eta &=& \eta\, v \\
-          \llbracket e_0\, e_1\rrbracket\eta &=& \phi(\llbracket e_0\rrbracket \eta) (\llbracket e_1\rrbracket\eta) \\
-          \llbracket\lambda x.e\rrbracket\eta &=& \psi(\lambda d \in \dinf. \llbracket e\rrbracket[\eta |v:d]) \\
-        \end{eqnarray*}        
+    \begin{prooftree}
+      \AxiomC{\ }
+      \RightLabel{si $v \not\in FV(e)$}
+      \UnaryInfC{$(\lambda v.e v) \to e$}
+    \end{prooftree}
+    
+  \subsection{Semántica denotacional del cálculo lambda}
+    \PN Sea $\dinf \cong [\dinf \to \dinf]$, donde $\dinf \rightarrow \dinf$ se refiere al espacio de funciones continuas donde todas tiene punto fijo, y sean:
+      \[
+        \begin{array}{rl}
+        \phi \,\in\, & \dinf \to  [\dinf \to  \dinf]\\
+        \psi \,\in\, & [\dinf \to  \dinf] \to  \dinf
+        \end{array}
+      \]
+      los isomorfismos tales que
+      \begin{align*}
+      \phi . \psi &= id \\
+      \psi . \phi &= id
+      \end{align*}
+
+      \begin{eqnarray*}
+        \text{Ambiente: } \Env &=& \var \to \dinf \\
+        \eta &\in& \Env \\
+        \llbracket\_\rrbracket &\in& \expr \to  Env \to  \dinf \\ \\
+        \llbracket v\rrbracket\eta &=& \eta\, v \\
+        \llbracket e_0\, e_1\rrbracket\eta &=& \phi(\llbracket e_0\rrbracket \eta) (\llbracket e_1\rrbracket\eta) \\
+        \llbracket\lambda x.e\rrbracket\eta &=& \psi(\lambda d \in \dinf. \llbracket e\rrbracket[\eta |v:d]) \\
+      \end{eqnarray*}        
         
     \begin{theorem}{Coincidencia} Si $\eta\, w$ = $\eta'\, w$ para todo $w \in FV(e)$,
       entonces $\llbracket e\rrbracket \eta = \llbracket e\rrbracket \eta'$.
@@ -145,6 +155,10 @@
       (correctitud de la regla $\eta$): Si $v \not\in FV(e)$, entonces
       $\llbracket\lambda v.e v\rrbracket = \llbracket e\rrbracket$.
     \end{property}
+
+    \begin{corollary}
+      Si $e \to^{\ast} e'$, entonces $\se{e} = \se{e'}$
+    \end{corollary}
         
     \PN Asumiremos que $\llbracket\Delta \Delta\rrbracket\eta = \bot$.
 
@@ -164,7 +178,7 @@
         \llbracket\lambda x.e\rrbracket\eta &=& (\iota_\bot . \psi)(\lambda d \in D. \llbracket e\rrbracket[\eta|v:d])
       \end{eqnarray*}
 
-      \PN Los teoremas antes vistos junto con la regla $\beta$ siguen valiendo pero no la regla $\eta$, pues $\se{\lambda y. \Delta\Delta} = \psi(\lambda d \in D.\bot)$ mientras que $\se{\Delta\Delta} = \bot$.
+      \PN Los teoremas antes vistos junto con la regla $\beta$ siguen valiendo pero no la regla $\eta$, pues $\se{\lambda y. \Delta\Delta y} = \psi(\lambda d \in D.\bot)$ mientras que $\se{\Delta\Delta} = \bot$.
     
     \subsubsection{Eager}
       \begin{eqnarray*}
@@ -180,35 +194,4 @@
         \llbracket\lambda x.e\rrbracket\eta &=& (\iota_\bot . \psi)(\lambda z \in V. \llbracket e\rrbracket[\eta|x:z])
       \end{eqnarray*}
 
-      \PN Los teoremas antes vistos (salvo sustitución) siguen valiendo pero no las reglas $\beta, \eta$.
-        
-  \section{Gramáticas}
-    \[
-      \begin{array}{rcl@{\hspace{1cm}}l}
-        \expr &::= && \text{término lambda, o expresión} \\
-            &|& \var & \text{variable} \\
-            &|& \expr \expr & \text{aplicación, el primero es el operador y el segundo el operando} \\
-            &|& \lambda \var.\expr & \text{abstracción o expresión lambda} \\
-            &|& \natconst | \boolconst \\
-            &|& -\expr \ |\ \expr + \expr  \ |\ \expr * \expr \ |... & \text{operadores aritméticos}\\
-            &|& \expr\geq \expr  \ |\ \expr\leq \expr \ |\ \expr< \expr \ | ... & \text{operadores relacionales}\\
-            &|& \expr\wedge \expr  \ |\ \expr\vee \expr \ |\ \neg\expr & \text{operadores lógicos} \\
-            &|& \ife \expr\thene \expr\elsee \expr \\
-            &|& \textbf{error}\ |\ \textbf{typeerror} \\
-            &|& \textbf{letrec}\var \equiv \lambda \var.\expr\ \textbf{in}\ \expr&\text{(Eval. Eager)} \\
-            &|& \textbf{rec}\ \expr& \text{(Eval. Normal)} \\
-            \natconst & ::= & 0\ |\ 1\ |\ 2\ | .... \\
-            \boolconst & ::= & \textbf{true}\ | \ \textbf{false}
-      \end{array}
-    \]
-
-    \textbf{Formas canónicas}
-    \[
-      \begin{array}{llllll}
-      \cnf & ::= & \intcnf\  |\  \boolcnf\ |\ \funcnf \ | \tuplecnf \\
-      \intcnf & ::= & ...\ | \ -2\ | \ -1\ | \ 0\ |\ 1\ |\ 2\ | ... \\
-      \boolcnf & ::= & \boolconst \\
-      \funcnf & ::= & \lambda \var.\expr \\
-      \tuplecnf & ::= & \la \la cnf \ra, ..., \la cnf \ra \ra
-      \end{array}
-    \]
+      \PN Los teoremas antes vistos (salvo sustitución) siguen valiendo pero no las reglas $\beta$, ya que $\se{(\lambda y \lambda x.x)(\Delta \Delta)}$ diverge en eager y no da $\se{\lambda x. x}$ como esperaría la regla y $\eta$, ya que $\se{\lambda y. \Delta\Delta y} = \psi(\lambda d \in D.\bot)$ mientras que $\se{\Delta\Delta} = \bot$.

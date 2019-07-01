@@ -68,7 +68,7 @@
       \item \textbf{Teorema de Renombre:} asegura que el significado no depende de las variables ligadas de una frase.
         \PN \textbf{Enunciado:} Los nombres de las variables ligadas no tienen importancia.
         \[
-          u \notin FV(q) - \{v\} \Rightarrow \semAGU{\forall u . q/v \rightarrow u} = \semAGU{\forall v . q}
+          u \notin FV(q) - \{v\} \Rightarrow \semAGU{\forall u . q/u \rightarrow v} = \semAGU{\forall v . q}
         \]
       \item \textbf{Teorema de Sustitución:} Si aplico la sustitución $\delta$ a $p$ y luego evaluo en el estado $\sigma$, puedo obtener el mismo resultado a partir de $p$ sin sustituir si evaluo en un estado que hace el trabajo de $\delta$ y de $\sigma$ (en las variables libres de $p$).
         \[
