@@ -151,8 +151,8 @@
           \end{array}\]
       \end{itemize}
 
-  \section{Semántica denotacional}
-    \subsection{Compartido entre Normal y Eager}
+  \subsection{Semántica denotacional}
+    \subsubsection{Compartido entre Normal y Eager}
       \PN $V$: es el conjunto de valores, de la misma forma que a las formas canónicas las llamamos también valores en su momento.
       \PN $D$: es el conjunto de resultados, que incluyen valores y otras cosas, en este caso, sólo se agrega bottom.
 
@@ -217,7 +217,7 @@
         \se{typeerror}\eta &=& tyerr
       \end{eqnarray*}
 
-    \subsection{Normal}
+    \subsubsection{Normal}
       \PN $V_{fun} = D \rightarrow D \qquad V_{tuple} = D^{*}$
       \begin{eqnarray*}
         \Env &=& \var \to  D \\
@@ -232,10 +232,10 @@
           tyerr & c.c \\
         \end{array}\right)_{tuple*} (\se{e}\eta) \\
         \se{\textbf{rec}\  e} \eta &=& (\lambda f \in  V_{fun}.\ Y f)_{fun*} (\se{e}\eta ) \\
-        \text{donde} && Y F = \sqcup_{i \geq 0} F^{i} \underline{\bot}
+        \text{donde} && Y f = \sqcup_{i \geq 0} f^{i} \underline{\bot}
       \end{eqnarray*}
         
-    \subsection{Eager}
+    \subsubsection{Eager}
       \PN $V_{fun} = V \rightarrow D \qquad V_{tuple} = V^{*}$
       \begin{eqnarray*}
         Env &=& \var \to V \\
