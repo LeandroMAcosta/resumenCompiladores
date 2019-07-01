@@ -1,6 +1,37 @@
 \section{Lenguajes Aplicativos}
-\section{Evaluación}
-    \subsection{Compartido entre Normal y Eager}
+  \subsection{Gramáticas}
+    \[\begin{array}{rcl@{\hspace{1cm}}l}
+      \expr &::= && \text{término lambda, o expresión} \\
+          &|& \var & \text{variable} \\
+          &|& \expr \expr & \text{aplicación, el primero es el operador y el segundo el operando} \\
+          &|& \lambda \var.\expr & \text{abstracción o expresión lambda} \\
+          &|& \natconst | \boolconst \\
+          &|& -\expr \ |\ \expr + \expr  \ |\ \expr * \expr \ |... & \text{operadores aritméticos}\\
+          &|& \expr\geq \expr  \ |\ \expr\leq \expr \ |\ \expr< \expr \ | ... & \text{operadores relacionales}\\
+          &|& \expr\wedge \expr  \ |\ \expr\vee \expr \ |\ \neg\expr & \text{operadores lógicos} \\
+          &|& \ife \expr\thene \expr\elsee \expr \\
+          &|& \la \expr, ... \expr \ra \\
+          &|& \expr . \natconst \\
+          &|& \textbf{letrec}\var \equiv \lambda \var.\expr\ \textbf{in}\ \expr&\text{(Eval. Eager)} \\
+          &|& \textbf{rec}\ \expr& \text{(Eval. Normal)} \\
+          &|& \textbf{error}\ |\ \textbf{typeerror} \\
+          \natconst & ::= & 0\ |\ 1\ |\ 2\ | .... \\
+          \boolconst & ::= & \textbf{true}\ | \ \textbf{false}
+    \end{array}\]
+
+    \textbf{Formas canónicas}
+    \[
+      \begin{array}{llllll}
+      \cnf & ::= & \intcnf\  |\  \boolcnf\ |\ \funcnf \ | \tuplecnf \\
+      \intcnf & ::= & ...\ | \ -2\ | \ -1\ | \ 0\ |\ 1\ |\ 2\ | ... \\
+      \boolcnf & ::= & \boolconst \\
+      \funcnf & ::= & \lambda \var.\expr \\
+      \tuplecnf & ::= & \la \la cnf \ra, ..., \la cnf \ra \ra
+      \end{array}
+    \]
+  
+  \subsection{Evaluación}
+    \subsubsection{Compartido entre Normal y Eager}
       \PN Para todas las formas canónicas vale: \ov{z \Rightarrow z}
       \begin{itemize}
         \item \textbf{Aritméticos y relacionales:} $\oplus\in \{+,-,*,=,\neq,\leq,\geq,...\}, \ \oslash \in \{/, mod\}$
@@ -45,11 +76,15 @@
               $
             \end{multicols}
           \end{itemize}
-        \item \textbf{Tuplas:}
-        \item \textbf{Recursión:}
+        \item \textbf{Definiciones locales y patrones:} $\textbf{let}\ p_1 \equiv e_1, \ldots, p_n \equiv e_n\ \textbf{in}\ e = (\lambda p_1\ldots\lambda p_n.e) e_1 \ldots e_n$
+          
+          \[\begin{array}{c}
+            \underline{e'\ \Rightarrow\  z' \qquad e/v \to z'\ \Rightarrow\ z} \\
+            \textbf{let } v \equiv e' \textbf{ in } e \ \Rightarrow\ z
+            \end{array}\]
       \end{itemize}
     
-    \subsection{Normal}    
+    \subsubsection{Normal}    
       \begin{itemize}
         \item \textbf{Funciones:}
           \begin{prooftree}
@@ -58,26 +93,22 @@
             \BinaryInfC{$e e' \bigstep z$}
           \end{prooftree}
         \item \textbf{Booleanos:}
-          \begin{multicols}{3}
-            \begin{itemize}
-              \item $e \wedge e' = \IF{e}{e'}{false}$
-              \item $e \vee e' = \IF{e}{true}{e'}$
-              \item $e \Rightarrow e' = \IF{e}{e'}{true}$
-            \end{itemize}
-          \end{multicols}
+          \begin{itemize}
+            \item $e \wedge e' = \IF{e}{e'}{false}$
+            \item $e \vee e' = \IF{e}{true}{e'}$
+            \item $e \Rightarrow e' = \IF{e}{e'}{true}$
+          \end{itemize}
         \item \textbf{Tuplas:}
-          \begin{multicols}{3}
+          \begin{multicols}{2}
             \vspace{3mm}
             $\begin{array}{c}
               \underline{\qquad \qquad \qquad \qquad \qquad \qquad}\\
               \la e_1, ..., e_n \ra \Rightarrow \la e_1, ..., e_n\ra
               \end{array}$
             $\begin{array}{c}
-              \underline{\ \ e \Rightarrow \langle e_1,...,e_n\rangle\qquad e_k \Rightarrow z }\\
-               e.\lfloor k\rfloor \Rightarrow\ z
+              \underline{\ \ e \Rightarrow \langle e_1,...,e_n\rangle\qquad e_k \Rightarrow z}  \ \ \text{ para } k \leq n \\
+              e.\lfloor k\rfloor \Rightarrow\ z
               \end{array}$
-            
-            $ k \leq n$
           \end{multicols}
           \item \textbf{Recursión:}
             \[\begin{array}{c}
@@ -86,7 +117,7 @@
               \end{array}\]
       \end{itemize}
         
-    \subsection{Eager}
+    \subsubsection{Eager}
       \begin{itemize}
         \item \textbf{Funciones:}
           \begin{prooftree}
@@ -102,17 +133,15 @@
           e \owedge e'\ \Rightarrow\ \lfloor b \owedge b'\rfloor
           \end{array}\]
         \item \textbf{Tuplas:}
-          \begin{multicols}{3}
+          \begin{multicols}{2}
             $\begin{array}{c}
               \underline{\ \ e_1 \Rightarrow z_1 \quad ... \quad \ e_n \Rightarrow z_n } \\
               \langle e_1,...,e_n\rangle\ \Rightarrow\ \langle z_1,...,z_n\rangle
             \end{array}$
-            \hspace{5mm}
             $\begin{array}{c}
-              \underline{\ \ e \Rightarrow \langle z_1,...,z_n\rangle }\\
-               e.\lfloor k\rfloor \Rightarrow\ z_k
-              \end{array}$
-            $k \leq n$
+              \underline{\ \ e \Rightarrow \langle z_1,...,z_n\rangle} \qquad \qquad \qquad \qquad \\
+              e.\lfloor k\rfloor \Rightarrow\ z_k \qquad \ \text{ para } k \leq n
+            \end{array}$
           \end{multicols}
         \item \textbf{Recursión:}
           \[\begin{array}{c}
@@ -172,7 +201,7 @@
         \se{\textbf{true}}\eta &=& \iota_{norm}(\iota_{bool} T) \\ \\
         \se{-e}\eta &=& (\lambda i \in V_{int}. \iota_{norm}(\iota_{int} -i))_{int*}(\se{e}\eta) \\
         \se{\neg e}\eta &=& (\lambda b \in V_{bool}. \iota_{norm}(\iota_{bool} \neg b))_{bool*}(\se{e}\eta) \\ \\
-        \se{e_0+e_1}\eta &=& (\lambda i \in V_{int}.\ (\lambda j \in V_{int}. \iota_{norm}(\iota_{int} i+j)_{int*}(\se{e_1}\eta))_{int*}(\se{e_0}\eta) \\
+        \se{e_0+e_1}\eta &=& (\lambda i \in V_{int}.\ (\lambda j \in V_{int}. \iota_{norm}(\iota_{int} i+j))_{int*}(\se{e_1}\eta))_{int*}(\se{e_0}\eta) \\
         \se{e_0/e_1'}\eta &=& (\lambda i \in V_{int}. \ (\lambda j \in V_{int}. \ \left\lbrace 
         \begin{array}{lll}
           err & j = 0 \\
@@ -183,13 +212,9 @@
           \se{e_0} & si b \\
           \se{e_1} & c.c \\
         \end{array}\right)_{bool*} (\se{e}\eta) \\ \\
+        \se{\textbf{let} \ v \equiv e' \textbf{ in } e}\eta &=& (\lambda z \in V. \se{e}[\eta | v : z])_{\ast}(\se{e'}\eta) \\ \\
         \se{error}\eta &=& err \\
-        \se{typeerror}\eta &=& tyerr \\ \\
-        \se{e.[k]}\eta &=& (\lambda t \in V_{tuple}. \ \left\lbrace 
-        \begin{array}{lll}
-          \iota_{norm} t.k & si \ k \leq \# t \\
-          tyerr & c.c \\
-        \end{array}\right)_{tuple*} (\se{e}\eta)
+        \se{typeerror}\eta &=& tyerr
       \end{eqnarray*}
 
     \subsection{Normal}
@@ -201,8 +226,13 @@
         \llbracket e_0\, e_1\rrbracket\eta &=& (\lambda f \in V_{fun}. f(\se{e_1}\eta))_{fun*} (\se{e_0}\eta) \\
         \llbracket\lambda x.e\rrbracket\eta &=& \iota_{norm}(\iota_{fun}(\lambda d \in D. \se{e}[\eta|x:d])) \\ \\
         \se{\la e_1, ..., e_n \ra}\eta &=& \iota_{norm}(\iota_{tuple} \la \se{e_1}\eta, ..., \se{e_n}\eta \ra) \\
+        \se{e.[k]}\eta &=& (\lambda t \in V_{tuple}. \ \left\lbrace 
+        \begin{array}{lll}
+          t.k & si \ k \leq \# t \\
+          tyerr & c.c \\
+        \end{array}\right)_{tuple*} (\se{e}\eta) \\
         \se{\textbf{rec}\  e} \eta &=& (\lambda f \in  V_{fun}.\ Y f)_{fun*} (\se{e}\eta ) \\
-        \text{donde} && Y \text{ es el operador de menor punto fijo}
+        \text{donde} && Y F = \sqcup_{i \geq 0} F^{i} \underline{\bot}
       \end{eqnarray*}
         
     \subsection{Eager}
@@ -214,7 +244,12 @@
         \llbracket e_0\, e_1\rrbracket\eta &=& (\lambda f \in V_{fun}. f_{*} (\se{e_1}\eta))_{fun*} (\se{e_0}\eta) \\
         \llbracket\lambda x.e\rrbracket\eta &=& \iota_{norm}(\iota_{fun}(\lambda z \in V. \se{e}[\eta|x:z])) \\ \\
         \se{\la e_1, ..., e_n \ra}\eta &=& (\lambda z_1 \in V. ... (\lambda z_n \in V . \iota_{norm}(\iota_{tuple} \la z_1, ..., z_n\ra))_{*} (\se{e_n}\eta) ...)_{*} (\se{e_1}\eta) \\
+        \se{e.[k]}\eta &=& (\lambda t \in V_{tuple}. \ \left\lbrace 
+        \begin{array}{lll}
+          \iota_{norm} t.k & si \ k \leq \# t \\
+          tyerr & c.c \\
+        \end{array}\right)_{tuple*} (\se{e}\eta) \\ \\
         \se{\letrecin{v \equiv \lambda u.e}{e'}}\eta &=& \se{e'} [\eta |v:\iota_{fun} Y_{V_{fun}} F] \\
         \text{donde} && F\ f\ z = \se{e}[\eta| v: \iota_{fun} f | u:z] \\
-        && Y_{V_{fun}} \text{ es el operador de menor punto fijo sobre } V_{fun}
+        && Y_{V_{fun}} F = \sqcup_{i \geq 0} F^{i} \underline{\bot}
       \end{eqnarray*}
