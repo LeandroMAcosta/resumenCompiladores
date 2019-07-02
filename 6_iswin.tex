@@ -11,6 +11,7 @@
       &|& \expr =_{ref} \expr & \text{comprueba si las referencias son las mismas (comparación de punteros)}
   \end{array}\]
 
+  \pagebreak
   \PN Definiciones:
   \begin{itemize}
     \item Rf: conjunto infinito de referencias
@@ -67,9 +68,8 @@
       \se{ee'}\eta\s &=& (\lambda \la \s',f\ra \in \Sigma \times V_{fun}.\ f_* (\se{e'}\eta\s'))_{fun*}(\se{e}\eta\s) \\
       \se{\lambda v.\  e'}\eta\s &=&  \iota_{norm}\la \s, \iota_{fun}(\lambda \la\s',z\ra \in \Sigma \times V.\ \se{e}[\eta|v:z]\s')\ra \\
       \se{\textbf{letrec}\ w &=& \lambda v.\  e\ine e'}\eta\s \ = \ \se{e'}[\eta|w:\iota_{fun}f]\s \\
-      \text{donde} && \\
-      f &=& \textbf{Y}_{V_{fun}}F \\
-      F\ f \ \la\s',z\ra &=& \se{e}[\eta|w:\iota_{fun} f|v:z]\s'
+      \text{donde} && f = \textbf{Y}_{V_{fun}}F \\
+      && F\ f \ \la\s',z\ra = \se{e}[\eta|w:\iota_{fun} f|v:z]\s'
     \end{eqnarray*}
 
   \subsection{Semántica operacional} 

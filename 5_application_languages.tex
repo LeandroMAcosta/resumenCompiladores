@@ -132,6 +132,7 @@
           \underline{e\ \Rightarrow\ \lfloor b\rfloor\qquad e'\ \Rightarrow\ \lfloor b'\rfloor}\\
           e \owedge e'\ \Rightarrow\ \lfloor b \owedge b'\rfloor
           \end{array}\]
+          \pagebreak
         \item \textbf{Tuplas:}
           \begin{multicols}{2}
             $\begin{array}{c}
@@ -212,6 +213,8 @@
           \se{e_0} & si b \\
           \se{e_1} & c.c \\
         \end{array}\right)_{bool*} (\se{e}\eta) \\ \\
+      \end{eqnarray*}
+      \begin{eqnarray*}
         \se{\textbf{let} \ v \equiv e' \textbf{ in } e}\eta &=& (\lambda z \in V. \se{e}[\eta | v : z])_{\ast}(\se{e'}\eta) \\ \\
         \se{error}\eta &=& err \\
         \se{typeerror}\eta &=& tyerr
