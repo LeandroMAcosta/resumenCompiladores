@@ -130,12 +130,10 @@
         \llbracket\lambda x.e\rrbracket\eta &=& \psi(\lambda d \in \dinf. \llbracket e\rrbracket[\eta |v:d]) \\
       \end{eqnarray*}        
         
-    \begin{theorem}{Coincidencia} Si $\eta\, w$ = $\eta'\, w$ para todo $w \in FV(e)$,
-      entonces $\llbracket e\rrbracket \eta = \llbracket e\rrbracket \eta'$.
+    \begin{theorem}{Coincidencia} Si $\forall w \in FV(e) . \eta\, w$ = $\eta'\, w$ entonces $\llbracket e\rrbracket \eta = \llbracket e\rrbracket \eta'$.
     \end{theorem}
         
-    \begin{theorem}{Sustitución} Si $\llbracket \delta\, w\rrbracket\eta = \eta' w$ para todo
-      $w \in FV(e)$, entonces $\llbracket e/\delta\rrbracket \eta =\llbracket e\rrbracket\eta'$.
+    \begin{theorem}{Sustitución} Si $\forall w \in FV(e). \llbracket \delta\, w\rrbracket\eta = \eta' w$ entonces $\llbracket e/\delta\rrbracket \eta =\llbracket e\rrbracket\eta'$.
     \end{theorem}
     
     \begin{theorem}{Sustitución Finita} $\llbracket e/v_1\to e_1, \ldots,
@@ -143,9 +141,8 @@
       \llbracket e_1\rrbracket\eta|\ldots|v_n:\llbracket e_n\rrbracket\eta]$.
     \end{theorem}
     
-    \begin{theorem}{Renombre} Si $v' \not\in FV(e)-\{v\}$, entonces
-      $\llbracket\lambda v'.(e/v\to v')\rrbracket = \llbracket\lambda
-      v.e\rrbracket$.
+    \begin{theorem}{Renombre} Si $w \not\in FV(e)-\{v\}$, entonces
+      $\llbracket\lambda v.e\rrbracket = \llbracket\lambda w.(e/v\to w)\rrbracket$.
     \end{theorem}
         
     \begin{property}(correctitud de la regla $\beta$): $\llbracket(\lambda v.e)\, e'\rrbracket = \llbracket e/v\to e'\rrbracket$.
@@ -163,35 +160,46 @@
     \PN Asumiremos que $\llbracket\Delta \Delta\rrbracket\eta = \bot$.
 
     \subsubsection{Normal}
-      \begin{eqnarray*}
-        D &=& V_\bot, \text{ donde } V \cong [D \to  D] \\ \\
-        \phi &\in& V \to  [D \to  D] \\
-        \psi &\in& [D \to  D] \to  V \\ \\ 
-        \lambda d &\in& D. \bot \text{ bottom de } D \rightarrow D \\
-        \psi(\lambda d &\in& D. \bot) \text{ bottom de V pero no de D} \\ \\
-        \phi_{\botbot} &\in& D \to  [D \to  D] \\
-        \iota_\bot . \psi &\in& [D \to  D] \to  D \\ \\
-        \Env &=& \var \to  D \\
-        \llbracket\_\rrbracket &\in& \expr \to  Env \to  D \\ \\
-        \llbracket v \rrbracket\eta &=& \eta v \\
-        \llbracket e_0\, e_1\rrbracket\eta &=& \phi_{\botbot} (\llbracket e_0\rrbracket\eta) (\llbracket e_1\rrbracket\eta) \\
-        \llbracket\lambda x.e\rrbracket\eta &=& (\iota_\bot . \psi)(\lambda d \in D. \llbracket e\rrbracket[\eta|v:d])
-      \end{eqnarray*}
+      \begin{multicols}{2}
+        \begin{eqnarray*}
+          D &=& V_\bot, \text{ donde } V \cong [D \to  D] \\ \\
+          \phi &\in& V \to  [D \to  D] \\
+          \psi &\in& [D \to  D] \to  V \\ \\ 
+          \lambda d &\in& D. \bot \text{ bottom de } D \rightarrow D \\
+          \psi(\lambda d &\in& D. \bot) \text{ bottom de V pero no de D} \\ \\
+          \phi_{\botbot} &\in& D \to  [D \to  D] \\
+          \iota_\bot . \psi &\in& [D \to  D] \to  D
+        \end{eqnarray*}
+        \begin{eqnarray*}
+          \\ \\ \\
+          \Env &=& \var \to  D \\
+          \llbracket\_\rrbracket &\in& \expr \to  Env \to  D \\ \\
+          \llbracket v \rrbracket\eta &=& \eta v \\
+          \llbracket e_0\, e_1\rrbracket\eta &=& \phi_{\botbot} (\llbracket e_0\rrbracket\eta) (\llbracket e_1\rrbracket\eta) \\
+          \llbracket\lambda x.e\rrbracket\eta &=& (\iota_\bot . \psi)(\lambda d \in D. \llbracket e\rrbracket[\eta|v:d])
+        \end{eqnarray*}
+      \end{multicols}
+      \PN Los teoremas antes vistos junto con la regla $\beta$ siguen valiendo pero no la regla $\eta$.
+      \PN Contraejemplo regla $\eta: \se{\lambda y. \Delta\Delta y} = \psi(\lambda d \in D.\bot)$ mientras que $\se{\Delta\Delta} = \bot$.    
 
-      \PN Los teoremas antes vistos junto con la regla $\beta$ siguen valiendo pero no la regla $\eta$, pues $\se{\lambda y. \Delta\Delta y} = \psi(\lambda d \in D.\bot)$ mientras que $\se{\Delta\Delta} = \bot$.
-    
     \subsubsection{Eager}
-      \begin{eqnarray*}
-        D &=& V_\bot, \text{ donde } V \cong [V \to D] \\ \\
-        \phi &\in& V \to [V \to D] \\
-        \psi &\in& [V \to D] \to V \\ \\
-        \phi_{\botbot} &\in& D \to [V \to D] \\
-        \iota_\bot . \psi &\in& [V \to D] \to D \\ \\
-        Env &=& \var \to V \\
-        \llbracket\_\rrbracket &\in& \expr \to Env \to D \\ \\
-        \llbracket v\rrbracket\eta &=& \iota_\bot (\eta v) \\
-        \llbracket e_0\, e_1\rrbracket\eta &=& (\phi_{\botbot} (\llbracket e_0\rrbracket\eta))_{\botbot}\, (\llbracket e_1\rrbracket\eta)\\
-        \llbracket\lambda x.e\rrbracket\eta &=& (\iota_\bot . \psi)(\lambda z \in V. \llbracket e\rrbracket[\eta|x:z])
-      \end{eqnarray*}
-
-      \PN Los teoremas antes vistos (salvo sustitución) siguen valiendo pero no las reglas $\beta$, ya que $\se{(\lambda y \lambda x.x)(\Delta \Delta)}$ diverge en eager y no da $\se{\lambda x. x}$ como esperaría la regla y $\eta$, ya que $\se{\lambda y. \Delta\Delta y} = \psi(\lambda d \in D.\bot)$ mientras que $\se{\Delta\Delta} = \bot$.
+      \begin{multicols}{2}
+        \begin{eqnarray*}
+          D &=& V_\bot, \text{ donde } V \cong [V \to D] \\ \\
+          \phi &\in& V \to [V \to D] \\
+          \psi &\in& [V \to D] \to V \\ \\
+          \phi_{\botbot} &\in& D \to [V \to D] \\
+          \iota_\bot . \psi &\in& [V \to D] \to D
+        \end{eqnarray*}
+        \begin{eqnarray*}
+          \\ \\
+          Env &=& \var \to V \\
+          \llbracket\_\rrbracket &\in& \expr \to Env \to D \\ \\
+          \llbracket v\rrbracket\eta &=& \iota_\bot (\eta v) \\
+          \llbracket e_0\, e_1\rrbracket\eta &=& (\phi_{\botbot} (\llbracket e_0\rrbracket\eta))_{\botbot}\, (\llbracket e_1\rrbracket\eta)\\
+          \llbracket\lambda x.e\rrbracket\eta &=& (\iota_\bot . \psi)(\lambda z \in V. \llbracket e\rrbracket[\eta|x:z])
+        \end{eqnarray*}
+      \end{multicols}
+      \PN Los teoremas antes vistos (salvo sustitución) siguen valiendo pero no las reglas $\beta, \eta$.
+      \PN Contraejemplo regla $\beta:$ No da $\se{\lambda x. x}$, como se esperaria, sino que $\se{(\lambda y \lambda x.x)(\Delta \Delta)}$ diverge en eager.
+      \PN Contraejemplo regla $\eta: \se{\lambda y. \Delta\Delta y} = \psi(\lambda d \in D.\bot)$ mientras que $\se{\Delta\Delta} = \bot$.
