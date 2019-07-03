@@ -86,7 +86,7 @@
     \PN No importa el nombre de las variables utilizadas en las declaraciones de variables locales, es decir, las ligadas.
 
     \vspace{3mm}
-    \PN $u \notin FV(c) - \{v\} \Rightarrow \semAGU{\newvar{u := e}{c/v\rightarrow u}} = \semAGU{\newvar{v := e}{c}}$
+    \PN $u \notin FV(c) - \{v\} \Rightarrow \semAGU{\newvar{u := e}{c/v\rightarrow u}} = \semAGU{\newvar{u := e}{c}}$
 
   \subsection*{Teorema de Sustitución (TS)}
     \PN Si $\delta$ es inyectiva sobre $FV(c)$ y $\forall \omega \in FV(c) . \; \sigma(\delta \omega) = \sigma' \omega$ entonces:
@@ -200,27 +200,27 @@
     \end{cases}
     \]
 
-  \subsubsection*{Con fallas}
-    \begin{multicols}{2}
-      \[\begin{array}{cll}
-        \overline{\lang{\fail, \sigma} \rightarrow \lang{\abort, \sigma}} \\ \\ \\
+    \subsubsection*{Con fallas}
+      \begin{multicols}{2}
+        \[\begin{array}{cll}
+          \overline{\lang{\fail, \sigma} \rightarrow \lang{\abort, \sigma}} \\ \\ \\
 
-        \lang{c_0, \sigma} \rightarrow \lang{\abort, \sigma'} \\
-        \overline{\lang{c_0;c_1, \sigma} \rightarrow \lang{\abort, \sigma'}} \\ \\ \\
+          \lang{c_0, \sigma} \rightarrow \lang{\abort, \sigma'} \\
+          \overline{\lang{c_0;c_1, \sigma} \rightarrow \lang{\abort, \sigma'}} \\ \\ \\
 
-        \lang{c_0, \sigma} \rightarrow \sigma' \\
-        \overline{\lang{\catch{c_0}{c_1}, \sigma} \rightarrow \sigma'} \\ \\ \\
-      \end{array}\]
-      \[\begin{array}{cll}
-        \lang{c_0, \sigma} \rightarrow \lang{\abort, \sigma'} \\
-        \overline{\lang{\catch{c_0}{c_1}, \sigma} \rightarrow \lang{c_1, \sigma'}} \\ \\ \\
-        \lang{c_0, \sigma} \rightarrow \lang{c'_0, \sigma'} \\
-        \overline{\lang{\catch{c_0}{c_1}, \sigma} \rightarrow \lang{\catch{c'_0}{c_1}, \sigma'}} \\ \\ \\
+          \lang{c_0, \sigma} \rightarrow \sigma' \\
+          \overline{\lang{\catch{c_0}{c_1}, \sigma} \rightarrow \sigma'} \\ \\ \\
+        \end{array}\]
+        \[\begin{array}{cll}
+          \lang{c_0, \sigma} \rightarrow \lang{\abort, \sigma'} \\
+          \overline{\lang{\catch{c_0}{c_1}, \sigma} \rightarrow \lang{c_1, \sigma'}} \\ \\ \\
+          \lang{c_0, \sigma} \rightarrow \lang{c'_0, \sigma'} \\
+          \overline{\lang{\catch{c_0}{c_1}, \sigma} \rightarrow \lang{\catch{c'_0}{c_1}, \sigma'}} \\ \\ \\
 
-        \lang{c, \sigma} \rightarrow \lang{\abort, \sigma'} \\
-        \overline{\lang{\newvar{v := e}{c}, \sigma} \rightarrow \lang{\abort, [\sigma' | v : \sigma v]}}
-      \end{array}\]
-    \end{multicols}
+          \lang{c, \sigma} \rightarrow \lang{\abort, \sigma'} \\
+          \overline{\lang{\newvar{v := e}{c}, \sigma} \rightarrow \lang{\abort, [\sigma' | v : \sigma v]}}
+        \end{array}\]
+      \end{multicols}
 
     \begin{eqnarray*}
       \{\!\!\{c\}\!\!\}_{\sigma} = \begin{cases}
@@ -230,18 +230,16 @@
       \end{cases}
     \end{eqnarray*}
 
-    \underline{PROPIEDADES:}
-    \begin{itemize}
-      \item \textbf{Lema 1:}
-        \begin{enumerate}
-          \item Si $\lang{c_0, \sigma} \rightarrow^{\ast} \sigma'$ entonces $\lang{c_0;c_1, \sigma} \rightarrow^{\ast} \lang{c_1, \sigma'}$
-          \item Si $\lang{c, [\sigma | v : \semsAGU{e}]} \rightarrow^{\ast} \sigma'$ entonces $\lang{\newvar{v := e}{c}, \sigma} \rightarrow^{\ast} [\sigma' | v : \sigma v]$
-          \item Si $\lang{c, [\sigma | v : \semsAGU{e}]} \rightarrow^{\ast} \lang{c', \sigma'}$ entonces $\lang{\newvar{v := e}{c}, \sigma} \rightarrow^{\ast} \lang{\newvar{v := \sigma' x}{c'}, [\sigma' | v : \sigma v]}$
-        \end{enumerate}
-        
-        \PN \textbf{Prueba:}
-        \begin{enumerate}
-          \item Supongamos $G_0 = \lang{c_0, \sigma} \RA \sigma'$, y que la ejecución $G_0 \RA \sigma'$ tiene $n$ pasos, es decir:
+    \PN \underline{PROPIEDADES:}
+    \subsubsection*{\textbf{Lema 1:}}
+      \begin{enumerate}
+        \item Si $\lang{c_0, \sigma} \rightarrow^{\ast} \sigma'$ entonces $\lang{c_0;c_1, \sigma} \rightarrow^{\ast} \lang{c_1, \sigma'}$
+        \item Si $\lang{c, [\sigma | v : \semsAGU{e}]} \rightarrow^{\ast} \sigma'$ entonces $\lang{\newvar{v := e}{c}, \sigma} \rightarrow^{\ast} [\sigma' | v : \sigma v]$
+        \item Si $\lang{c, [\sigma | v : \semsAGU{e}]} \rightarrow^{\ast} \lang{c', \sigma'}$ entonces $\lang{\newvar{v := e}{c}, \sigma} \rightarrow^{\ast} \lang{\newvar{v := \sigma' v}{c'}, [\sigma' | v : \sigma v]}$
+      \end{enumerate}
+    \PN \textbf{Prueba:}
+      \begin{enumerate}
+        \item Supongamos $G_0 = \lang{c_0, \sigma} \RA \sigma'$, y que la ejecución $G_0 \RA \sigma'$ tiene $n$ pasos, es decir:
         \[
           G_0 \rightarrow G_1 \rightarrow ... G_n = \sigma'
         \]
@@ -267,20 +265,18 @@
         \item
       \end{enumerate}
 
-      \item \textbf{Lema 2:}
-        \begin{enumerate}
-          \item $\lang{c, \sigma} \rightarrow \sigma' \Rightarrow \semsAGU{c} = \sigma'$
-          \item $\lang{c, \sigma} \rightarrow \lang{c', \sigma'} \Rightarrow \semsAGU{c} = \semAGU{c'}\sigma'$
-        \end{enumerate}
+    \subsubsection*{\textbf{Lema 2:}}
+      \begin{enumerate}
+        \item $\lang{c, \sigma} \rightarrow \sigma' \Rightarrow \semsAGU{c} = \sigma'$
+        \item $\lang{c, \sigma} \rightarrow \lang{c', \sigma'} \Rightarrow \semsAGU{c} = \semAGU{c'}\sigma'$
+      \end{enumerate}
+    \PN \textbf{Prueba:}
 
-        \PN \textbf{Prueba:}
+    \subsubsection*{\textbf{Lema 3:}} $\semsAGU{c} = \sigma' \Rightarrow \lang{c, \sigma} \rightarrow^{\ast} \sigma'$
+    \PN \textbf{Prueba:}
 
-      \item \textbf{Lema 3:} $\semsAGU{c} = \sigma' \Rightarrow \lang{c, \sigma} \rightarrow^{\ast} \sigma'$
-        
-        \PN \textbf{Prueba:}
+    \subsubsection*{\textbf{Teorema:}} Para todo comando $c$ se tiene $\{\!\!\{c\}\!\!\} = \semAGU{c}$
+    \PN \textbf{Prueba:}
 
-      \item \textbf{Teorema:} Para todo comando $c$ se tiene $\{\!\!\{c\}\!\!\} = \semAGU{c}$
-        
-        \PN \textbf{Prueba:}
-
-    \end{itemize}
+    \subsubsection*{Teoremas de Coincidencia, Renombre y Sustitución para la semántica operacional}
+      \PN Todos estos teoremas son válidos para la semántica operacional también. Se prueban sencillamente utilizando el teorema anterior, que dice que para todo comando c vale $\{\!\!\{c\}\!\!\} = \semAGU{c}$.
