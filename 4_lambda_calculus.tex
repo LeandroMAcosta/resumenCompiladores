@@ -39,7 +39,7 @@
     \item Forma canónica: abstracciones $(\lambda x.e)$
     \item \textit{Redex}: expresión de la forma $(\lambda v.e) e'$.
     \item Expresion lambda cerrada: $\lambda v.e$ tal que $FV(e) = \{v\}$
-    \item Formal normal: expresión sin rédices. No necesariamente son abstracciones, por ejemplo, $(\lambda x.y) (\lambda z.z)$ $\beta$-contrae a $y$ es es formal normal pero no canónica.
+    \item Formal normal: expresión sin rédices. No necesariamente son abstracciones, por ejemplo, $(\lambda x.y) (\lambda z.z)$ $\beta$-contrae a $y$ es formal normal pero no canónica.
   \end{itemize}
         
   \paragraph{Renombre ($\alpha$)}
@@ -115,20 +115,25 @@
         \psi \,\in\, & [\dinf \to  \dinf] \to  \dinf
         \end{array}
       \]
-      los isomorfismos tales que
-      \begin{align*}
-      \phi . \psi &= id \\
-      \psi . \phi &= id
-      \end{align*}
+      los isomorfismos tales que $\qquad \phi . \psi = id, \qquad \psi . \phi = id$
+      % \begin{align*}
+      % \phi . \psi &= id \\
+      % \psi . \phi &= id
+      % \end{align*}
 
-      \begin{eqnarray*}
-        \text{Ambiente: } \Env &=& \var \to \dinf \\
-        \eta &\in& \Env \\
-        \llbracket\_\rrbracket &\in& \expr \to  Env \to  \dinf \\ \\
-        \llbracket v\rrbracket\eta &=& \eta\, v \\
-        \llbracket e_0\, e_1\rrbracket\eta &=& \phi(\llbracket e_0\rrbracket \eta) (\llbracket e_1\rrbracket\eta) \\
-        \llbracket\lambda x.e\rrbracket\eta &=& \psi(\lambda d \in \dinf. \llbracket e\rrbracket[\eta |v:d]) \\
-      \end{eqnarray*}        
+      \begin{multicols}{2}
+        \begin{eqnarray*}
+          \text{Ambiente: } \Env &=& \var \to \dinf \\
+          \eta &\in& \Env \\
+          \llbracket\_\rrbracket &\in& \expr \to  Env \to  \dinf \\ \\
+        \end{eqnarray*}
+        \begin{eqnarray*}
+          \\
+          \llbracket v\rrbracket\eta &=& \eta\, v \\
+          \llbracket e_0\, e_1\rrbracket\eta &=& \phi(\llbracket e_0\rrbracket \eta) (\llbracket e_1\rrbracket\eta) \\
+          \llbracket\lambda x.e\rrbracket\eta &=& \psi(\lambda d \in \dinf. \llbracket e\rrbracket[\eta |v:d])
+        \end{eqnarray*}        
+      \end{multicols}
         
     \begin{theorem}{Coincidencia} Si $\forall w \in FV(e) . \eta\, w$ = $\eta'\, w$ entonces $\llbracket e\rrbracket \eta = \llbracket e\rrbracket \eta'$.
     \end{theorem}
@@ -166,12 +171,11 @@
           \phi &\in& V \to  [D \to  D] \\
           \psi &\in& [D \to  D] \to  V \\ \\ 
           \lambda d &\in& D. \bot \text{ bottom de } D \rightarrow D \\
-          \psi(\lambda d &\in& D. \bot) \text{ bottom de V pero no de D} \\ \\
-          \phi_{\botbot} &\in& D \to  [D \to  D] \\
-          \iota_\bot . \psi &\in& [D \to  D] \to  D
+          \psi(\lambda d &\in& D. \bot) \text{ bottom de V pero no de D}
         \end{eqnarray*}
         \begin{eqnarray*}
-          \\ \\ \\
+          \phi_{\botbot} &\in& D \to  [D \to  D] \\
+          \iota_\bot . \psi &\in& [D \to  D] \to  D \\ \\
           \Env &=& \var \to  D \\
           \llbracket\_\rrbracket &\in& \expr \to  Env \to  D \\ \\
           \llbracket v \rrbracket\eta &=& \eta v \\
@@ -192,7 +196,7 @@
           \iota_\bot . \psi &\in& [V \to D] \to D
         \end{eqnarray*}
         \begin{eqnarray*}
-          \\ \\
+          \\ \\ \\
           Env &=& \var \to V \\
           \llbracket\_\rrbracket &\in& \expr \to Env \to D \\ \\
           \llbracket v\rrbracket\eta &=& \iota_\bot (\eta v) \\

@@ -6,8 +6,8 @@
       && \var := \intexp \\
       && \comm\ ;\ \comm \\ 
       && \ife \boolexp\thene\comm\elsee\comm \\ 
-      && \newvar \var:=\intexp\ine\comm \\ 
-      && \while \boolexp\doc\comm \\
+      && \newvar{\var:=\intexp}{\comm} \\ 
+      && \while{\boolexp}{\comm} \\
       && \catch{\comm}{\comm} \\
       && \mathbb{!} \intexp \\
       && \mathbb{?} \var \\
@@ -15,7 +15,7 @@
 
   \subsection*{\underline{Semántica Denotacional} (con fallas)}
     \begin{itemize}
-      \item $(\ast)$: Se tranfiere el control a f si NO HAY $\abort$
+      \item $(\ast)$: Se tranfiere el control a f SI NO HAY $\abort$
       \item $(+)$: Se tranfiere el control a f SOLO en caso de $\abort$
       \item $(\dag)$: Se tranfiere el control a f SIEMPRE
     \end{itemize}
@@ -164,7 +164,7 @@
         \noindent
         \overline{\lang{\skipp, \sigma} \rightarrow \sigma} \\ \\
         
-        \overline{\lang{v := e, \sigma} \rightarrow [\sigma | v : \semsAGU{e}]} \\ \\
+        \overline{\lang{v := e, \sigma} \rightarrow [\sigma | v : \semsAGU{e}]} \\ \\ \\
         
         \lang{c_0, \sigma} \rightarrow \sigma' \\
         \overline{\lang{c_0;c_1, \sigma} \rightarrow \lang{c_1, \sigma'}} \\ \\
@@ -172,7 +172,7 @@
         \overline{\lang{c_0;c_1, \sigma} \rightarrow \lang{c'_0; c_1, \sigma'}} \\ \\
         
         (\semsAGU{e} = V) \\
-        \overline{\lang{\ifthenelse{e}{c}{c'}, \sigma} \rightarrow \lang{c, \sigma}} \\ \\
+        \overline{\lang{\ifthenelse{e}{c}{c'}, \sigma} \rightarrow \lang{c, \sigma}} \\ \\ \\
       \end{array}\]
       \[\begin{array}{cll}
         \noindent
@@ -237,7 +237,7 @@
         \item Si $\lang{c, [\sigma | v : \semsAGU{e}]} \rightarrow^{\ast} \sigma'$ entonces $\lang{\newvar{v := e}{c}, \sigma} \rightarrow^{\ast} [\sigma' | v : \sigma v]$
         \item Si $\lang{c, [\sigma | v : \semsAGU{e}]} \rightarrow^{\ast} \lang{c', \sigma'}$ entonces $\lang{\newvar{v := e}{c}, \sigma} \rightarrow^{\ast} \lang{\newvar{v := \sigma' v}{c'}, [\sigma' | v : \sigma v]}$
       \end{enumerate}
-    \PN \textbf{Prueba:}
+      \PN Prueba:
       \begin{enumerate}
         \item Supongamos $G_0 = \lang{c_0, \sigma} \RA \sigma'$, y que la ejecución $G_0 \RA \sigma'$ tiene $n$ pasos, es decir:
         \[
@@ -270,13 +270,20 @@
         \item $\lang{c, \sigma} \rightarrow \sigma' \Rightarrow \semsAGU{c} = \sigma'$
         \item $\lang{c, \sigma} \rightarrow \lang{c', \sigma'} \Rightarrow \semsAGU{c} = \semAGU{c'}\sigma'$
       \end{enumerate}
-    \PN \textbf{Prueba:}
+      \PN Prueba:
 
     \subsubsection*{\textbf{Lema 3:}} $\semsAGU{c} = \sigma' \Rightarrow \lang{c, \sigma} \rightarrow^{\ast} \sigma'$
-    \PN \textbf{Prueba:}
+      \vspace{3mm}
+      \PN Prueba: Por inducción en la estructura de $c$.
 
     \subsubsection*{\textbf{Teorema:}} Para todo comando $c$ se tiene $\{\!\!\{c\}\!\!\} = \semAGU{c}$
-    \PN \textbf{Prueba:}
+      \vspace{3mm}
+      \PN Prueba:
+        \begin{itemize}
+          \item Supongamos $\se{c}\s = \s'$, entonces por el \textbf{Lemma 3} $\{\!\!\{c\}\!\!\}\s = \semAGU{c}\s$.
+          \item Supongamos $\se{c}\s = \bot$, entonces probaremos por el absurdo que $\la c, \s \ra \uparrow$
+            \PN Supongamos que $\exists \s'$ tal que $\la c, \s \ra \to^{\ast} s'$. Aplicando sucesivamente el \textbf{Lemma 2}, llegamos a que $\se{c}\s = \s'$, lo cual es absurdo.
+        \end{itemize}
 
     \subsubsection*{Teoremas de Coincidencia, Renombre y Sustitución para la semántica operacional}
       \PN Todos estos teoremas son válidos para la semántica operacional también. Se prueban sencillamente utilizando el teorema anterior, que dice que para todo comando c vale $\{\!\!\{c\}\!\!\} = \semAGU{c}$.

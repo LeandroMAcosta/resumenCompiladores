@@ -11,16 +11,16 @@
       &|& \expr =_{ref} \expr & \text{comprueba si las referencias son las mismas (comparación de punteros)}
   \end{array}\]
 
-  \pagebreak
+  % \pagebreak
   \PN Definiciones:
   \begin{itemize}
     \item Rf: conjunto infinito de referencias
     \item $\Sigma = \bigcup\limits_{F \subset_{fin} V_{ref}} F \to V$
     \item $new(\sigma) = new(dom(\sigma))$
     \item $new(\s) \in Rf$, devuelve una referencia nueva tal que $new(\s) \notin dom(\s)$
-    % \item V = $V_{int} + V_{bool} + V_{fun} + V_{tuple} + V_{ref}$
-    % \item D = $(\Sigma \times V + \{error, typeerror\})_{\bot}$
-    % \item $\iota_{norm} \la \s, z \ra \in D$, $\s \in \Sigma, z \in V$
+    \item V = $V_{int} + V_{bool} + V_{fun} + V_{tuple} + V_{ref}$
+    \item D = $(\Sigma \times V + \{error, typeerror\})_{\bot}$
+    \item $\iota_{norm} \la \s, z \ra \in D$, $\s \in \Sigma, z \in V$
   \end{itemize}
 
   \vspace{3mm}
@@ -42,28 +42,7 @@
     f_* & \bot &=& \bot
   \end{array}\]
 
-  \subsection{Semántica operacional} 
-    \begin{multicols}{2}  
-      \[\begin{array}{c}
-        \underline{\s,e \Rightarrow \lambda v.\ e_0,\s'\quad \s',e' \Rightarrow z',\s''\quad \s'', (e_0/v\rightarrow z') \Rightarrow z,\s'''}\\
-        ee',\s \Rightarrow z,\s''' \\ \\
-
-        \underline{\s,e \Rightarrow r,\s'\quad \s',e' \Rightarrow z,\s''} \\
-        \s,e:=e' \Rightarrow z,[\s''|r:z] \\ \\
-      \end{array}\]
-      \[\begin{array}{c}
-        \s,e \Rightarrow z,\s' \qquad \qquad \qquad \\
-        \overline{\s,\textbf{ref}\ e \Rightarrow r,[\s'|r:z]} \qquad r = new(\sigma') \\ \\
-
-        \s,e \Rightarrow r,\s' \qquad \qquad \qquad \\
-        \overline{\s,\textbf{val}\ e \Rightarrow \s' r,\s'} \qquad r \in dom(\sigma') \\ \\
-
-        \underline{\s,e \Rightarrow r,\s'\quad \s',e' \Rightarrow r',\s''} \qquad \qquad \\
-        \s,e=_{ref}e' \Rightarrow \lfloor r=r'\rfloor,\s'' \qquad \qquad 
-      \end{array}\]
-    \end{multicols}
-
-    \subsection{Algunas propiedades del fragmento imperativo}
+  \subsection{Algunas propiedades del fragmento imperativo}
     \begin{itemize}
       \item $\textbf{skip} =_{def} \la \ra$
       \item $e;e' =_{def} \textbf{let}\ v=e \ine e'\qquad\qquad(v\notin FV\ (e'))$
@@ -84,19 +63,51 @@
         \[
         \se{\newvar{v=e}{e'}}\eta\s = (\lambda \la \s', z\ra.\se{e'}[\eta|v:\iota_{ref}r][\s'|r:z])_{*}(\se{e}\eta\s)\quad\text{donde } r = new(dom\  \s') 
         \]
-      \item $\while e\do e' =_{def} \textbf{letrec}\ w=\lambda v.\ \ife e\thene e'; w \ v \elsee \textbf{skip} \ine w \la \ra$
-      \PN donde $w$ y $v$ no deben ocurrir en $e$ ni $e'$
-      \[\begin{array}{c}
-        \s,e \Rightarrow \textbf{false},\s'\\
-        \overline{\s, \while e\do e' \Rightarrow \la\ra,\s'}
-        \end{array}
-        \qquad
-        \begin{array}{c}
-        \underline{\s,e \Rightarrow \textbf{true},\s'\quad \s', e';\while e \do e' \Rightarrow z',\s''}\\
-        \s, \while e \do e' \Rightarrow z',\s''
-        \end{array}
-        \]
+      \item $\while b\do c =_{def} \textbf{letrec}\ w=\lambda v.\ \ife b\thene c; w \ \la \ra \elsee \textbf{skip} \ine w \la \ra$
+        \PN donde $w$ y $v$ no deben ocurrir en $b$ ni $c$
+        \[\begin{array}{c}
+          \s,b \Rightarrow \textbf{false},\s'\\
+          \overline{\s, \while b\do c \Rightarrow \la\ra,\s'}
+          \end{array}
+          \qquad
+          \begin{array}{c}
+          \underline{\s,b \Rightarrow \textbf{true},\s'\quad \s', c;\while b \do c \Rightarrow z',\s''}\\
+          \s, \while b \do c \Rightarrow z',\s''
+          \end{array}
+          \]
+          \begin{eqnarray*}
+            \se{\while{b}{c}}\eta\s &=& \iota_{fun} (Y_{V_{fun}} F) \la \ra \\
+            \text{donde} && F\ f \ \la\s',z\ra = 
+            \ \left\lbrace 
+            \begin{array}{lll}
+              \iota_{fun} f \la\ra & \text{si } \se{b}\eta\s \\
+              \la\ra & c.c
+            \end{array}\right. \\
+            && Y_{V_{fun}} F = \sqcup_{i \geq 0} F^{i} \underline{\bot}
+          \end{eqnarray*}
     \end{itemize}
+
+  \pagebreak
+  \subsection{Semántica operacional} 
+    \begin{multicols}{2}  
+      \[\begin{array}{c}
+        \underline{\s,e \Rightarrow \lambda v.\ e_0,\s'\quad \s',e' \Rightarrow z',\s''\quad \s'', (e_0/v\rightarrow z') \Rightarrow z,\s'''}\\
+        ee',\s \Rightarrow z,\s''' \\ \\
+
+        \underline{\s,e \Rightarrow r,\s'\quad \s',e' \Rightarrow z,\s''} \\
+        \s,e:=e' \Rightarrow z,[\s''|r:z] \\ \\
+      \end{array}\]
+      \[\begin{array}{c}
+        \s,e \Rightarrow z,\s' \qquad \qquad \qquad \\
+        \overline{\s,\textbf{ref}\ e \Rightarrow r,[\s'|r:z]} \qquad r = new(\sigma') \\ \\
+
+        \s,e \Rightarrow r,\s' \qquad \qquad \qquad \\
+        \overline{\s,\textbf{val}\ e \Rightarrow \s' r,\s'} \qquad r \in dom(\sigma') \\ \\
+
+        \underline{\s,e \Rightarrow r,\s'\quad \s',e' \Rightarrow r',\s''} \qquad \qquad \\
+        \s,e=_{ref}e' \Rightarrow \lfloor r=r'\rfloor,\s'' \qquad \qquad 
+      \end{array}\]
+    \end{multicols}
 
   \subsection{Semántica denotacional}
     \begin{eqnarray*}
@@ -126,7 +137,7 @@
       \se{v}\eta\s &=& \iota_{norm}(\s, \eta v) \\
       \se{ee'}\eta\s &=& (\lambda \la \s',f\ra \in \Sigma \times V_{fun}.\ f_* (\se{e'}\eta\s'))_{fun*}(\se{e}\eta\s) \\
       \se{\lambda v.\  e'}\eta\s &=&  \iota_{norm}\la \s, \iota_{fun}(\lambda \la\s',z\ra \in \Sigma \times V.\ \se{e}[\eta|v:z]\s')\ra \\ \\
-      \se{\textbf{letrec}\ w &=& \lambda v.\  e\ine e'}\eta\s \ = \ \se{e'}[\eta|w:\iota_{fun}f]\s \\
-      \text{donde} && f = \textbf{Y}_{V_{fun}}F \\
-      && F\ f \ \la\s',z\ra = \se{e}[\eta|w:\iota_{fun} f|v:z]\s'
+      \se{\letrecin{v \equiv \lambda u.e}{e'}}\eta &=& \se{e'} [\eta |v:\iota_{fun} Y_{V_{fun}} F] \\
+      \text{donde} && F\ f \ \la\s',z\ra = \se{e}[\eta|v:\iota_{fun} f|u:z]\s' \\
+      && Y_{V_{fun}} F = \sqcup_{i \geq 0} F^{i} \underline{\bot}
     \end{eqnarray*}

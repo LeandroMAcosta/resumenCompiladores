@@ -83,6 +83,10 @@
             \underline{e\ \Rightarrow\  z' \qquad e'/v \to z'\ \Rightarrow\ z} \\
             \textbf{let } v \equiv e \textbf{ in } e' \ \Rightarrow\ z
             \end{array}\]
+        \item \textbf{Recursión:} Equivalencia entre la recursión Normal y Eager
+          \[
+            \letrecin{f \equiv \lambda v.e'}{e} \qquad  \equiv \qquad (\lambda f . e) \ \textbf{rec}(\lambda f . \lambda v. e')
+          \]
       \end{itemize}
     
     \subsubsection{Normal}    
@@ -192,6 +196,8 @@
         \se{\textbf{true}}\eta &=& \iota_{norm}(\iota_{bool} T) \\ \\
         \se{-e}\eta &=& (\lambda i \in V_{int}. \iota_{norm}(\iota_{int} -i))_{int*}(\se{e}\eta) \\
         \se{\neg e}\eta &=& (\lambda b \in V_{bool}. \iota_{norm}(\iota_{bool} \neg b))_{bool*}(\se{e}\eta) \\ \\
+      \end{eqnarray*}
+      \begin{eqnarray*}
         \se{e_0+e_1}\eta &=& (\lambda i \in V_{int}.\ (\lambda j \in V_{int}. \iota_{norm}(\iota_{int} i+j))_{int*}(\se{e_1}\eta))_{int*}(\se{e_0}\eta) \\
         \se{e_0/e_1'}\eta &=& (\lambda i \in V_{int}. \ (\lambda j \in V_{int}. \ \left\lbrace 
         \begin{array}{lll}
@@ -212,10 +218,10 @@
       \PN $V_{fun} = D \rightarrow D \qquad V_{tuple} = D^{*}$
       \begin{eqnarray*}
         \Env &=& \var \to  D \\
-        \llbracket\_\rrbracket &\in& \expr \to  Env \to  D \\ \\
+        \llbracket\_\rrbracket &\in& \expr \to  Env \to  D \\
         \llbracket v \rrbracket\eta &=& \eta v \\
         \llbracket e_0\, e_1\rrbracket\eta &=& (\lambda f \in V_{fun}. f(\se{e_1}\eta))_{fun*} (\se{e_0}\eta) \\
-        \llbracket\lambda x.e\rrbracket\eta &=& \iota_{norm}(\iota_{fun}(\lambda d \in D. \se{e}[\eta|x:d])) \\ \\
+        \llbracket\lambda x.e\rrbracket\eta &=& \iota_{norm}(\iota_{fun}(\lambda d \in D. \se{e}[\eta|x:d])) \\
         \se{\la e_1, ..., e_n \ra}\eta &=& \iota_{norm}(\iota_{tuple} \la \se{e_1}\eta, ..., \se{e_n}\eta \ra) \\
         \se{e.[k]}\eta &=& (\lambda t \in V_{tuple}. \ \left\lbrace 
         \begin{array}{lll}
@@ -230,10 +236,10 @@
       \PN $V_{fun} = V \rightarrow D \qquad V_{tuple} = V^{*}$
       \begin{eqnarray*}
         Env &=& \var \to V \\
-        \llbracket\_\rrbracket &\in& \expr \to Env \to D \\ \\
+        \llbracket\_\rrbracket &\in& \expr \to Env \to D \\
         \llbracket v\rrbracket\eta &=& \iota_{norm}(\eta v) \\
         \llbracket e_0\, e_1\rrbracket\eta &=& (\lambda f \in V_{fun}. f_{*} (\se{e_1}\eta))_{fun*} (\se{e_0}\eta) \\
-        \llbracket\lambda x.e\rrbracket\eta &=& \iota_{norm}(\iota_{fun}(\lambda z \in V. \se{e}[\eta|x:z])) \\ \\
+        \llbracket\lambda x.e\rrbracket\eta &=& \iota_{norm}(\iota_{fun}(\lambda z \in V. \se{e}[\eta|x:z])) \\
         \se{\la e_1, ..., e_n \ra}\eta &=& (\lambda z_1 \in V. ... (\lambda z_n \in V . \iota_{norm}(\iota_{tuple} \la z_1, ..., z_n\ra))_{*} (\se{e_n}\eta) ...)_{*} (\se{e_1}\eta) \\
         \se{e.[k]}\eta &=& (\lambda t \in V_{tuple}. \ \left\lbrace 
         \begin{array}{lll}
